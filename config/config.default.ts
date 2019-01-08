@@ -28,8 +28,7 @@ export default (appInfo: EggAppInfo) => {
       port: 6379,
       password: '',
       db: 0
-    },
-    agent: true
+    }
   };
 
   config.session = {
@@ -37,7 +36,7 @@ export default (appInfo: EggAppInfo) => {
     maxAge: 24 * 3600 * 1000,
     httpOnly: true,
     encrypt: true
-  }
+  };
   // the return config will combines to EggAppConfig
   return {
     ...config,
