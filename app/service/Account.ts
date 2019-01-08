@@ -30,6 +30,7 @@ export default class Account extends Service {
     if (!account) {
       return this.ServerResponse.error('注册失败');
     }
+    
     return 'hi';
   }
 
