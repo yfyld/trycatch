@@ -1,7 +1,9 @@
-const ServerResponse = require('../util/serverResponse');
-const ResponseCode = require('../constant/responseCode');
 
-module.exports = {
+import ResponseCode from '../constant/responseCode';
+
+import ServerResponse from '../util/serverResponse';
+
+export default {
     ServerResponse,
     ResponseCode
 }

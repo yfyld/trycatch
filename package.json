@@ -30,10 +30,14 @@
     "egg-session-redis": "^2.1.0",
     "egg-validate": "^2.0.2",
     "lodash": "^4.17.11",
+    "md5": "^2.2.1",
     "mysql2": "^1.6.4"
   },
   "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/register": "^7.0.0",
     "@types/lodash": "^4.14.119",
+    "@types/md5": "^2.1.33",
     "@types/mocha": "^2.2.40",
     "@types/node": "^7.0.12",
     "@types/supertest": "^2.0.0",

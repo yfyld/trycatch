@@ -1,8 +1,10 @@
 import { Controller } from 'egg';
 import * as _ from "lodash";
 
+
 export default class HomeController extends Controller {
     
+
     public async index() {
       const { ctx } = this;
       ctx.body = await ctx.service.account.sayHi('egg');
@@ -26,7 +28,14 @@ export default class HomeController extends Controller {
       const { ctx } = this;
       const accountInfo = ctx.session.currentUser;
       _.unset(accountInfo, 'password');
-      ctx.body = ctx.response.ServerResponse.success('OK', accountInfo);
+      ctx.body = this.ctx.response.ServerResponse.success('OK', accountInfo);
+    }
+
+    // 退出登录
+    public async logout() {
+      const { ctx } = this;
+      ctx.session = null;
+      ctx.body = this.ctx.response.ServerResponse.success('OK', '退出成功');
     }
 
   }

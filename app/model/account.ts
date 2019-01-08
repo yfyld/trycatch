@@ -3,10 +3,10 @@ import { Application } from 'egg';
 
 
 
-module.exports = (app: Application) => {
+export default (app: Application) => {
   const { STRING, INTEGER, DATE } = app.Sequelize;
 
-  const User = app.model.define('user', {
+  const Account = app.model.define('account', {
     id: { type: INTEGER, primaryKey: true, autoIncrement: true },
     name: STRING(30),
     mobile: STRING(20),
@@ -15,5 +15,5 @@ module.exports = (app: Application) => {
     updated_at: DATE,
   });
 
-  return User;
+  return Account;
 };

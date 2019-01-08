@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     SUCCESS: 2000,
     ERROR: 3000,
     ERROR_ARGUMENT: 3001,
