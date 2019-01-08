@@ -1,13 +1,12 @@
-import { Application, Context } from 'egg';
+import { Context } from 'egg';
 
-module.exports = (options: object, app: Application) => {
+
+module.exports = () => {
     return async function(ctx: Context, next: () => Promise<any>) {
         const user = await ctx.session.currentUser;
         if (!user) {
-
+            return ctx.body = ctx.response.ServerResponse.error('用户未登录', ctx.response.ResponseCode.NO_LOGIN);
         }
-        console.log(options);
-        console.log(app);
         await next();
     }
 }

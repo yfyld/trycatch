@@ -1,5 +1,5 @@
 import { Controller } from 'egg';
-// import unset from 'lodash/unset';
+import * as _ from "lodash";
 
 export default class HomeController extends Controller {
     
@@ -25,7 +25,7 @@ export default class HomeController extends Controller {
     public async getInfo() {
       const { ctx } = this;
       const accountInfo = ctx.session.currentUser;
-      // unset(accountInfo, 'password');
+      _.unset(accountInfo, 'password');
       ctx.body = ctx.response.ServerResponse.success('OK', accountInfo);
     }
 

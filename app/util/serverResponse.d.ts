@@ -6,6 +6,6 @@ declare class ServerResponse {
     data?: object | null;
     getData(): object | null;
     getStatus(): number;
-    static success(msg: string, data: object, status: number): object;
-    static error(msg: string, status: number): object;
+    static success(msg: string, data: object, status?: number): object;
+    static error(msg: string, status?: number): object;
 }
