@@ -13,15 +13,5 @@ declare module 'egg' {
         redis: Redis
     }
 
-    // interface Response extends ExtendResponseType {
-    //     ServerResponse: ServerResponse,
-    //     ResponseCode: {
-    //         SUCCESS: number,
-    //         ERROR: number,
-    //         ERROR_ARGUMENT: number,
-    //         NO_LOGIN: number,
-    //         NO_AUTH: number,
-    //     }
-    // }
 
 } 
