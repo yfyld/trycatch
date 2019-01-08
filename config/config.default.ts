@@ -19,7 +19,24 @@ export default (appInfo: EggAppInfo) => {
     dialect: 'mysql',
     host: '127.0.0.1',
     port: 3306,
-    database: 'findebug-development'
+    database: 'fundebug-development'
+  };
+
+  config.redis = {
+    client: {
+      host: '127.0.0.1',
+      port: 6379,
+      password: '',
+      db: 0
+    },
+    agent: true
+  };
+
+  config.session = {
+    key: 'FUNDEBUG_SESS',
+    maxAge: 24 * 3600 * 1000,
+    httpOnly: true,
+    encrypt: true
   }
   // the return config will combines to EggAppConfig
   return {
