@@ -12,15 +12,21 @@ export default (appInfo: EggAppInfo) => {
 
   // add your special config in here
   const bizConfig = {
-    sourceUrl: `https://github.com/eggjs/examples/tree/master/${appInfo.name}`,
+    
   };
 
-  // config.sequelize = {
-  //   dialect: 'mysql',
-  //   host: 'yfyld.online',
-  //   port: 3306,
-  //   database: 'trycatch-dev'
-  // };
+  config.sequelize = {
+    dialect: 'mysql',
+    host: '97.64.36.18',
+    port: 3333,
+    database: 'trycatch',
+    username: 'yuhonyon',
+    password: '342531',
+    define: {
+      underscored: true
+    }
+
+  };
   config.security = {
     csrf: {
       enable: false
@@ -28,10 +34,10 @@ export default (appInfo: EggAppInfo) => {
   };
   config.redis = {
     client: {
-      host: '127.0.0.1',
-      port: 6379,
-      password: '',
-      db: 0
+      host: '97.64.36.18',
+      port: 6666,
+      password: '342531',
+      db: 2
     }
   };
 
@@ -49,7 +55,7 @@ export default (appInfo: EggAppInfo) => {
   }
   // the return config will combines to EggAppConfig
   return {
-    ...config,
     ...bizConfig,
+    ...config,
   };
 };

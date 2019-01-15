@@ -1,5 +1,5 @@
 {
-  "name": "findebug",
+  "name": "trycatch",
   "version": "1.0.0",
   "description": "",
   "private": true,
@@ -7,8 +7,8 @@
     "typescript": true
   },
   "scripts": {
-    "start": "egg-scripts start --daemon --title=egg-server-findebug",
-    "stop": "egg-scripts stop --title=egg-server-findebug",
+    "start": "egg-scripts start --daemon --title=egg-server-trycatch",
+    "stop": "egg-scripts stop --title=egg-server-trycatch",
     "dev": "egg-bin dev -r egg-ts-helper/register",
     "debug": "egg-bin debug -r egg-ts-helper/register",
     "test-local": "egg-bin test -r egg-ts-helper/register",

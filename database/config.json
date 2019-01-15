@@ -1,23 +1,23 @@
 {
   "development": {
-    "username": "trycatch-dev",
+    "username": "yuhonyon",
     "password": "342531",
-    "database": "trycatch-dev",
-    "host": "yfyld.online",
+    "database": "trycatch",
+    "host": "97.64.36.18",
     "dialect": "mysql"
   },
   "test": {
-    "username": "trycatch-dev",
+    "username": "yuhonyon",
     "password": "342531",
-    "database": "trycatch-dev",
-    "host": "yfyld.online",
+    "database": "trycatch",
+    "host": "97.64.36.18",
     "dialect": "mysql"
   },
   "production": {
-    "username": "trycatch-dev",
+    "username": "trycatch",
     "password": "342531",
-    "database": "trycatch-dev",
-    "host": "yfyld.online",
+    "database": "trycatch",
+    "host": "97.64.36.18",
     "dialect": "mysql"
   }
 }
