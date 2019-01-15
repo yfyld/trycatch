@@ -2,12 +2,14 @@
 // Do not modify this file!!!!!!!!!
 
 import 'egg';
-import ExportAccount from '../../../app/service/Account';
 import ExportTest from '../../../app/service/Test';
+import ExportLog from '../../../app/service/log';
+import ExportUser from '../../../app/service/user';
 
 declare module 'egg' {
   interface IService {
-    account: ExportAccount;
     test: ExportTest;
+    log: ExportLog;
+    user: ExportUser;
   }
 }

@@ -15,12 +15,12 @@ export default (appInfo: EggAppInfo) => {
     sourceUrl: `https://github.com/eggjs/examples/tree/master/${appInfo.name}`,
   };
 
-  config.sequelize = {
-    dialect: 'mysql',
-    host: 'yfyld.online',
-    port: 3306,
-    database: 'trycatch-dev'
-  };
+  // config.sequelize = {
+  //   dialect: 'mysql',
+  //   host: 'yfyld.online',
+  //   port: 3306,
+  //   database: 'trycatch-dev'
+  // };
   config.security = {
     csrf: {
       enable: false

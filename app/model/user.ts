@@ -6,7 +6,7 @@ import { Application } from 'egg';
 export default (app: Application) => {
   const { STRING, INTEGER, DATE } = app.Sequelize;
 
-  const Account = app.model.define('account', {
+  const User = app.model.define('user', {
     id: { type: INTEGER, primaryKey: true, autoIncrement: true },
     name: STRING(30),
     mobile: STRING(20),
@@ -15,5 +15,5 @@ export default (app: Application) => {
     updated_at: DATE,
   });
 
-  return Account;
+  return User;
 };

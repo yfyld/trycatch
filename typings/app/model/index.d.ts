@@ -2,10 +2,16 @@
 // Do not modify this file!!!!!!!!!
 
 import 'egg';
-import ExportAccount from '../../../app/model/account';
+import ExportError from '../../../app/model/error';
+import ExportLog from '../../../app/model/log';
+import ExportProject from '../../../app/model/project';
+import ExportUser from '../../../app/model/user';
 
 declare module 'sequelize' {
   interface Sequelize {
-    Account: ReturnType<typeof ExportAccount>;
+    Error: ReturnType<typeof ExportError>;
+    Log: ReturnType<typeof ExportLog>;
+    Project: ReturnType<typeof ExportProject>;
+    User: ReturnType<typeof ExportUser>;
   }
 }

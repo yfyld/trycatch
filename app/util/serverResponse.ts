@@ -18,6 +18,9 @@ export default class ServerResponse {
     getStatus() {
         return this.status;
     }
+    isSuccess() {
+        return this.status = SUCCESS;
+    }
 
     static success(msg: string = '', data: object | string = {}, status: number = SUCCESS) {
         return new ServerResponse(status, msg, data)
@@ -26,4 +29,15 @@ export default class ServerResponse {
     static error(msg: string = '', status: number = ERROR) {
         return new ServerResponse(status, msg, null)
     }
+}
+
+export class TypeServerResponse {
+    status: number;
+    msg?: string;
+    data?: object | string | null;
+    getData: () => object | string | null | undefined;
+    getStatus: () => number;
+    isSuccess: () => boolean;
+    static success: (msg: string, data: object | string, status: number) => object;
+    static error: (msg: string, status: number) => object
 }

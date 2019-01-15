@@ -5,13 +5,13 @@ import ServerResponse from '../util/serverResponse';
 
 
 // import * as md5 from 'md5';
-export default class Account extends Service {
+export default class User extends Service {
 
-  AccountModel: Model<{}, {}>;
+  UserModel: Model<{}, {}>;
   ServerResponse: typeof ServerResponse;
   constructor(ctx) {
     super(ctx);
-    // this.AccountModel = ctx.model.Account;
+    // this.UserModel = ctx.model.User;
     this.ServerResponse = ctx.response.ServerResponse;
     
   }
@@ -23,11 +23,11 @@ export default class Account extends Service {
 
 
   // 注册
-  public async register(account) {
+  public async signup(user) {
     // return `hi, ${data}`;
-    // account.password = md5(account.password);
-    // account = await this.AccountModel.create(account);
-    if (!account) {
+    // user.password = md5(User.password);
+    // user = await this.UserModel.create(user);
+    if (!user) {
       return this.ServerResponse.error('注册失败');
     }
     
@@ -36,6 +36,6 @@ export default class Account extends Service {
 
   // 登录
   public async login(data: object) {
-    return `hi, ${data}`;
+    return this.ServerResponse.success('登录成功', data);
   }
 }
