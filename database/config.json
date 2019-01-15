@@ -1,23 +1,23 @@
 {
   "development": {
-    "username": "root",
-    "password": null,
-    "database": "fundebug_development",
-    "host": "127.0.0.1",
+    "username": "trycatch-dev",
+    "password": "342531",
+    "database": "trycatch-dev",
+    "host": "yfyld.online",
     "dialect": "mysql"
   },
   "test": {
-    "username": "root",
-    "password": null,
-    "database": "fundebug_test",
-    "host": "127.0.0.1",
+    "username": "trycatch-dev",
+    "password": "342531",
+    "database": "trycatch-dev",
+    "host": "yfyld.online",
     "dialect": "mysql"
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "fundebug_production",
-    "host": "127.0.0.1",
+    "username": "trycatch-dev",
+    "password": "342531",
+    "database": "trycatch-dev",
+    "host": "yfyld.online",
     "dialect": "mysql"
   }
 }
