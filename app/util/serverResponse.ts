@@ -1,4 +1,5 @@
-const { SUCCESS, ERROR } = require('../constant/responseCode');
+
+import { SUCCESS, ERROR } from '../constant/responseCode';
 
 export default class ServerResponse {
     status: number;
@@ -31,7 +32,7 @@ export default class ServerResponse {
     }
 }
 
-export class TypeServerResponse {
+export class CServerResponse {
     status: number;
     msg?: string;
     data?: object | string | null;

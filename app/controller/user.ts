@@ -1,7 +1,6 @@
 
 import { Controller } from 'egg';
 import * as _ from "lodash";
-import { TypeServerResponse } from '../util/serverResponse';
 
 export default class UserController extends Controller {
     
@@ -14,14 +13,15 @@ export default class UserController extends Controller {
     // 注册
     public async signup() {
       const { ctx } = this;
-      ctx.body = await ctx.service.user.signup(ctx.request.body);
+      const response = await ctx.service.user.signup(ctx.request.body);
+      ctx.body = response;
     }
 
 
     // 登录
     public async login() {
       const { ctx } = this;
-      const response: TypeServerResponse = await ctx.service.user.login(ctx.request.body);
+      const response = await ctx.service.user.login(ctx.request.body);
       if (response.isSuccess()) {
         ctx.session.currentUser = response.getData();
       }
