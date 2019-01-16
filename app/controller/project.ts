@@ -7,9 +7,10 @@ export default class ProjectController extends Controller {
     async index() {
         const { ctx } = this;
         const query = { ...ctx.query };
+        const user = ctx.session.currentUser || {};
         query.page = ctx.helper.parseInt(query.page);
         query.pageSize = ctx.helper.parseInt(query.pageSize);
-        ctx.body = await ctx.service.project.list(query);
+        ctx.body = await ctx.service.project.list(query, user.mobile);
     }
 
     // 创建项目

@@ -2,7 +2,7 @@
 
 
 import { Service } from 'egg';
-import { Model, Instance } from 'sequelize';
+import { Model, Instance, Operators } from 'sequelize';
 import ServerResponse from '../util/serverResponse';
 import { IResponseCode } from '../constant/responseCode';
 import { awaitWrapper } from './../util/util';
@@ -12,21 +12,30 @@ export default class Project extends Service {
     ProjectModel: Model<Instance<{}>, {}>;
     ServerResponse: typeof ServerResponse;
     ResponseCode: IResponseCode;
+    Op: Operators;
     constructor(ctx) {
         super(ctx);
         this.ctx = ctx;
         this.ProjectModel = ctx.model.Project;
         this.ServerResponse = ctx.response.ServerResponse;
         this.ResponseCode = ctx.response.ResponseCode;
+        this.Op = ctx.app.Sequelize.Op;
     }
 
     // 项目列表
-    async list({ page = 1, pageSize = 10 }) {
+    async list({ page = 1, pageSize = 10 }, mobile: string) {
+
         const data = await awaitWrapper(this.ProjectModel.findAndCountAll({
             attributes: ['id', 'name', 'language', 'frame'],
             offset: (page - 1) * pageSize,
+            where: {
+                [this.Op.or]: [
+                    { creator: mobile },
+                    { member: { [this.Op.like]: '%' + mobile + '%' }}
+                ]
+            },
             limit: pageSize,
-            // order: ['id']
+            order: [['id', 'desc']]
           }))
 
           if (data) {

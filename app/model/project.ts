@@ -12,6 +12,7 @@ export default (app: Application) => {
     language: STRING(20),
     frame: STRING(10),
     member: STRING(100),
+    creator: STRING(10),
     created_at: DATE,
     updated_at: DATE,
   });

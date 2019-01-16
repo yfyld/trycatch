@@ -34,7 +34,7 @@ export default class User extends Service {
       attributes: ['id', 'name', 'mobile'],
       offset: (page - 1) * pageSize,
       limit: pageSize,
-      // order: ['id']
+      order: [['id', 'desc']]
     })
     if (data) {
       return this.ServerResponse.success('查询成功', { totalCount: data.count || 0, list: data.rows || [] });
