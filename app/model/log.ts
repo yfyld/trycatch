@@ -9,14 +9,13 @@ export default (app: Application) => {
   const Log = app.model.define('log', {
     id: { type: INTEGER, primaryKey: true, autoIncrement: true },
     type: STRING(30),
-    description: STRING(100),
-    method: STRING(10),
+    source: STRING(10000),
     url: STRING(100),
     projectId: {
       type: INTEGER,
       field: 'project_id'
     },
-    page: STRING(100),
+    version: STRING(10),
     created_at: DATE,
     updated_at: DATE,
   });
