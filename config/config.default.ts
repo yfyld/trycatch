@@ -47,7 +47,12 @@ export default (appInfo: EggAppInfo) => {
     httpOnly: true,
     encrypt: true
   };
-
+  config.bodyParser = {
+    enableTypes: ['json', 'form', 'text'],
+    extendTypes: {
+      text: ['text/xml', 'application/xml']
+    }
+  }
   config.cors = {
     origin: 'http://127.0.0.1:3000',
     allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH,OPTIONS',

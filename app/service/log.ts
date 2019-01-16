@@ -18,9 +18,19 @@ export default class Log extends Service {
         this.Op = ctx.app.Sequelize.Op;
     }
 
-    async list(data: object) {
-        console.log(data);
-        return 'abcd';
+    async list({ page = 1, pageSize = 10}) {
+        const data = await this.LogModel.findAndCountAll({
+            attributes: ['id', 'type', 'projectId', 'url'],
+            offset: (page - 1) * pageSize,
+            limit: pageSize,
+            order: [['id', 'desc']]
+        })
+    
+        if (data) {
+            return this.ServerResponse.success('查询成功', { totalCount: data.count || 0, list: data.rows || [] });
+        } else {
+            return this.ServerResponse.error('查询失败');
+        }
     }
 
     async create(log) {

@@ -25,7 +25,7 @@ export default class Project extends Service {
     // 项目列表
     async list({ page = 1, pageSize = 10 }, mobile: string) {
 
-        const data = await awaitWrapper(this.ProjectModel.findAndCountAll({
+        const data = await this.ProjectModel.findAndCountAll({
             attributes: ['id', 'name', 'language', 'frame'],
             offset: (page - 1) * pageSize,
             where: {
@@ -36,13 +36,13 @@ export default class Project extends Service {
             },
             limit: pageSize,
             order: [['id', 'desc']]
-          }))
+        })
 
-          if (data) {
+        if (data) {
             return this.ServerResponse.success('查询成功', { totalCount: data.count || 0, list: data.rows || [] });
-          } else {
+        } else {
             return this.ServerResponse.error('查询失败');
-          }
+        }
     }
     
     // 创建项目
