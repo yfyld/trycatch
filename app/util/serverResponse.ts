@@ -20,7 +20,7 @@ export default class ServerResponse {
         return this.status;
     }
     isSuccess() {
-        return this.status = SUCCESS;
+        return this.status === SUCCESS;
     }
 
     static success(msg: string = '', data: object | string = {}, status: number = SUCCESS) {

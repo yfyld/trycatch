@@ -10,7 +10,7 @@ export default (app: Application) => {
     id: { type: INTEGER, primaryKey: true, autoIncrement: true },
     name: STRING(30),
     mobile: STRING(20),
-    password: STRING(20),
+    password: STRING(50),
     created_at: DATE,
     updated_at: DATE,
   });
