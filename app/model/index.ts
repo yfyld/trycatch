@@ -2,5 +2,14 @@ export interface IUserModel {
     mobile: string,
     password: string,
     name: string,
-    id: string
+    id: number
+}
+
+export interface IProjectModel {
+    id: number,
+    name: string,
+    language: string,
+    frame: string,
+    member: string
+
 }

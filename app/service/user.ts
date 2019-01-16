@@ -1,4 +1,3 @@
-
 import { Service } from 'egg';
 import { Model, Instance } from 'sequelize';
 import * as md5 from 'md5';
@@ -38,7 +37,7 @@ export default class User extends Service {
       // order: ['id']
     })
     if (data) {
-      return this.ServerResponse.success('查询成功', { totalCount: data.count, list: data.rows });
+      return this.ServerResponse.success('查询成功', { totalCount: data.count || 0, list: data.rows || [] });
     } else {
       return this.ServerResponse.error('查询失败');
     }
@@ -84,13 +83,18 @@ export default class User extends Service {
 
   // 删除
   public async destroy(id: string) {
-    const user = await this.UserModel.findById(id);
-    if (user) {
-      await user.destroy();
-      return this.ServerResponse.success('删除成功');
+    const [err, user] = await this.ctx.helper.awaitWrapper(this.UserModel.findById(id));
+    if (err) {
+      return this.ServerResponse.error('内部错误');
     } else {
-      return this.ServerResponse.error('用户不存在');
+      if (user) {
+        await user.destroy();
+        return this.ServerResponse.success('删除成功');
+      } else {
+        return this.ServerResponse.error('用户不存在');
+      }
     }
+    
   }
 
 

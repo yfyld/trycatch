@@ -44,7 +44,8 @@ export default class UserController extends Controller {
   //更新用户信息
   public async update() {
     const { ctx } = this;
-    ctx.body = await ctx.service.user.update(ctx.request.body);
+    const id = ctx.helper.parseInt(ctx.request.body.id);
+    ctx.body = await ctx.service.user.update({...ctx.request.body, id});
   }
 
   // 退出登录
