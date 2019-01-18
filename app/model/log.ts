@@ -1,6 +1,6 @@
 'use strict';
 import { Application } from 'egg';
-
+import * as moment from 'moment';
 
 
 export default (app: Application) => {
@@ -19,6 +19,12 @@ export default (app: Application) => {
     created_at: DATE,
     updated_at: DATE,
   });
+
+  Log.beforeCreate(function() {
+    const y_m = moment().format('YYYY_MM');
+    Log.tableName = `log_${y_m}`;
+  })
+
 
   return Log;
 };

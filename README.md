@@ -1,33 +1,6 @@
-# hackernews-async-ts
+1.2 关系数据库都有哪些关系？
+两个对象A和B之间只有哪些可能存在的关系？
 
-[Hacker News](https://news.ycombinator.com/) showcase using typescript && egg
-
-## QuickStart
-
-### Development
-
-```bash
-$ npm i
-$ npm run dev
-$ open http://localhost:7001/
-```
-
-Don't tsc compile at development mode, if you had run `tsc` then you need to `npm run clean` before `npm run dev`.
-
-### Deploy
-
-```bash
-$ npm run tsc
-$ npm start
-```
-
-### Npm Scripts
-
-- Use `npm run lint` to check code style
-- Use `npm test` to run unit test
-- se `npm run clean` to clean compiled js at development mode once
-
-### Requirement
-
-- Node.js 8.x
-- Typescript 2.8+
+1:1 1个A对应1个B（一夫一妻）。有2张表，A表中有一个外键关联B表；
+1:N 1个A对应多个B（一夫多妻）。有2张表，B表中有一个外键关联A表；
+M:N 1个A对应多个B，一个B也可能对应多个A（多夫多妻）。有3张表，C表中有2个外键，分别关联A表、B表；

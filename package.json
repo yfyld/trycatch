@@ -31,6 +31,7 @@
     "egg-validate": "^2.0.2",
     "lodash": "^4.17.11",
     "md5": "^2.2.1",
+    "moment": "^2.23.0",
     "mysql2": "^1.6.4"
   },
   "devDependencies": {
@@ -39,6 +40,7 @@
     "@types/lodash": "^4.14.119",
     "@types/md5": "^2.1.33",
     "@types/mocha": "^2.2.40",
+    "@types/moment": "^2.13.0",
     "@types/node": "^7.0.12",
     "@types/supertest": "^2.0.0",
     "autod": "^3.0.1",

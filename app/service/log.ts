@@ -3,6 +3,7 @@ import { Model, Instance, Operators } from 'sequelize';
 import ServerResponse from '../util/serverResponse';
 import { IResponseCode } from '../constant/responseCode';
 
+
 export default class Log extends Service {
 
     LogModel: Model<Instance<{}>, {}>;
