@@ -16,6 +16,6 @@ export default class ErrorController extends Controller {
     async show() {
         const { ctx } = this;
         const id = ctx.helper.parseInt(ctx.params.id);
-        ctx.body = await ctx.service.error.show(id);
+        ctx.body = await ctx.service.error.show({...ctx.query, id});
     }
 }

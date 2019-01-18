@@ -20,8 +20,15 @@ export default class Error extends Service {
         this.Op = ctx.app.Sequelize.Op;
     }
 
-    async show(id) {
-        console.log(id);
+    async show({id, month}) {
+        // await this.LogModel.findOne({
+        //     where: {
+        //         id,
+        //         month
+        //     }
+        // });
+        console.log(month);
+        await this.LogModel.findById(id)
         return 12;
         // const [err, error] = await awaitWrapper(this.)
     }

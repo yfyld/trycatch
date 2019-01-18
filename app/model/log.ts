@@ -15,6 +15,7 @@ export default (app: Application) => {
       type: INTEGER,
       field: 'project_id'
     },
+    month: STRING(10),
     version: STRING(10),
     created_at: DATE,
     updated_at: DATE,
@@ -25,6 +26,15 @@ export default (app: Application) => {
     Log.tableName = `log_${y_m}`;
   })
 
+ 
+
+  Log.beforeFind(function(options: Object) {
+    // const date = options.where.date
+    const where = (options as any).where || {};
+    const month = where.month;
+    // 校验表是否存在
+    Log.tableName = `log_${month}`;
+  })
 
   return Log;
 };
