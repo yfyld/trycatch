@@ -82,3 +82,13 @@ export interface ErrorInfo {
   id?: number
   status?: string
 }
+
+export interface EventInfo {
+  id?: number
+  status?: string
+}
+
+export interface EventListDataItem {
+  id?: number
+  status?: string
+}

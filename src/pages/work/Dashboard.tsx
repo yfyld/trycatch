@@ -6,13 +6,14 @@ import { Table, Tag,Button,Tooltip,Menu, Dropdown } from 'antd'
 import style from './Dashboard.less'
 import * as actions from '@/store/actions'
 import {connect} from 'react-redux'
-import { parseDate } from '@/utils'
+import { parseDate ,findOne} from '@/utils'
 import { bindActionCreators } from 'redux'
 import { StoreState } from '@/store/reducers'
 import { Dispatch } from 'redux'
 import { Action, ErrorListParams, Order,ErrorChangeParams ,ErrorListData} from '@/types'
 import { Link } from 'react-router-dom';
 import * as moment from "moment";
+import {ERROR_STATUS,ERROR_TYPE} from "@/constants"
 
 const { Column } = Table
 
@@ -59,33 +60,38 @@ const mapTableSearchParamsToParam = ({
 
 
 
+const userMenu=(keys:number[],doErrorChange:Function)=>(
+  <Menu onClick={({key})=>doErrorChange({userId:Number(key),errorList:keys})}>
+    <Menu.Item key={1}>
+      小王
+    </Menu.Item>
+  </Menu>
+)
+
+const statusMenu=(keys:number[],doErrorChange:Function)=>(
+  <Menu onClick={({key})=>doErrorChange({status:key,errorList:keys})}>
+    {
+      ERROR_STATUS.map(status=>(
+        <Menu.Item key={status.value}>
+          {status.text}
+        </Menu.Item>
+      ))
+    }
+  </Menu>
+)
 
 
 
 const Dashboard = ({ loading, doGetErrorAllData,errorChartData ,errorListData,rowSelectionKeys,doErrorListSelectionChange,doErrorChange}: Props) => {
 
-  const userMenu=(
-    <Menu onClick={({key})=>doErrorChange({userId:Number(key),errorList:rowSelectionKeys})}>
-      <Menu.Item key={1}>
-        小王
-      </Menu.Item>
-    </Menu>
-  )
 
-  const statusMenu=(
-    <Menu onClick={({key})=>doErrorChange({status:key,errorList:rowSelectionKeys})}>
-      <Menu.Item key="UNSOLVED">
-        未解决
-      </Menu.Item>
-    </Menu>
-  )
 
   const selectionHandler =(
     <span>&emsp;
-      <Dropdown trigger={["click"]} overlay={userMenu}>
+      <Dropdown trigger={["click"]} overlay={userMenu(rowSelectionKeys,doErrorChange)}>
           <Tooltip placement="right" title="指派"><Button shape="circle" icon="user" /></Tooltip>
       </Dropdown>
-      <Dropdown trigger={["click"]} overlay={statusMenu}>
+      <Dropdown trigger={["click"]} overlay={statusMenu(rowSelectionKeys,doErrorChange)}>
           <Tooltip placement="right" title="状态"><Button shape="circle" icon="user" /></Tooltip>
       </Dropdown>
     </span>
@@ -121,8 +127,8 @@ const Dashboard = ({ loading, doGetErrorAllData,errorChartData ,errorListData,ro
                     {moment(record.dateStart).fromNow()}~{moment(record.dateEnd).fromNow()}
                   </span>
                   <span>
-                  <Dropdown trigger={["click"]} overlay={userMenu}>
-                      <Tooltip placement="right" title="指派"><Tag color="blue">{record.ownerName}</Tag></Tooltip>
+                  <Dropdown trigger={["click"]} overlay={userMenu([record.id],doErrorChange)}>
+                      <Tag color="blue">{record.ownerName}</Tag>
                   </Dropdown>
                   </span>
                 </div>
@@ -131,37 +137,23 @@ const Dashboard = ({ loading, doGetErrorAllData,errorChartData ,errorListData,ro
           />
           <Column
             filterMultiple={false}
-            filters={[
-              {
-                text: 'Joe',
-                value: 'Joe'
-              },
-              {
-                text: 'Jim',
-                value: 'Jim'
-              }
-            ]}
+            filters={ERROR_TYPE}
             title="错误类型"
             dataIndex="type"
             key="type"
-            render={type => <Tag color="blue">{type}</Tag>}
+            render={type => <Tag color="blue">{findOne(ERROR_TYPE,type).text}</Tag>}
           />
           <Column
             filterMultiple={false}
-            filters={[
-              {
-                text: 'Joe',
-                value: 'Joe'
-              },
-              {
-                text: 'Jim',
-                value: 'Jim'
-              }
-            ]}
+            filters={ERROR_STATUS}
             title="状态"
             dataIndex="status"
             key="status"
-            render={status => <Tag color="blue">{status}</Tag>}
+            render={(status,record:any) =>(
+              <Dropdown trigger={["click"]} overlay={statusMenu([record.id],doErrorChange)}>
+                  <Tag>{findOne(ERROR_STATUS,status).text}</Tag>
+              </Dropdown>
+            )}
           />
           <Column sorter title="时间" dataIndex="date" key="date" />
 

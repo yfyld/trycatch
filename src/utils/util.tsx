@@ -70,3 +70,9 @@ export const history = createHistory()
   }
   return fmt;
 }
+
+
+
+export const findOne=(arr:any,value:any,key="value")=>{
+  return arr.find(item=>item[key]===value)
+}

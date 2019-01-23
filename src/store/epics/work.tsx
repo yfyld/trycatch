@@ -47,19 +47,31 @@ const errorChange: Epic<Action, Action, StoreState> = (action$,state$) =>
     switchMap(action=>
       Api.fetchErrorChange(state$.value.work.errorInfo.id,action.payload).pipe(
         map(()=>{
-          actions.doGetErrorChartDataRequest({})
+          if(/dashboard/.test(state$.value.router.location.pathname)){
+            actions.doGetErrorChartDataRequest({})
+          }
           return action
         })
       )
     )
   ) 
 
+  const getEventListData: Epic<Action, Action, StoreState> = (action$,state$) =>
+  action$.pipe(
+    filter(isActionOf(actions.doGetEventListDataRequest)),
+    switchMap(action=>
+      Api.fetchErrorEventList(state$.value.work.errorInfo.id,action.payload).pipe(
+        map(actions.doGetEventListDataSuccess)
+      )
+    )
+  )
   
 
 export default [
   getErrorListData,
   getErrorChartData,
   getErrorAllData,
-  errorChange
+  errorChange,
+  getEventListData
 ]
 

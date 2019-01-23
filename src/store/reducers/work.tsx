@@ -2,7 +2,7 @@ import { getType } from 'typesafe-actions'
 
 import * as actions from '../actions'
 import update from 'immutability-helper'
-import { Action, ErrorChartData, ErrorListData,ErrorListParams,ErrorInfo } from '@/types'
+import { Action, ErrorChartData, ErrorListData,ErrorListParams,ErrorInfo ,EventInfo,EventListDataItem} from '@/types'
 
 export interface WorkState {
   errorChartData: ErrorChartData
@@ -10,8 +10,11 @@ export interface WorkState {
   errorSearchParams:ErrorListParams
   loading:boolean,
   rowSelectionKeys:number[],
-  errorInfo:ErrorInfo
+  errorInfo:ErrorInfo,
+  eventInfo:EventInfo
+  eventListData:EventListDataItem[]
 }
+
 
 const initialState = {
   errorSearchParams:{
@@ -28,7 +31,9 @@ const initialState = {
     data: []
   },
   rowSelectionKeys:[],
-  errorInfo:{}
+  errorInfo:{},
+  eventListData:[],
+  eventInfo:{}
 }
 
 export const workReducer = (
@@ -48,6 +53,11 @@ export const workReducer = (
     case getType(actions.doErrorListSelectionChange):
       return update(state,{rowSelectionKeys:{$set:action.payload}})
 
+    case getType(actions.doGetEventListDataSuccess):
+      return update(state,{eventListData:{$set:action.payload}})
+
+
+      
     default:
       return state
   }

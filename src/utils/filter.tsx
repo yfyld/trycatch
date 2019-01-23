@@ -1,11 +1,5 @@
-export const errorStatus=(type:string):string=>{
-  if(type === 'UNSOLVED'){
-    return "未解决"
-  }else if(type === 'SOLVED'){
-    return "解决"
-  }else if(type === 'IGNORE'){
-    return "忽略"
-  }else{
-    return "处理中"
-  }
+import {ERROR_STATUS} from "@/constants"
+export const errorStatus=(type:string):typeof ERROR_STATUS[0]=>{
+  return ERROR_STATUS.find(item=>item.value===type)
 }
+
