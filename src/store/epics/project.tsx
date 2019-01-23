@@ -1,46 +1,54 @@
 import * as actions from '../actions'
 import { Epic } from 'redux-observable'
-
-import {switchMap ,map,filter, delay,distinctUntilChanged,withLatestFrom,flatMap} from 'rxjs/operators'
-import { StoreState } from "@/store/reducers";
-import {  isActionOf } from 'typesafe-actions'
-import {Action} from "@/types"
-import * as Api from "@/api"
-
-import {mapLocationIntoActions} from '@/utils'
-
-import hanlders from "@/store/handles"
+import {message} from 'antd'
+import { mergeMap, map, filter, catchError ,tap} from 'rxjs/operators'
+import { bindNodeCallback ,of} from 'rxjs'
+import { StoreState } from '@/store/reducers'
+import { isActionOf } from 'typesafe-actions'
+import { Action } from '@/types'
+import * as Api from '@/api'
 
 
-
-
-const getProjectList: Epic<Action, Action, StoreState> = (action$,state$) =>
+const getProjectList: Epic<Action, Action, StoreState> = action$ =>
   action$.pipe(
-    filter(isActionOf(actions.doGetProjectList)),
-    switchMap(action=>
+    filter(isActionOf(actions.doGetProjectListRequest)),
+    mergeMap(action =>
       Api.fetchProjectList().pipe(
-        map(actions.doSetProjectList)
+        map(actions.doGetProjectListSuccess),
+        catchError(() => {
+          return of(actions.doGetProjectListFailure())
+        })
       )
     )
   )
 
-const triggerFetchOnLocationChange: Epic<Action, Action, StoreState> = (action$,state$) =>
-  state$.pipe(
-    map(state=>state.router.location),
-    delay(10),
-    distinctUntilChanged(),
-    withLatestFrom(state$),
-    flatMap(([location,state])=>mapLocationIntoActions(location,hanlders)
-    .filter(({ isExist }) => (isExist
-      ? !state[isExist]
-      : true // 缓存逻辑略全为true
+  const getProjectDetail: Epic<Action, Action, StoreState> = action$ =>
+  action$.pipe(
+    filter(isActionOf(actions.doGetProjectDetailsRequest)),
+    mergeMap(action =>
+      Api.fetchProjectInfo(action.payload).pipe(
+        map(actions.doGetProjectDetailsSuccess),
+        catchError(() => {
+          return of(actions.doGetProjectDetailsFailure())
+        })
+      )
+    )
+  ) 
+
+const updateProjectDetails: Epic<Action, Action, StoreState> = (action$,state$)=>
+  action$.pipe(
+    filter(isActionOf(actions.doUpdateProjectDetailsRequest)),
+    mergeMap(action=>bindNodeCallback(action.payload.validateFields)().pipe(
+      mergeMap(params=>Api.fetchProjectUpdate(state$.value.project.projectInfo.id,params).pipe(
+        tap(()=>{message.success('保存成功')}),
+        map(()=>actions.doGetProjectDetailsRequest(state$.value.project.projectInfo.id))
+      )),
+      catchError((error) =>{
+        console.log(error)
+        message.error("请填写正确的项目信息")
+        return of(actions.doUpdateProjectDetailsFailure())
+      })
     ))
-    .map(({action})=>action)
-    .reduce((a, b) => a.concat(b), []))
   )
 
-export default [
-  getProjectList,
-  triggerFetchOnLocationChange
-]
-
+export default [getProjectList, updateProjectDetails,getProjectDetail]

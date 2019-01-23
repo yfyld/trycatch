@@ -11,24 +11,24 @@ import {Link} from "react-router-dom";
 import {Action,UserInfo} from "@/types"
 interface Props {
     form: WrappedFormUtils,
-    doLogin:Function
+    doLoginRequest:Function
 }
 
-const handleSubmit = (e:any,form:WrappedFormUtils,doLogin:Function) => {
+const handleSubmit = (e:any,form:WrappedFormUtils,doLoginRequest:Function) => {
   e.preventDefault()
     form.validateFields((err, values) => {
     if (!err) {
       console.log('Received values of form: ', values)
-      doLogin(values)
+      doLoginRequest(values)
     }
   })
 }
 
-const Login=({form,doLogin}:Props)=>{
+const Login=({form,doLoginRequest}:Props)=>{
   const { getFieldDecorator } = form
   return (
     <LoginLayout>
-      <Form onSubmit={(e)=>handleSubmit(e,form,doLogin)} className="login-form">
+      <Form onSubmit={(e)=>handleSubmit(e,form,doLoginRequest)} className="login-form">
         <Form.Item>
           {getFieldDecorator('userName', {
             rules: [
@@ -75,7 +75,7 @@ const Login=({form,doLogin}:Props)=>{
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>)=>bindActionCreators({
-  doLogin: (params:UserInfo)=>actions.doLogin(params)
+  doLoginRequest: (params:UserInfo)=>actions.doLoginRequest(params)
 },dispatch)
 
 export default connect(null,mapDispatchToProps)(Form.create()(Login));

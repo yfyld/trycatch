@@ -1,5 +1,6 @@
 import fetch from './http';
 import { from } from 'rxjs';
+import {ErrorChangeParams} from "@/types"
 // 全局
 
 export function fetchUserInfo(params?: object) {
@@ -56,3 +57,8 @@ export function fetchErrorInfo(errorId: number) {
 export function fetchErrorEventList(errorId: number,params:any) {
   return from(fetch.get(`/error/${errorId}`,params))
 }
+
+export function fetchErrorChange(errorId:number,params?: ErrorChangeParams) {
+  return from(fetch.put(`/error/${errorId}`, params))
+}
+

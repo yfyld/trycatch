@@ -1,31 +1,31 @@
-import { ActionType, getType } from 'typesafe-actions';
-
-import * as actions from "../actions";
-
-type Action = ActionType<typeof actions>;
-
-
+import { getType } from 'typesafe-actions'
+import update from 'immutability-helper'
+import * as actions from '../actions'
+import { Action } from '@/types'
 
 export interface AppState {
-  readonly loading: boolean;
-  readonly weather?: any;
+  loading: boolean
+  userInfo?: object
 }
 
 const initialState = {
   loading: false,
-};
+  userInfo: {},
 
-export const appReducer = (state: AppState = initialState, action: Action): AppState => {
+}
 
+export const appReducer = (
+  state: AppState = initialState,
+  action: Action
+): AppState => {
   switch (action.type) {
-
-    case getType(actions.incrementEnthusiasm):
-      return Object.assign({}, state, { weather: {} });
-
-    case getType(actions.incrementEnthusiasm):
-      return state;
+    case getType(actions.doLoginSuccess):
+      return state
+      
+    case getType(actions.doGetUserInfoSuccess):
+      return update(state, { userInfo: { $set: action.payload } })
 
     default:
-      return state;
+      return state
   }
-};
+}

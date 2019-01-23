@@ -5,46 +5,61 @@ import {switchMap ,map,filter, mergeMap} from 'rxjs/operators';
 import { StoreState } from "@/store/reducers";
 import { isActionOf } from 'typesafe-actions'
 import * as Api from "@/api"
-import {ActionNormal} from "@/types"
+import {Action} from "@/types"
 
 
 
-const getErrorChartData: Epic<ActionNormal, ActionNormal, StoreState> = (action$) =>
+const getErrorChartData: Epic<Action, Action, StoreState> = (action$) =>
   action$.pipe(
-    filter(isActionOf(actions.doGetErrorChartData)),
+    filter(isActionOf(actions.doGetErrorChartDataRequest)),
     switchMap(action=>
       Api.fetchErrorChartData(action.payload).pipe(
-        map(actions.doSetErrorChartData)
+        map(actions.doGetErrorChartDataSuccess)
       )
     )
   )
 
-  const getErrorListData: Epic<ActionNormal, ActionNormal, StoreState> = (action$) =>
+  const getErrorListData: Epic<Action, Action, StoreState> = (action$) =>
   action$.pipe(
-    filter(isActionOf(actions.doGetErrorListData)),
+    filter(isActionOf(actions.doGetErrorListDataRequest)),
     switchMap(action=>
       Api.fetchErrorListData(action.payload).pipe(
-        map(actions.doSetErrorChartData)
+        map(actions.doGetErrorListDataSuccess)
       )
     )
   )
 
 
-  const getErrorAllData: Epic<ActionNormal, ActionNormal, StoreState> = (action$) =>
+  const getErrorAllData: Epic<Action, Action, StoreState> = (action$,state$) =>
   action$.pipe(
     filter(isActionOf(actions.doGetErrorAllData)),
+    map(action=>({...action,payload:{...state$.value.work.errorSearchParams}})),
     mergeMap((action)=>[
-      actions.doGetErrorChartData(action.payload),
-      actions.doGetErrorListData(action.payload)
+      actions.doGetErrorChartDataRequest(action.payload),
+      actions.doGetErrorListDataRequest(action.payload)
     ])
     
   )
+
+const errorChange: Epic<Action, Action, StoreState> = (action$,state$) =>
+  action$.pipe(
+    filter(isActionOf(actions.doErrorChange)),
+    switchMap(action=>
+      Api.fetchErrorChange(state$.value.work.errorInfo.id,action.payload).pipe(
+        map(()=>{
+          actions.doGetErrorChartDataRequest({})
+          return action
+        })
+      )
+    )
+  ) 
 
   
 
 export default [
   getErrorListData,
   getErrorChartData,
-  getErrorAllData
+  getErrorAllData,
+  errorChange
 ]
 

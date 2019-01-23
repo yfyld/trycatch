@@ -3,7 +3,7 @@ import { ActionType } from 'typesafe-actions'
 
 export type Action = ActionType<typeof actions>
 
-export interface ActionNormal {
+export interface ActionAny {
   type: string
   payload?: any
 }
@@ -17,6 +17,8 @@ export interface ProjectInfo {
   name?: string
   id?: number
 }
+
+
 
 export interface UserInfo {
   nickName?: string
@@ -32,7 +34,7 @@ export interface ErrorChartDataItem {
 
 export interface ErrorChartData {
   total: number
-  list: ErrorChartDataItem[]
+  data: ErrorChartDataItem[]
 }
 
 export enum Order {
@@ -46,6 +48,7 @@ export interface ErrorListParams {
   pageSize?: number
   status?: string
   type?: string
+  projectId?:number,
   dateOrder?: Order
   userOrder?: Order
   eventOrder?: Order
@@ -65,5 +68,17 @@ export interface ErrorListDataItem {
 
 export interface ErrorListData {
   totalPage: number
-  list: ErrorListDataItem[]
+  data: ErrorListDataItem[]
+}
+
+export interface ErrorChangeParams {
+  userId?: number
+  status?: string
+  errorList: number[]
+}
+
+
+export interface ErrorInfo {
+  id?: number
+  status?: string
 }

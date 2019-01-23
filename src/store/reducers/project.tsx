@@ -1,8 +1,8 @@
-import { ActionType, getType } from 'typesafe-actions';
+import { getType } from 'typesafe-actions';
 import * as actions from "../actions";
-import {ProjectListItem,ProjectInfo} from "@/types"
+import {ProjectListItem,ProjectInfo,Action} from "@/types"
+import update from 'immutability-helper'
 
-type Action = ActionType<typeof actions>;
 
 
 
@@ -19,12 +19,14 @@ const initialState = {
 export const projectReducer = (state: ProjectState = initialState, action: Action): ProjectState => {
 
   switch (action.type) {
-
-    case getType(actions.doGetProjectList):
-      return state
     
-    case getType(actions.doSetProjectList):
-      return {...state, projectList: action.payload.list}
+    case getType(actions.doGetProjectListSuccess):
+      return update(state,{projectList:{$set:action.payload.list}})
+
+
+    case getType(actions.doGetProjectDetailsSuccess):
+      return update(state,{projectInfo:{$set:action.payload}})
+
 
     default:
       return state;
