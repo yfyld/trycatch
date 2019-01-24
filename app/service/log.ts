@@ -7,6 +7,8 @@ import { IResponseCode } from '../constant/responseCode';
 export default class Log extends Service {
 
     LogModel: Model<Instance<{}>, {}>;
+    IdModel: Model<Instance<{}>, {}>;
+    ErrorModel: Model<Instance<{}>, {}>;
     ServerResponse: typeof ServerResponse;
     ResponseCode: IResponseCode;
     Op: Operators;
@@ -14,6 +16,8 @@ export default class Log extends Service {
         super(ctx);
         this.ctx = ctx;
         this.LogModel = ctx.model.Log;
+        this.ErrorModel = ctx.model.Error;
+        this.IdModel = ctx.model.Id;
         this.ServerResponse = ctx.response.ServerResponse;
         this.ResponseCode = ctx.response.ResponseCode;
         this.Op = ctx.app.Sequelize.Op;
@@ -34,8 +38,23 @@ export default class Log extends Service {
         }
     }
 
+    async getId(type) {
+        const data = await this.IdModel.findOne();
+        if (data) {
+            data[type]++;
+            await data.save();
+            return data[type];
+        } else {
+            await this.IdModel.create({
+                logId: 1
+            })
+            return 1;
+        }
+    }
+
     async create(log) {
-        const data = await this.LogModel.create(log);
+        const id = this.getId('logId');
+        const data = await this.LogModel.create({...log, id});
         if (data) {
             return this.ServerResponse.success('日志添加成功');
         } else {

@@ -21,14 +21,13 @@ export default class Error extends Service {
     }
 
     async show({id, month}) {
-        // await this.LogModel.findOne({
-        //     where: {
-        //         id,
-        //         month
-        //     }
-        // });
-        console.log(month);
-        await this.LogModel.findById(id)
+        const data = await this.LogModel.findOne({
+            where: {
+                id,
+                month
+            }
+        });
+        console.log(data);
         return 12;
         // const [err, error] = await awaitWrapper(this.)
     }
