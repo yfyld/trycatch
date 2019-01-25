@@ -24,6 +24,7 @@ export default class ServerResponse {
     }
 
     static success(msg: string = '', data: object | string = {}, status: number = SUCCESS) {
+
         return new ServerResponse(status, msg, data)
     }
 

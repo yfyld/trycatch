@@ -26,6 +26,7 @@ export default class UserController extends Controller {
   public async login() {
     const { ctx } = this;
     const response = await ctx.service.user.login(ctx.request.body);
+    
     if (response.isSuccess()) {
       ctx.session.currentUser = response.getData();
     }

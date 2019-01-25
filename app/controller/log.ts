@@ -13,15 +13,17 @@ export default class LogController extends Controller {
     public async create() {
         const { ctx } = this;
         const json = typeof ctx.request.body === 'string' ? JSON.parse(ctx.request.body) : {};
+   
         const { authInfo = {}, data = {} } = json;
-        const { type, url } = data;
-        const apikey = new Buffer(authInfo.apikey || '', 'base64');
+        const { type, url, errorId } = data;
+        const apikey = Buffer.from(authInfo.apikey || '', 'base64');
         const project = apikey.toString() ? JSON.parse(apikey.toString()) : {};
+       
         const projectId = project.projectId;
         const version = authInfo.version;
         ctx.body = await ctx.service.log.create({
             type, url, source: typeof ctx.request.body === 'string' ? ctx.request.body : JSON.stringify(ctx.request.body),
-            projectId, version
+            projectId, version, errorId
         });
     }
 }

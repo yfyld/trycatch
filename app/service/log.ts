@@ -1,4 +1,5 @@
 import { Service } from 'egg';
+import * as moment from 'moment';
 import { Model, Instance, Operators } from 'sequelize';
 import ServerResponse from '../util/serverResponse';
 import { IResponseCode } from '../constant/responseCode';
@@ -52,9 +53,24 @@ export default class Log extends Service {
         }
     }
 
-    async create(log) {
-        const id = this.getId('logId');
+    async checkErrorExist(errorId) {
+        const data = await this.ErrorModel.findOne({where: { errorId }});
+        return data;
+    }
+    
+
+    async create({errorId, ...log}) {
+        const id = await this.getId('logId');
+        const y_m = moment().format('YYYY-MM');
+        await this.ctx.app.redis.zadd('id', id, y_m);
         const data = await this.LogModel.create({...log, id});
+        const error: any = await await this.ErrorModel.findOne({where: { errorId }});
+        if (!error) {
+            await this.ErrorModel.create({errorId, logId: id});
+        } else {
+            error.logId = error.logId + ',' + id;
+            await error.save();
+        }
         if (data) {
             return this.ServerResponse.success('日志添加成功');
         } else {

@@ -63,7 +63,6 @@ export default class User extends Service {
   // 登录
   public async login({mobile, password}: IUserModel) {
     if (! await this._checkExistByField('mobile', mobile)) {
-      console.log('--------------------------------');
       return this.ServerResponse.error('手机号不存在');
     }
     const data = await this.UserModel.findOne({
@@ -75,7 +74,8 @@ export default class User extends Service {
     if (!data) {
       return this.ServerResponse.error('密码错误');
     } else {
-      _.unset(data, 'password');
+      
+      _.unset(data, 'dataValues.password');
       return this.ServerResponse.success('登录成功', data);
     }
     

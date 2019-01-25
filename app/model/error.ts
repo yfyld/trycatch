@@ -8,9 +8,10 @@ export default (app: Application) => {
 
   const Error = app.model.define('error', {
     id: { type: INTEGER, primaryKey: true, autoIncrement: true },
-    projectId: {
-        type: INTEGER,
-        field: 'project_id'
+    logId: STRING(1000),
+    errorId: {
+      type: INTEGER,
+      field: 'error_id'
     },
     type: STRING(30),
     description: STRING(100),
