@@ -4,7 +4,11 @@ export default class ErrorController extends Controller {
     
     // 错误列表
     async index() {
-
+        const { ctx } = this;
+        const startTime = ctx.helper.parseInt(ctx.query.startTime);
+        const endTime = ctx.helper.parseInt(ctx.query.endTime);
+        const page = ctx.helper.parseInt(ctx.query.page);
+        ctx.body = await ctx.service.error.list({...ctx.query, startTime, endTime, page});
     }
 
     // 某个项目错误列表

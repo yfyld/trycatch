@@ -7,6 +7,8 @@ export default class LogController extends Controller {
         const query = { ...ctx.query };
         query.page = ctx.helper.parseInt(query.page);
         query.pageSize = ctx.helper.parseInt(query.pageSize);
+        query.startTime = ctx.helper.parseInt(query.startTime);
+        query.endTime = ctx.helper.parseInt(query.endTime);
         ctx.body = await ctx.service.log.list(query);
     }
 
@@ -25,5 +27,11 @@ export default class LogController extends Controller {
             type, url, source: typeof ctx.request.body === 'string' ? ctx.request.body : JSON.stringify(ctx.request.body),
             projectId, version, errorId
         });
+    }
+
+    async show() {
+        const { ctx } = this;
+        const id = ctx.helper.parseInt(ctx.params.id);
+        ctx.body = await ctx.service.log.show(id);
     }
 }
