@@ -17,6 +17,10 @@ export default (app: Application) => {
       type: INTEGER,
       field: 'project_id',
     },
+    errorId: {
+      type: INTEGER,
+      field: 'error_id'
+    },
     month: STRING(10),
     version: STRING(10),
     created_at: {
