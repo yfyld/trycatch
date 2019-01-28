@@ -19,7 +19,12 @@ export default (app: Application) => {
     },
     month: STRING(10),
     version: STRING(10),
-    created_at: DATE,
+    created_at: {
+      type: DATE,
+      get() {
+        console.log(this);
+      }
+    },
     updated_at: DATE,
   });
 
