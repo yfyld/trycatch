@@ -59,14 +59,14 @@ export default class Log extends Service {
     }
     
 
-    async create({errorId, ...log}) {
+    async create({errorId, projectId, ...log}) {
         const id = await this.getId('logId');
         const y_m = moment().format('YYYY-MM');
         await this.ctx.app.redis.zadd('id', id, y_m);
-        const data = await this.LogModel.create({...log, id});
+        const data = await this.LogModel.create({...log, errorId, projectId, id});
         const error: any = await await this.ErrorModel.findOne({where: { errorId }});
         if (!error) {
-            await this.ErrorModel.create({errorId, logId: id, count: 1});
+            await this.ErrorModel.create({errorId, logId: id, projectId, count: 1});
         } else {
             error.logId = error.logId + ',' + id;
             error.count = error.count + 1;

@@ -4,14 +4,23 @@ import { Application } from 'egg';
 
 
 export default (app: Application) => {
-  const { STRING, INTEGER, DATE } = app.Sequelize;
+  const { STRING, INTEGER, DATE, ENUM } = app.Sequelize;
 
   const Error = app.model.define('error', {
     id: { type: INTEGER, primaryKey: true, autoIncrement: true },
     logId: STRING(1000),
+    projectId: {
+      type: INTEGER,
+      field: 'project_id'
+    },
     errorId: {
       type: INTEGER,
       field: 'error_id'
+    },
+    status: {
+      type: ENUM,
+      values: ['UNSOLVED', 'SOLVED', 'IGNORE', 'PROGRESS'],
+      defaultValue: 'UNSOLVED'
     },
     count: INTEGER,
     type: STRING(30),
