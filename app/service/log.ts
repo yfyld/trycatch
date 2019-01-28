@@ -4,6 +4,7 @@ import { Model, Instance, Operators } from 'sequelize';
 import ServerResponse from '../util/serverResponse';
 import { IResponseCode } from '../constant/responseCode';
 
+const month = ['2018_01', '2018_02', '2018_03', '']
 
 export default class Log extends Service {
 
@@ -24,9 +25,44 @@ export default class Log extends Service {
         this.Op = ctx.app.Sequelize.Op;
     }
 
-    async list({ page = 1, pageSize = 10}) {
+    getLog({ startTime, endTime, errorId}, month) {
+        const startDate = moment(startTime).format('YYYY-MM-DD HH:mm:ss');
+        const endDate = moment(endTime).format('YYYY-MM-DD HH:mm:ss');
+        return this.LogModel.findAndCountAll({
+            attributes: ['id', 'type', 'projectId', 'url'],
+            where: {
+                created_at: {
+                    [this.Op.between]: [startDate, endDate]
+                },
+                errorId,
+                month
+            },
+            // offset: (page - 1) * pageSize,
+            // limit: pageSize,
+            order: [['id', 'desc']]
+        })
+    
+        
+    }
+
+    async list({ page = 1, pageSize = 10, startTime, endTime, errorId}) {
+        const startMonth = moment(startTime).format('YYYY_MM');
+        const endMonth = moment(endTime).format('YYYY_MM');
+        const promises = [];
+        
+        /*
+        const startDate = moment(startTime).format('YYYY-MM-DD HH:mm:ss');
+        const endDate = moment(endTime).format('YYYY-MM-DD HH:mm:ss');
+        const startMonth = moment(startTime).format('YYYY_MM');
+        const endMonth = moment(endTime).format('YYYY_MM');
         const data = await this.LogModel.findAndCountAll({
             attributes: ['id', 'type', 'projectId', 'url'],
+            where: {
+                created_at: {
+                    [this.Op.between]: [startDate, endDate]
+                },
+                errorId
+            },
             offset: (page - 1) * pageSize,
             limit: pageSize,
             order: [['id', 'desc']]
@@ -37,6 +73,7 @@ export default class Log extends Service {
         } else {
             return this.ServerResponse.error('查询失败');
         }
+        */
     }
 
     async getId(type) {
@@ -63,7 +100,7 @@ export default class Log extends Service {
         const id = await this.getId('logId');
         const y_m = moment().format('YYYY-MM');
         await this.ctx.app.redis.zadd('id', id, y_m);
-        const data = await this.LogModel.create({...log, errorId, projectId, id});
+        const data = await this.LogModel.create({...log, errorId, projectId, id, month: y_m});
         const error: any = await await this.ErrorModel.findOne({where: { errorId }});
         if (!error) {
             await this.ErrorModel.create({errorId, logId: id, projectId, count: 1});

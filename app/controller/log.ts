@@ -7,6 +7,8 @@ export default class LogController extends Controller {
         const query = { ...ctx.query };
         query.page = ctx.helper.parseInt(query.page);
         query.pageSize = ctx.helper.parseInt(query.pageSize);
+        query.startTime = ctx.helper.parseInt(query.startTime);
+        query.endTime = ctx.helper.parseInt(query.endTime);
         ctx.body = await ctx.service.log.list(query);
     }
 

@@ -30,7 +30,6 @@ export default class Error extends Service {
         });
         console.log(data);
         return 12;
-        // const [err, error] = await awaitWrapper(this.)
     }
 
 
