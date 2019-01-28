@@ -28,4 +28,10 @@ export default class LogController extends Controller {
             projectId, version, errorId
         });
     }
+
+    async show() {
+        const { ctx } = this;
+        const id = ctx.helper.parseInt(ctx.params.id);
+        ctx.body = await ctx.service.log.show(id);
+    }
 }

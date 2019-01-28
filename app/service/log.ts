@@ -29,8 +29,6 @@ export default class Log extends Service {
     getLog({ startTime, endTime, errorId}, month) {
         const startDate = moment(startTime).format('YYYY-MM-DD HH:mm:ss');
         const endDate = moment(endTime).format('YYYY-MM-DD HH:mm:ss');
-        console.log(startDate);
-        console.log(endDate);
         
         return this.LogModel.findAndCountAll({
             attributes: ['id', 'type', 'projectId', 'url'],
@@ -113,6 +111,22 @@ export default class Log extends Service {
             return this.ServerResponse.success('日志添加成功');
         } else {
             return this.ServerResponse.error('日志添加失败');
+        }
+    }
+
+
+    async show(id) {
+        const y_m = await this.ctx.app.redis.zrangebyscore('id', id, '+inf');
+        const data = await this.LogModel.findOne({
+            where: {
+                id,
+                month: y_m[0]
+            }
+        })
+        if (data) {
+            return this.ServerResponse.success('查询成功', data);
+        } else {
+            return this.ServerResponse.error('查询失败');
         }
     }
 }
