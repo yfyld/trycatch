@@ -39,7 +39,7 @@ export default class Project extends Service {
         })
 
         if (data) {
-            return this.ServerResponse.success('查询成功', { totalCount: data.count || 0, list: data.rows || [] });
+            return this.ServerResponse.success('查询成功', { totalCount: data.count || 0, data: data.rows || [] });
         } else {
             return this.ServerResponse.error('查询失败');
         }

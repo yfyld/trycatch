@@ -33,11 +33,8 @@
       true,
       10
     ],
-    "variable-name": [
-      true,
-      "allow-leading-underscore"
-    ],
-    "align": [true, "statements"]
+    "variable-name": false,
+    "align": [true, "statements"],
   }
 }
 

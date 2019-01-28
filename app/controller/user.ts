@@ -1,14 +1,15 @@
 
 import { Controller } from 'egg';
 import * as _ from "lodash";
-
+import {PageQuery} from "../../types";
 export default class UserController extends Controller {
     
 
   // 用户列表
   public async index() {
     const { ctx } = this;
-    const query = { ...ctx.query };
+
+    const query:PageQuery = { ...ctx.query };
     query.page = ctx.helper.parseInt(query.page);
     query.pageSize = ctx.helper.parseInt(query.pageSize);
     ctx.body = await ctx.service.user.list(query);

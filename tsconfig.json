@@ -22,6 +22,16 @@
     "inlineSourceMap": true,
     "importHelpers": true
   },
+  "rootDirs": ["app","config"],
+  "baseUrl": ".",
+  "paths": {
+    "@/*": [
+      "app/*"
+    ],
+    "types/*":[
+      "types/*"
+    ]
+  },
   "exclude": [
     "app/public",
     "app/views",

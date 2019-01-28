@@ -8,8 +8,8 @@ export default class ProjectController extends Controller {
         const { ctx } = this;
         const query = { ...ctx.query };
         const user = ctx.session.currentUser || {};
-        query.page = ctx.helper.parseInt(query.page);
-        query.pageSize = ctx.helper.parseInt(query.pageSize);
+        query.page = ctx.helper.parseInt(query.page)||1;
+        query.pageSize = ctx.helper.parseInt(query.pageSize)||20;
         ctx.body = await ctx.service.project.list(query, user.mobile);
     }
 
