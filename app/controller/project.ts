@@ -10,7 +10,7 @@ export default class ProjectController extends Controller {
         const user = ctx.session.currentUser || {};
         query.page = ctx.helper.parseInt(query.page)||1;
         query.pageSize = ctx.helper.parseInt(query.pageSize)||20;
-        ctx.body = await ctx.service.project.list(query, user.mobile);
+        ctx.body = await ctx.service.project.list(query, user.id);
     }
 
     // 创建项目
@@ -22,8 +22,8 @@ export default class ProjectController extends Controller {
     // 更新项目
     async update() {
         const { ctx } = this;
-        const id = ctx.helper.parseInt(ctx.request.body.id);
-        ctx.body = await ctx.service.project.update({...ctx.request.body, id});
+        const id = ctx.helper.parseInt(ctx.params.id);
+        ctx.body = await ctx.service.project.update(id,ctx.request.body);
     }
 
     // 项目详情

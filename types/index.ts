@@ -4,3 +4,8 @@ export interface PageQuery{
   pageSize:number
 }
 
+
+export interface ProjectModel{
+  id:number,
+  name:number
+}

@@ -2,14 +2,15 @@
 
 
 import { Service } from 'egg';
-import { Model, Instance, Operators } from 'sequelize';
+import { Model, Operators } from 'sequelize';
 import ServerResponse from '../util/serverResponse';
 import { IResponseCode } from '../constant/responseCode';
 import { awaitWrapper } from './../util/util';
+import {ProjectModel} from "../../types"
 
 export default class Project extends Service {
 
-    ProjectModel: Model<Instance<{}>, {}>;
+    ProjectModel: Model<ProjectModel, {}>;
     ServerResponse: typeof ServerResponse;
     ResponseCode: IResponseCode;
     Op: Operators;
@@ -23,15 +24,15 @@ export default class Project extends Service {
     }
 
     // 项目列表
-    async list({ page = 1, pageSize = 10 }, mobile: string) {
+    async list({ page = 1, pageSize = 10 }, id: number) {
 
         const data = await this.ProjectModel.findAndCountAll({
             attributes: ['id', 'name', 'language', 'frame'],
             offset: (page - 1) * pageSize,
             where: {
                 [this.Op.or]: [
-                    { creator: mobile },
-                    { member: { [this.Op.like]: '%' + mobile + '%' }}
+                    { creator: id },
+                    { member: { [this.Op.like]: '%' + id + '%' }}
                 ]
             },
             limit: pageSize,
@@ -47,22 +48,24 @@ export default class Project extends Service {
     
     // 创建项目
     async create(project) {
+        project.creator=this.ctx.session.currentUser.id;
         const data = await this.ProjectModel.create(project);
         if (data) {
-            return this.ServerResponse.success('项目创建成功');
+            return this.ServerResponse.success('项目创建成功',{id:data.id});
         } else {
             return this.ServerResponse.error('项目创建失败');
         }
     }
 
     // 更新项目
-    async update({id, updates}) {
+    async update(id, updates) {
         const [err, project] = await awaitWrapper(this.ProjectModel.findById(id));
         if (err) {
             return this.ServerResponse.error('内部错误', this.ResponseCode.ERROR_ARGUMENT);
         } else {
             if (project) {
-                project.update(updates);
+                await project.update(updates)
+                return this.ServerResponse.success('项目更新成功');
             } else {
                 return this.ServerResponse.error('项目不存在', this.ResponseCode.NO_CONTENT);
             }
