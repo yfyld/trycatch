@@ -23,7 +23,6 @@ const STRING = Sequelize.STRING;
 const INTEGER = Sequelize.INTEGER;
 const DATE = Sequelize.DATE;
 
-
 for (let i = 0; i < year.length; i++) {
     for (let j = 0; j < month.length; j++) {
         const Log = sequelize.define(`log_${year[i]}_${month[[j]]}`, {

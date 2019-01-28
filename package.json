@@ -19,7 +19,9 @@
     "ci": "npm run lint && npm run cov && npm run tsc",
     "autod": "autod",
     "lint": "tslint --project . -c tslint.json",
-    "clean": "ets clean"
+    "clean": "ets clean",
+    "ip": "node ip/index.js",
+    "sequelize": "node sequelize/index.js"
   },
   "dependencies": {
     "egg": "^2.6.1",
@@ -30,10 +32,12 @@
     "egg-sequelize": "^4.3.0",
     "egg-session-redis": "^2.1.0",
     "egg-validate": "^2.0.2",
+    "iconv-lite": "^0.4.24",
     "lodash": "^4.17.11",
     "md5": "^2.2.1",
     "moment": "^2.23.0",
-    "mysql2": "^1.6.4"
+    "mysql2": "^1.6.4",
+    "redis": "^2.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
