@@ -66,9 +66,10 @@ export default class Log extends Service {
         const data = await this.LogModel.create({...log, id});
         const error: any = await await this.ErrorModel.findOne({where: { errorId }});
         if (!error) {
-            await this.ErrorModel.create({errorId, logId: id});
+            await this.ErrorModel.create({errorId, logId: id, count: 1});
         } else {
             error.logId = error.logId + ',' + id;
+            error.count = error.count + 1;
             await error.save();
         }
         if (data) {

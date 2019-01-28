@@ -13,6 +13,7 @@ export default (app: Application) => {
       type: INTEGER,
       field: 'error_id'
     },
+    count: INTEGER,
     type: STRING(30),
     description: STRING(100),
     created_at: DATE,

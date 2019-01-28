@@ -10,7 +10,7 @@
     "start": "egg-scripts start --daemon --title=egg-server-trycatch",
     "stop": "egg-scripts stop --title=egg-server-trycatch",
     "dev": "egg-bin dev -r egg-ts-helper/register",
-    "frp":"./frp/frpc -c ./frp/frpc.ini",
+    "frp": "./frp/frpc -c ./frp/frpc.ini",
     "debug": "egg-bin debug -r egg-ts-helper/register",
     "test-local": "egg-bin test -r egg-ts-helper/register",
     "test": "npm run lint -- --fix && npm run test-local",
