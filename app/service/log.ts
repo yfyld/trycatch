@@ -5,6 +5,7 @@ import * as _ from 'lodash';
 import ServerResponse from '../util/serverResponse';
 import { IResponseCode } from '../constant/responseCode';
 import table from '../constant/table';
+import {CreateLogParams} from "../../types"
 
 
 export default class Log extends Service {
@@ -93,18 +94,36 @@ export default class Log extends Service {
         return data;
     }
     
-
-    async create({errorId, projectId, ...log}) {
-        const id = await this.getId('logId');
+    
+    async create({errorId, projectId, ...log}:CreateLogParams) {
+        const id:number = await this.getId('logId');
         const y_m = moment().format('YYYY_MM');
-        await this.ctx.app.redis.zadd('id', id, y_m);
-        const data = await this.LogModel.create({...log, errorId, projectId, id, month: y_m});
-        const error: any = await await this.ErrorModel.findOne({where: { errorId }});
+        await this.ctx.app.redis.zadd('id', String(id), y_m);
+        const data = await this.LogModel.create({
+            ...log,
+            errorId,
+            projectId,
+            id,
+            month: y_m
+        });
+        const error: any = await this.ErrorModel.findOne({where: { id:errorId }});
         if (!error) {
-            await this.ErrorModel.create({errorId, logId: id, projectId, count: 1});
+            await this.ErrorModel.create({
+                id:errorId,
+                projectId,
+                type:log.type,
+                version:log.version,
+                status:"UNSOLVED",
+                url:log.url,
+                page:log.page,
+                name:log.name,
+                message:log.message
+            });
         } else {
-            error.logId = error.logId + ',' + id;
-            error.count = error.count + 1;
+            error.eventCount = error.eventCount + 1;
+            if(error.status==="SOLVED"){
+               error.status="UNSOLVED"
+            }
             await error.save();
         }
         if (data) {
