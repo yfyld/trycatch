@@ -1,3 +1,4 @@
+
 import { Service } from 'egg';
 import * as moment from 'moment';
 import { Model, Instance, Operators } from 'sequelize';
@@ -7,6 +8,7 @@ import { IResponseCode } from '../constant/responseCode';
 import table from '../constant/table';
 import {CreateLogParams} from "../../types"
 
+import { awaitWrapper } from '../util/util';
 
 export default class Log extends Service {
 
@@ -62,16 +64,24 @@ export default class Log extends Service {
             promises.push(this.getLog({startTime, endTime, errorId}, table[i]));
         }
         
-        const log = await Promise.all([...promises]);
-        
-        const data = log.reduce((data, item) => {
-            return {
-                totalCount: data.totalCount + item.count,
-                list: data.list.concat(item.rows)
+        const [err, log] = await awaitWrapper(Promise.all([...promises]));
+        if (err) {
+            return this.ServerResponse.error('内部错误', this.ResponseCode.ERROR_ARGUMENT);
+        } else {
+            if (log) {
+                const data = log.reduce((data, item) => {
+                    return {
+                        totalCount: data.totalCount + item.count,
+                        list: data.list.concat(item.rows)
+                    }
+                }, {totalCount: 0, list: []} )
+                return this.ServerResponse.success('查询成功', data);
+            } else {
+                return this.ServerResponse.error('查询失败');
             }
-        }, {totalCount: 0, list: []} )
-        // 暂时没做异常处理
-        return this.ServerResponse.success('查询成功', data);
+        }
+        
+        
        
     }
 
@@ -128,24 +138,34 @@ export default class Log extends Service {
         }
         if (data) {
             return this.ServerResponse.success('日志添加成功');
-        } else {
-            return this.ServerResponse.error('日志添加失败');
         }
+
+        
     }
 
 
     async show(id) {
-        const y_m = await this.ctx.app.redis.zrangebyscore('id', id, '+inf');
-        const data = await this.LogModel.findOne({
-            where: {
-                id,
-                month: y_m[0]
-            }
-        })
-        if (data) {
-            return this.ServerResponse.success('查询成功', data);
+        const [err, y_m] = await awaitWrapper(this.ctx.app.redis.zrangebyscore('id', id, '+inf'));
+        if (err) {
+            return this.ServerResponse.error('内部错误', this.ResponseCode.ERROR_ARGUMENT);
         } else {
-            return this.ServerResponse.error('查询失败');
-        }
+            const [err1, data] = await awaitWrapper(this.LogModel.findOne({
+                where: {
+                    id,
+                    month: y_m[0]
+                }
+            }))
+            if (err1) {
+                return this.ServerResponse.error('内部错误', this.ResponseCode.ERROR_ARGUMENT);
+            } else {
+                if (data) {
+                    return this.ServerResponse.success('查询成功', data);
+                } else {
+                    return this.ServerResponse.error('查询无数据', this.ResponseCode.NO_CONTENT);
+                }
+            }
+        } 
+        
+       
     }
 }

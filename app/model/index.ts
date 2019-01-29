@@ -13,3 +13,10 @@ export interface IProjectModel {
     member: string
 
 }
+
+export interface IErrorModel {
+    id: number,
+    logId: string,
+    status: string,
+    count: number
+}
