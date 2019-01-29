@@ -99,12 +99,15 @@ export default class Log extends Service {
         const y_m = moment().format('YYYY_MM');
         await this.ctx.app.redis.zadd('id', id, y_m);
         const data = await this.LogModel.create({...log, errorId, projectId, id, month: y_m});
-        const error: any = await await this.ErrorModel.findOne({where: { errorId }});
+        // const error: any = await await this.ErrorModel.findOne({where: { errorId }});
+        const error: any = await await this.ErrorModel.findById(errorId);
+
         if (!error) {
-            await this.ErrorModel.create({errorId, logId: id, projectId, count: 1});
+            await this.ErrorModel.create({id: errorId, logId: id, projectId, count: 1});
         } else {
             error.logId = error.logId + ',' + id;
             error.count = error.count + 1;
+            error.status = 'UNSOLVED';
             await error.save();
         }
         if (data) {
@@ -117,6 +120,7 @@ export default class Log extends Service {
 
     async show(id) {
         const y_m = await this.ctx.app.redis.zrangebyscore('id', id, '+inf');
+       
         const data = await this.LogModel.findOne({
             where: {
                 id,

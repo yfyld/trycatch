@@ -1,6 +1,7 @@
 import { Service } from 'egg';
 import { Model, Instance, Operators } from 'sequelize';
 import * as moment from 'moment';
+import * as _ from 'lodash';
 import ServerResponse from '../util/serverResponse';
 import { IResponseCode } from '../constant/responseCode';
 
@@ -51,5 +52,24 @@ export default class Error extends Service {
         } else {
             return this.ServerResponse.error('查询失败')
         }
+    }
+
+
+    async stat({startTime, endTime }) {
+        const startDate = moment(startTime).format('YYYY-MM-DD HH:mm:ss');
+        const endDate = moment(endTime).format('YYYY-MM-DD HH:mm:ss');
+        const data = await this.ErrorModel.findAll({
+            where: {
+                updated_at: {
+                    [this.Op.between]: [startDate, endDate]
+                }
+            }
+        })
+        const error = data && data.map((item: any) => {
+            return {...item, day: moment(item.dataValues.updated_at).format('YYYY-MM-DD')}
+        });
+        const statError = _.groupBy(error, 'day');
+        const statSum = Object.keys(statError).map(item => ({ day: item, sum: statError[item].length}));
+        return this.ServerResponse.success('查询成功', statSum);
     }
 }

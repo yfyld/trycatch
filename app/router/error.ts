@@ -5,6 +5,7 @@ module.exports = (app: Application) => {
 
     const prefix = '/error';
 
+    router.get(`${prefix}/stat`, controller.error.stat);
     router.resources('error', prefix, controller.error);
     
     
