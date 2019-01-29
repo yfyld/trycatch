@@ -13,10 +13,6 @@ export default (app: Application) => {
       type: INTEGER,
       field: 'project_id'
     },
-    // errorId: {
-    //   type: INTEGER,
-    //   field: 'error_id'
-    // },
     status: {
       type: ENUM,
       values: ['UNSOLVED', 'SOLVED', 'IGNORE', 'PROGRESS'],
