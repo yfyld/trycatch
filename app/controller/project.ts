@@ -39,4 +39,17 @@ export default class ProjectController extends Controller {
         const id = ctx.helper.parseInt(ctx.params.id);
         ctx.body = await ctx.service.project.destroy(id);
     }
+
+    // 添加项目成员
+    async addMember() {
+        const { ctx } = this;
+        const id = ctx.helper.parseInt(ctx.params.id);
+        ctx.body = await ctx.service.project.addMember(ctx.request.body, id);
+    }
+
+    async deleteMember() {
+        const { ctx } = this;
+        const id = ctx.helper.parseInt(ctx.params.id);
+        ctx.body = await ctx.service.project.deleteMember(ctx.request.body, id);
+    }
 }

@@ -3,6 +3,7 @@
 
 import { Service } from 'egg';
 import { Model, Operators } from 'sequelize';
+import * as _ from 'lodash';
 import ServerResponse from '../util/serverResponse';
 import { IResponseCode } from '../constant/responseCode';
 import { awaitWrapper } from './../util/util';
@@ -105,5 +106,40 @@ export default class Project extends Service {
         }
     }
 
+    // 添加项目成员
+    async addMember({userIds}, id) {
+        const [err, data] = await awaitWrapper(this.ProjectModel.findById(id));
+        if (err) {
+            return this.ServerResponse.error('内部错误');
+        } else {
+            if (data) {
+                const members = data.members.split(',');
+                const addMembers = userIds.split(',');
+                const member = addMembers.filter(item => _.findIndex(members, i => i === item) === -1).concat(members);
+                data.member = member.join(',');
+                data.update();
+            } else {
+                return this.ServerResponse.error('项目不存在', this.ResponseCode.NO_CONTENT);
+            }
+        }
+    }
+
+    // 删除项目成员
+    async deleteMember({userIds}, id) {
+        const [err, data] = await awaitWrapper(this.ProjectModel.findById(id));
+        if (err) {
+            return this.ServerResponse.error('内部错误');
+        } else {
+            if (data) {
+                const members = data.members.split(',');
+                const addMembers = userIds.split(',');
+                const member = members.filter(item => _.findIndex(addMembers, i => i === item) >= 0);
+                data.member = member.join(',');
+                data.update();
+            } else {
+                return this.ServerResponse.error('项目不存在', this.ResponseCode.NO_CONTENT);
+            }
+        }
+    }
 
 }
