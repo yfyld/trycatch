@@ -41,14 +41,13 @@ export default class Error extends Service {
             where: {
                 updated_at: {
                     [this.Op.between]: [startDate, endDate]
-                },
-                limit: 20,
-                offset: (page - 1) * 20
-                
-            }
+                }
+            },
+            limit: 20,
+            offset: (page - 1) * 20
         })
         if (error) {
-            return this.ServerResponse.success('查询成功', { totalCount: error.count || 0, list: error.rows || [] });
+            return this.ServerResponse.success('查询成功', { totalCount: error.count || 0, data: error.rows || [] });
         } else {
             return this.ServerResponse.error('查询失败')
         }

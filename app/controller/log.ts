@@ -9,6 +9,7 @@ export default class LogController extends Controller {
         query.pageSize = ctx.helper.parseInt(query.pageSize);
         query.startTime = ctx.helper.parseInt(query.startTime);
         query.endTime = ctx.helper.parseInt(query.endTime);
+        query.errorId = ctx.helper.parseInt(query.errorId);
         ctx.body = await ctx.service.log.list(query);
     }
 
