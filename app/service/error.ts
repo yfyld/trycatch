@@ -72,4 +72,20 @@ export default class Error extends Service {
         const statSum = Object.keys(statError).map(item => ({ day: item, sum: statError[item].length}));
         return this.ServerResponse.success('查询成功', statSum);
     }
+
+
+    async status({errorIds, status}) {
+        const errorList = errorIds.split(',');
+        const data = await this.ErrorModel.update({
+            status,
+            where: {
+                [this.Op.in]: errorList
+            }
+        })
+        if (data) {
+            return this.ServerResponse.success('更新成功');
+        } else {
+            return this.ServerResponse.error('更新失败');
+        }
+    }
 }

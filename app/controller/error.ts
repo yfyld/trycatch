@@ -30,7 +30,12 @@ export default class ErrorController extends Controller {
         const query = { ...ctx.query };
         query.startTime = ctx.helper.parseInt(query.startTime);
         query.endTime = ctx.helper.parseInt(query.endTime);
-        console.log(query);
         ctx.body = await ctx.service.error.stat({...query});
+    }
+
+    // 错误状态修改
+    async status() {
+        const { ctx } = this;
+        ctx.body = await ctx.service.error.status({...ctx.query});
     }
 }
