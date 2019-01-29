@@ -12,6 +12,7 @@ import {ProjectModel} from "../../types"
 export default class Project extends Service {
 
     ProjectModel: Model<ProjectModel, {}>;
+    UserModel:any;
     ServerResponse: typeof ServerResponse;
     ResponseCode: IResponseCode;
     Op: Operators;
@@ -19,6 +20,7 @@ export default class Project extends Service {
         super(ctx);
         this.ctx = ctx;
         this.ProjectModel = ctx.model.Project;
+        this.UserModel=ctx.model.User;
         this.ServerResponse = ctx.response.ServerResponse;
         this.ResponseCode = ctx.response.ResponseCode;
         this.Op = ctx.app.Sequelize.Op;
@@ -141,5 +143,27 @@ export default class Project extends Service {
             }
         }
     }
+
+    async members(id) {
+        const [err, project] = await awaitWrapper(this.ProjectModel.findById(id));
+        
+        if (err) {
+            return this.ServerResponse.error('内部错误', this.ResponseCode.ERROR_ARGUMENT);
+        }
+
+        const [usersErr, users] = await awaitWrapper(this.UserModel.findAll({
+            where:{
+                [this.Op.in]:project.memberIds.split(',').map(item=>Number(item))
+            }
+        }));
+        
+        if (usersErr) {
+            return this.ServerResponse.error('内部错误', this.ResponseCode.ERROR_ARGUMENT);
+        }
+        
+        return this.ServerResponse.success('查询成功', users);
+        
+    }
+
 
 }

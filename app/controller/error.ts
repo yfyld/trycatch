@@ -5,10 +5,13 @@ export default class ErrorController extends Controller {
     // 错误列表
     async index() {
         const { ctx } = this;
-        const startTime = ctx.helper.parseInt(ctx.query.startTime);
-        const endTime = ctx.helper.parseInt(ctx.query.endTime);
-        const page = ctx.helper.parseInt(ctx.query.page);
-        ctx.body = await ctx.service.error.list({...ctx.query, startTime, endTime, page});
+        const query={...ctx.query}
+        query.startTime = ctx.helper.parseInt(ctx.query.startTime);
+        query.endTime = ctx.helper.parseInt(ctx.query.endTime);
+        query.page = ctx.helper.parseInt(ctx.query.page)||1;
+        query.pageSize = ctx.helper.parseInt(ctx.query.pageSize)||20;
+        query.projectId = ctx.helper.parseInt(ctx.query.projectId)
+        ctx.body = await ctx.service.error.list(query);
     }
 
 
@@ -21,8 +24,23 @@ export default class ErrorController extends Controller {
         ctx.body = await ctx.service.error.stat({...query});
     }
 
-    // 错误状态修改
-    async status() {
+    
+    async updates() {
+        interface RequestBody{
+            errorList:number[],
+            updateData:{
+                type?:string,
+                status?:string,
+                owner?:number
+            }
+        }
+        const { ctx } = this;
+        const requestBody:RequestBody={...ctx.request.body}
+        ctx.body = await ctx.service.error.updates(requestBody);
+    }
+
+    // 错误事件详情
+    async show() {
         const { ctx } = this;
         ctx.body = await ctx.service.error.status({...ctx.query});
     }
