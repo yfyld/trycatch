@@ -1,61 +1,51 @@
 const Subscription = require('egg').Subscription;
 
-console.log(999909)
 class UserCount extends Subscription {
   constructor(ctx){
-    super(ctx)
+    super(ctx);
     this.ErrorModel = ctx.model.Error;
     this.LogModel = ctx.model.Log;
+    this.LogServer=ctx.service.Log;
   }
   static get schedule() {
     return {
-      interval: '10s',
-      type: 'all',
+      interval: '1h',
+      type: 'all'
     };
   }
 
-  
-
 
   async subscribe() {
-    const Op = this.ctx.app.Sequelize.Op
-
+    const Op = this.ctx.app.Sequelize.Op;
+    
     const errors = await this.ErrorModel.findAll({
       where: {
-        update_at:{
-          [Op.gt]:Date.now()-60*60000
+        updated_at: {
+          [Op.gt]: Date.now()-3600*1000*1
         }
       },
       raw: true
-    })
+    });
 
-    console.log(999909,errors)
-    if(errors.length){
+
+    if(!errors.length){
       return;
     }
 
     for(let error of errors){
-      const logs:[{customId:string}]=await this.LogModel.findAll({
-        attributes: ['customId'],
-        where: {
-          errorId:error.id
-        },
-        raw: true
-      })
+      const response=await this.ctx.service.log.list({errorId: error.id})
 
-      const userCount=new Set(logs.map(item=>item.customId)).size
+      const userCount=new Set(response.data.map(item => item.customId)).size;
 
       await this.ErrorModel.update({
         userCount
       },{
         where: {
-          id:error.id
+          id: error.id
         }
-      })
+      });
 
     }
-    
-
 
   }
 }

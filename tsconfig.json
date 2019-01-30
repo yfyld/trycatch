@@ -22,7 +22,7 @@
     "inlineSourceMap": true,
     "importHelpers": true
   },
-  "rootDirs": ["app","config"],
+  "rootDirs": ["app","config","schedule"],
   "baseUrl": ".",
   "paths": {
     "@/*": [
