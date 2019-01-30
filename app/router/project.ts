@@ -6,6 +6,8 @@ module.exports = (app: Application) => {
 
     const prefix = '/project';
 
+    router.post(`${prefix}/:id/addMember`, controller.project.addMember);
+    router.delete(`${prefix}/:id/deleteMember`, controller.project.deleteMember);
     router.resources('project', prefix, checkLogin, controller.project);
     
     
