@@ -1,5 +1,17 @@
 import * as actions from '@/store/actions'
 import { ActionType } from 'typesafe-actions'
+import {StoreState} from '@/store/reducers'
+
+export interface PageData<T>{
+  totalCount:number,
+  data:T[]
+}
+export interface PageQuery{
+  page?:number,
+  pageSize?:number
+}
+
+export type StoreState=StoreState;
 
 export type Action = ActionType<typeof actions>
 
@@ -7,6 +19,16 @@ export interface ActionAny {
   type: string
   payload?: any
 }
+
+
+
+export interface UserInfo {
+  nickName?: string
+  id?: string
+  mobile?: string
+  password?: string
+}
+
 
 export interface ProjectListItem {
   name: string
@@ -20,12 +42,6 @@ export interface ProjectInfo {
 
 
 
-export interface UserInfo {
-  nickName?: string
-  id?: string
-  mobile?: string
-  password?: string
-}
 
 export interface ErrorChartDataItem {
   date: number
@@ -33,7 +49,7 @@ export interface ErrorChartDataItem {
 }
 
 export interface ErrorChartData {
-  total: number
+  totalCount: number
   data: ErrorChartDataItem[]
 }
 
@@ -43,15 +59,17 @@ export enum Order {
   false
 }
 
-export interface ErrorListParams {
-  page?: number
-  pageSize?: number
+export interface ErrorSearchParams extends PageQuery {
   status?: string
   type?: string
-  projectId?:number,
+  projectId?:number
   dateOrder?: Order
   userOrder?: Order
   eventOrder?: Order
+  page?:number
+  pageSize?:number
+  endTime?:number,
+  startTime?:number
 }
 
 export interface ErrorListDataItem {
@@ -67,14 +85,16 @@ export interface ErrorListDataItem {
 }
 
 export interface ErrorListData {
-  totalPage: number
+  totalCount: number
   data: ErrorListDataItem[]
 }
 
 export interface ErrorChangeParams {
-  userId?: number
-  status?: string
-  errorList: number[]
+  errorList: number[],
+  updateData:{
+    ownerId?: number
+    status?: string
+  }
 }
 
 
@@ -86,9 +106,13 @@ export interface ErrorInfo {
 export interface EventInfo {
   id?: number
   status?: string
+  url?:string
+  type?:string
+  source?:string
 }
 
 export interface EventListDataItem {
   id?: number
   status?: string
 }
+

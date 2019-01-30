@@ -9,11 +9,13 @@ import update from 'immutability-helper'
 export interface ProjectState {
    projectList: ProjectListItem[];
    projectInfo: ProjectInfo;
+   projectAddVisible:boolean
 }
 
 const initialState = {
   projectList: [],
-  projectInfo: {}
+  projectInfo: {},
+  projectAddVisible:false,
 };
 
 export const projectReducer = (state: ProjectState = initialState, action: Action): ProjectState => {
@@ -21,13 +23,17 @@ export const projectReducer = (state: ProjectState = initialState, action: Actio
   switch (action.type) {
     
     case getType(actions.doGetProjectListSuccess):
-      return update(state,{projectList:{$set:action.payload.list}})
+      return update(state,{projectList:{$set:action.payload.data}})
 
 
     case getType(actions.doGetProjectDetailsSuccess):
       return update(state,{projectInfo:{$set:action.payload}})
 
-
+    case getType(actions.doAddProjectToggle):
+      return update(state,{projectAddVisible:{$set:action.payload}})
+     
+    case getType(actions.doAddProjectSuccess):
+      return update(state,{projectAddVisible:{$set:false}})  
     default:
       return state;
   }

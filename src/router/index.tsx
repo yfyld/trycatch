@@ -6,6 +6,7 @@ import CoreRouter from './CoreRouter'
 import { ConnectedRouter } from 'connected-react-router'
 
 const Login = React.lazy(() => import('@/pages/account/Login'))
+const Signup = React.lazy(() => import('@/pages/account/Signup'))
 
 export default class Routes extends React.Component {
   public render() {
@@ -20,6 +21,7 @@ export default class Routes extends React.Component {
         <ConnectedRouter history={history}>
           <Switch>
             <Route exact path="/login" component={Login} />
+            <Route exact path="/signup" component={Signup} />
             <Route path="/" component={CoreRouter} />
           </Switch>
         </ConnectedRouter>

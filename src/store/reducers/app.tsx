@@ -1,27 +1,30 @@
 import { getType } from 'typesafe-actions'
 import update from 'immutability-helper'
 import * as actions from '../actions'
-import { Action } from '@/types'
+import { Action,UserInfo } from '@/types'
 
 export interface AppState {
   loading: boolean
-  userInfo?: object
+  userInfo: UserInfo
 }
 
-const initialState = {
+const initialState=():AppState => ({
   loading: false,
   userInfo: {},
-
-}
+})
 
 export const appReducer = (
-  state: AppState = initialState,
+  state: AppState = initialState(),
   action: Action
 ): AppState => {
   switch (action.type) {
     case getType(actions.doLoginSuccess):
       return state
-      
+
+    case getType(actions.doLogoutSuccess):
+      return update(state,  {$set: initialState()})
+
+
     case getType(actions.doGetUserInfoSuccess):
       return update(state, { userInfo: { $set: action.payload } })
 

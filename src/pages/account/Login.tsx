@@ -8,29 +8,21 @@ import * as actions from '@/store/actions'
 import LoginLayout from '@/components/LoginLayout'
 import {Link} from "react-router-dom";
 
-import {Action,UserInfo} from "@/types"
+import {Action} from "@/types"
 interface Props {
-    form: WrappedFormUtils,
-    doLoginRequest:Function
+  form:WrappedFormUtils,
+  doSubmit:(e:React.FormEvent,form:WrappedFormUtils)=>{}
 }
 
-const handleSubmit = (e:any,form:WrappedFormUtils,doLoginRequest:Function) => {
-  e.preventDefault()
-    form.validateFields((err, values) => {
-    if (!err) {
-      console.log('Received values of form: ', values)
-      doLoginRequest(values)
-    }
-  })
-}
 
-const Login=({form,doLoginRequest}:Props)=>{
+
+const Login=({form,doSubmit}:Props)=>{
   const { getFieldDecorator } = form
   return (
     <LoginLayout>
-      <Form onSubmit={(e)=>handleSubmit(e,form,doLoginRequest)} className="login-form">
+      <Form onSubmit={(e)=>doSubmit(e,form)} className="login-form">
         <Form.Item>
-          {getFieldDecorator('userName', {
+          {getFieldDecorator('mobile', {
             rules: [
               { required: true, message: '请输入手机号' }
             ]
@@ -66,8 +58,8 @@ const Login=({form,doLoginRequest}:Props)=>{
           >
             登录
           </Button>
-          没有账号 <a href="">注册!</a>
-          <Link to="/home"> test</Link>
+          没有账号 <Link to="/signup">注册!</Link>
+          <Link to="/project"> test</Link>
         </Form.Item>
       </Form>
     </LoginLayout>
@@ -75,7 +67,10 @@ const Login=({form,doLoginRequest}:Props)=>{
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>)=>bindActionCreators({
-  doLoginRequest: (params:UserInfo)=>actions.doLoginRequest(params)
+  doSubmit:(e:React.FormEvent,form:WrappedFormUtils)=>{
+    e.preventDefault();
+    return actions.doLoginRequest(form)
+  }
 },dispatch)
 
 export default connect(null,mapDispatchToProps)(Form.create()(Login));

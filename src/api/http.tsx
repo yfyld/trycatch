@@ -7,6 +7,7 @@ import axios, {
   
 } from 'axios'
 import config from '@/config'
+import {message} from "antd"
 
 const Loading = {
   loadingNum: 0,
@@ -29,10 +30,11 @@ const Loading = {
 }
 
 let curMes = ''
-const message = (mes: string) => {
+const errorMessage = (mes: string) => {
   if (mes === curMes) {
     return
   }
+  message.error(mes)
   curMes = mes
 }
 
@@ -59,15 +61,21 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   (response: AxiosResponse) => {
     Loading.remove()
-    return Promise.resolve(response)
+    if(response.data.status===2000){
+      response.data=response.data.data;
+      return Promise.resolve(response)
+    }else{
+      errorMessage(response.data.msg)
+      return Promise.reject(response)
+    }
   },
   (error: AxiosError) => {
     Loading.remove()
 
     if (error.code === 'ECONNABORTED') {
-      message('网络连接超时')
+      errorMessage('网络连接超时')
     } else {
-      message('请求失败')
+      errorMessage('请求失败')
     }
 
     return Promise.reject(error)

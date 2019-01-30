@@ -1,28 +1,32 @@
 import * as React from 'react'
 import FilterBar from './components/FilterBar'
-import { Button, Tooltip, Menu, Dropdown, List,Skeleton } from 'antd'
-import style from './Dashboard.less'
+import { Button, Tooltip, Menu, Dropdown, List,Tabs } from 'antd'
+import style from './ErrorDetails.less'
 import * as actions from '@/store/actions'
 import { connect } from 'react-redux'
 // import {findOne} from '@/utils'
 import { bindActionCreators } from 'redux'
 import { StoreState } from '@/store/reducers'
 import { Dispatch } from 'redux'
-import { Action, ErrorChangeParams } from '@/types'
+import { Action, ErrorChangeParams,EventListDataItem,PageData,EventInfo,ErrorInfo } from '@/types'
 // import * as moment from "moment";
 import { ERROR_STATUS } from '@/constants'
-
+const {TabPane} =Tabs;
 interface Props {
-  loading: boolean
+  eventListLoading: boolean
   doErrorChange: (params: ErrorChangeParams) => Action
-  doErrorDetails: any
+  doGetEventListDataRequest:()=>Action
+  doErrorDetails: any,
+  eventInfo:EventInfo
+  errorInfo:ErrorInfo
+  eventListData:PageData<EventListDataItem>
 }
 
-const ErrorDetails = ({ loading,doErrorChange, doErrorDetails }: Props) => {
+const ErrorDetails = ({ errorInfo,eventInfo,eventListLoading,doErrorChange, doErrorDetails ,eventListData,doGetEventListDataRequest}: Props) => {
   const userMenu = (
     <Menu
       onClick={({ key }) =>
-        doErrorChange({ userId: Number(key), errorList: [1] })
+        doErrorChange({ updateData:{ownerId: Number(key)}, errorList: [errorInfo.id] })
       }
     >
       <Menu.Item key={1}>小王</Menu.Item>
@@ -30,7 +34,7 @@ const ErrorDetails = ({ loading,doErrorChange, doErrorDetails }: Props) => {
   )
 
   const statusMenu = (
-    <Menu onClick={({ key }) => doErrorChange({ status: key, errorList: [1] })}>
+    <Menu onClick={({ key }) => doErrorChange({ updateData:{status: key}, errorList: [errorInfo.id] })}>
       {ERROR_STATUS.map(status => (
         <Menu.Item key={status.value}>{status.text}</Menu.Item>
       ))}
@@ -47,19 +51,19 @@ const ErrorDetails = ({ loading,doErrorChange, doErrorDetails }: Props) => {
       </Dropdown>
       <Dropdown trigger={['click']} overlay={statusMenu}>
         <Tooltip placement="right" title="状态">
-          <Button shape="circle" icon="user" />
+          <Button shape="circle" icon="setting" />
         </Tooltip>
       </Dropdown>
     </span>
   )
 
 
-  const loadMore = !loading ? (
+  const loadMore = !eventListLoading ? (
     <div style={{
       textAlign: 'center', marginTop: 12, height: 32, lineHeight: '32px',
     }}
     >
-      <Button>加载更多</Button>
+      <Button onClick={doGetEventListDataRequest}>加载更多</Button>
     </div>
   ) : null;
 
@@ -69,26 +73,38 @@ const ErrorDetails = ({ loading,doErrorChange, doErrorDetails }: Props) => {
         <FilterBar doGetErrorAllData={doErrorDetails} />
       </div>
       <div className={style.table}>{selectionHandler}</div>
-      <div>
-        <div>
+      <div className={style.content}>
+        <div className={style.list}>
           <List
             className="demo-loadmore-list"
-            loading={false}
+            loading={eventListLoading}
             itemLayout="horizontal"
             loadMore={loadMore}
-            // dataSource={list}
+            dataSource={eventListData.data}
             renderItem={item => (
               <List.Item>
-                <Skeleton avatar title={false} loading={item.loading} active>
                   <List.Item.Meta
-                    title="HTTP_EOORE"
-                    description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                    title={item.type}
+                    description={item.url}
                   />
-                  <div>content</div>
-                </Skeleton>
               </List.Item>
             )}
           />
+        </div>
+        <div className={style.main}>
+        <Tabs defaultActiveKey="1">
+        <TabPane tab="基本信息" key="1">
+              <div>
+              {eventInfo.source}
+              </div>
+        </TabPane>
+        <TabPane tab="用户行为" key="2">
+        <div>
+{eventInfo.source?JSON.stringify(JSON.parse(eventInfo.source).behavior):''}
+        </div>
+              
+        </TabPane>
+      </Tabs>
         </div>
       </div>
     </div>
@@ -103,6 +119,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
       },
       doErrorDetails: params => {
         return actions.doErrorChange(params)
+      },
+      doGetEventListDataRequest:()=>{
+          return actions.doGetEventListDataRequest({})
       }
     },
     dispatch
@@ -111,7 +130,10 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 const mapStateToprops = (state: StoreState) => {
   return {
-    loading: state.work.loading
+    eventListLoading: state.work.eventListLoading,
+    eventListData:state.work.eventListData,
+    eventInfo:state.work.eventInfo,
+    errorInfo:state.work.errorInfo
   }
 }
 

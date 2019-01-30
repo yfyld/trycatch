@@ -2,22 +2,30 @@ import * as React from 'react'
 import { Tabs,Form,Input,Button } from 'antd'
 import { WrappedFormUtils } from 'antd/lib/form/Form';
 import {connect} from "react-redux"
-import { Dispatch } from 'redux'
+
 import * as actions from '@/store/actions'
-import { bindActionCreators } from 'redux'
-import {Action} from '@/types'
+import { bindActionCreators,Dispatch } from 'redux'
+import {Action,ProjectInfo,StoreState} from '@/types'
 const TabPane = Tabs.TabPane
 
 
 interface Props{
   form:WrappedFormUtils,
-  doSubmit:(e:React.FormEvent,form:WrappedFormUtils)=>{}
+  doSubmit:(e:React.FormEvent,form:WrappedFormUtils)=>{},
+  projectInfo:ProjectInfo
 }
 
 
 
-function ProjectDetails({form,doSubmit}:Props){
-  const { getFieldDecorator } = form;
+function ProjectDetails({form,doSubmit,projectInfo}:Props){
+  const { getFieldDecorator,setFieldsValue } = form;
+  React.useEffect(()=>{
+    if(projectInfo.id){
+      setFieldsValue({
+        name:projectInfo.name
+      })
+    }
+  },[projectInfo.id])
   return (
     <div>
       <Tabs defaultActiveKey="1">
@@ -64,4 +72,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>)=>bindActionCreators({
 },dispatch)
 
 
-export default connect(null,mapDispatchToProps)(Form.create()(ProjectDetails));
+const mapStateToProps = (state:StoreState) => ({
+  projectInfo: state.project.projectInfo
+});
+
+export default connect(mapStateToProps,mapDispatchToProps)(Form.create()(ProjectDetails));

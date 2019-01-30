@@ -1,13 +1,13 @@
 import * as React from 'react';
 import {DatePicker,Button} from 'antd'
 import * as moment from "moment";
-import { ErrorListParams } from '@/types'
+import { ErrorSearchParams } from '@/types'
 const {RangePicker} = DatePicker;
 const dateFormat='YYYY/MM/DD';
 
 
 interface Props{
-    doGetErrorAllData: (params:ErrorListParams) => any
+    doGetErrorAllData: (params:ErrorSearchParams) => any
 }
 
 const FilterBar =({doGetErrorAllData}:Props)=>{

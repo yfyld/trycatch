@@ -5,9 +5,9 @@ import { mergeMap, map, filter, catchError ,tap} from 'rxjs/operators'
 import { bindNodeCallback ,of} from 'rxjs'
 import { StoreState } from '@/store/reducers'
 import { isActionOf } from 'typesafe-actions'
-import { Action } from '@/types'
+import { Action ,ActionAny} from '@/types'
 import * as Api from '@/api'
-
+import { push } from 'connected-react-router'
 
 const getProjectList: Epic<Action, Action, StoreState> = action$ =>
   action$.pipe(
@@ -51,4 +51,22 @@ const updateProjectDetails: Epic<Action, Action, StoreState> = (action$,state$)=
     ))
   )
 
-export default [getProjectList, updateProjectDetails,getProjectDetail]
+const addProject: Epic<ActionAny, ActionAny, StoreState> = (action$,state$)=>
+  action$.pipe(
+    filter(isActionOf(actions.doAddProjectRequest)),
+    mergeMap(action=>bindNodeCallback(action.payload.validateFields)().pipe(
+      mergeMap(params=>Api.fetchProjectAdd(params).pipe(
+        tap(()=>{message.success('提交成功')}),
+        mergeMap((reponse)=>[
+          actions.doAddProjectSuccess(),
+          push(`/project/${reponse.data.id}`)
+        ])
+      )),
+      catchError((error) =>{
+        console.log(error)
+        message.error("请填写正确的项目信息")
+        return of(actions.doAddProjectFailure())
+      })
+    ))
+  )
+export default [getProjectList, updateProjectDetails,getProjectDetail,addProject]

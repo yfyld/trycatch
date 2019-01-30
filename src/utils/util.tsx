@@ -1,6 +1,7 @@
 import { connect as connectComponent } from 'react-redux';
 import createHistory from 'history/createBrowserHistory';
 import { matchPath } from 'react-router-dom';
+import {StoreState} from "@/types"
 
 
 
@@ -14,12 +15,11 @@ export const connect = (mapStateToProps?: any, actions?: any) => {
 export const history = createHistory()
 
 
- export const mapLocationIntoActions = ({ pathname, search }:any, handlers:any) => (Object as any).entries(handlers)
+ export const mapLocationIntoActions = ({ pathname, search }:any, handlers:any,state:StoreState) => (Object as any).entries(handlers)
   .map(([expectedPath, handler]) => {
     const match = matchPath(pathname, { path: expectedPath, exact: true });
-    console.log(match,99909)
     return match
-      ? handler({ pathname, search, ...match.params })
+      ? handler({ pathname, search, ...match.params },state)
       : [];
   })
   .reduce((a, b) => a.concat(b),[]);
@@ -73,6 +73,11 @@ export const history = createHistory()
 
 
 
-export const findOne=(arr:any,value:any,key="value")=>{
-  return arr.find(item=>item[key]===value)
+interface FindOneArr<T>{
+  value:T
+  [propName: string]: any;
 }
+export function findOne<V,T extends FindOneArr<V>>(arr:T[],value:V):T{
+  return arr.find(item=>item.value===value)
+}
+

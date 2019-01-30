@@ -10,7 +10,7 @@ import { parseDate ,findOne} from '@/utils'
 import { bindActionCreators } from 'redux'
 import { StoreState } from '@/store/reducers'
 import { Dispatch } from 'redux'
-import { Action, ErrorListParams, Order,ErrorChangeParams ,ErrorListData} from '@/types'
+import { Action, ErrorSearchParams, Order,ErrorChangeParams ,ErrorListData} from '@/types'
 import { Link } from 'react-router-dom';
 import * as moment from "moment";
 import {ERROR_STATUS,ERROR_TYPE} from "@/constants"
@@ -21,9 +21,10 @@ interface ChartData{
   name:string
   value:number[]
 }
+ 
 interface Props {
-  doGetErrorAllData: (params:ErrorListParams) => any
-  loading: boolean,
+  doGetErrorAllData: (params:ErrorSearchParams) => any
+  errorListLoading: boolean,
   errorChartData:ChartData[],
   errorListData:ErrorListData,
   rowSelectionKeys:number[],
@@ -41,8 +42,8 @@ const mapTableSearchParamsToParam = ({
   pagination,
   filters,
   sorter
-}: TableSearchParams): ErrorListParams => {
-  const params: ErrorListParams = {
+}: TableSearchParams): ErrorSearchParams => {
+  const params: ErrorSearchParams = {
     page: pagination.current,
     pageSize: pagination.pageSize
   }
@@ -59,7 +60,6 @@ const mapTableSearchParamsToParam = ({
 }
 
 
-
 const userMenu=(keys:number[],doErrorChange:Function)=>(
   <Menu onClick={({key})=>doErrorChange({userId:Number(key),errorList:keys})}>
     <Menu.Item key={1}>
@@ -67,6 +67,7 @@ const userMenu=(keys:number[],doErrorChange:Function)=>(
     </Menu.Item>
   </Menu>
 )
+
 
 const statusMenu=(keys:number[],doErrorChange:Function)=>(
   <Menu onClick={({key})=>doErrorChange({status:key,errorList:keys})}>
@@ -82,7 +83,8 @@ const statusMenu=(keys:number[],doErrorChange:Function)=>(
 
 
 
-const Dashboard = ({ loading, doGetErrorAllData,errorChartData ,errorListData,rowSelectionKeys,doErrorListSelectionChange,doErrorChange}: Props) => {
+
+const Dashboard = ({ errorListLoading, doGetErrorAllData,errorChartData ,errorListData,rowSelectionKeys,doErrorListSelectionChange,doErrorChange}: Props) => {
 
 
 
@@ -92,7 +94,7 @@ const Dashboard = ({ loading, doGetErrorAllData,errorChartData ,errorListData,ro
           <Tooltip placement="right" title="指派"><Button shape="circle" icon="user" /></Tooltip>
       </Dropdown>
       <Dropdown trigger={["click"]} overlay={statusMenu(rowSelectionKeys,doErrorChange)}>
-          <Tooltip placement="right" title="状态"><Button shape="circle" icon="user" /></Tooltip>
+          <Tooltip placement="right" title="状态"><Button shape="circle" icon="setting" /></Tooltip>
       </Dropdown>
     </span>
   );
@@ -109,7 +111,7 @@ const Dashboard = ({ loading, doGetErrorAllData,errorChartData ,errorListData,ro
         <Table rowSelection={{
           selectedRowKeys:rowSelectionKeys,
           onChange: doErrorListSelectionChange
-          }} rowKey="id" loading={loading} dataSource={errorListData.data} onChange={(pagination:any, filters:any, sorter:any)=>doGetErrorAllData(mapTableSearchParamsToParam({pagination, filters, sorter}))}>
+          }} rowKey="id" loading={errorListLoading} dataSource={errorListData.data} onChange={(pagination:any, filters:any, sorter:any)=>doGetErrorAllData(mapTableSearchParamsToParam({pagination, filters, sorter}))}>
           <Column
             width={400}
             title={<div>全选{rowSelectionKeys.length?selectionHandler:''}</div>}
@@ -120,11 +122,12 @@ const Dashboard = ({ loading, doGetErrorAllData,errorChartData ,errorListData,ro
                 <Link to={`/error-details/${record.id}`}>
                   <strong>{record.type}</strong>
                   {record.url}
-                  <p>{record.desc}</p>
+                  <p>{record.name}</p>
+                  <p>{record.message}</p>
                 </Link>
                 <div>
                   <span>
-                    {moment(record.dateStart).fromNow()}~{moment(record.dateEnd).fromNow()}
+                    {moment(record.created_at).fromNow()}~{moment(record.updated_at).fromNow()}
                   </span>
                   <span>
                   <Dropdown trigger={["click"]} overlay={userMenu([record.id],doErrorChange)}>
@@ -155,16 +158,18 @@ const Dashboard = ({ loading, doGetErrorAllData,errorChartData ,errorListData,ro
               </Dropdown>
             )}
           />
-          <Column sorter title="时间" dataIndex="date" key="date" />
+          <Column sorter title="时间" dataIndex="updated_at" key="updated_at" render={
+            (date)=>(moment(date).fromNow())
+          } />
 
           <Column
             sorter
             title="事件数"
-            dataIndex="eventTotal"
-            key="eventTotal"
+            dataIndex="eventCount"
+            key="eventCount"
           />
 
-          <Column sorter title="用户数" dataIndex="userTotal" key="userTotal" />
+          <Column sorter title="用户数" dataIndex="userCount" key="userCount" />
           <Column
             filterMultiple={false}
             filters={[
@@ -209,7 +214,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 const mapStateToprops = (state: StoreState) => {
   return {
     errorChartData: state.work.errorChartData.data.map(item=>({name:parseDate(item.date,'yyyy-MM-dd'),value:[item.date,item.count]})),
-    loading: state.work.loading,
+    errorListLoading: state.work.errorListLoading,
     rowSelectionKeys:state.work.rowSelectionKeys,
     errorListData:state.work.errorListData
   }

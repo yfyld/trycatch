@@ -2,11 +2,22 @@ import * as constants from "@/constants";
 import { createAction } from "typesafe-actions";
 import { AxiosResponse } from 'axios';
 import {UserInfo} from "@/types"
+import {WrappedFormUtils} from 'antd/lib/form/Form';
 
 
-export const doLoginRequest = createAction(constants.LOGIN_REQUEST,resolve=>(params:UserInfo)=>resolve(params));
+export const doLoginRequest = createAction(constants.LOGIN_REQUEST,resolve=>(form:WrappedFormUtils)=>resolve(form));
 export const doLoginSuccess = createAction(constants.LOGIN_SUCCESS);
 export const doLoginFailure = createAction(constants.LOGIN_FAILURE);
+
+
+export const doLogoutRequest = createAction(constants.LOGOUT_REQUEST);
+export const doLogoutSuccess = createAction(constants.LOGOUT_SUCCESS);
+export const doLogoutFailure = createAction(constants.LOGOUT_FAILURE);
+
+
+export const doSignupRequest = createAction(constants.SIGNUP_REQUEST,resolve=>(form:WrappedFormUtils)=>resolve(form));
+export const doSignupSuccess = createAction(constants.SIGNUP_SUCCESS);
+export const doSignupFailure = createAction(constants.SIGNUP_FAILURE);
 
 
 export const doGetUserInfoRequest = createAction(constants.GET_USER_INFO_REQUEST);
