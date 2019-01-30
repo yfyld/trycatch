@@ -33,8 +33,8 @@ export default class Project extends Service {
             offset: (page - 1) * pageSize,
             where: {
                 [this.Op.or]: [
-                    { creator: id },
-                    { member: { [this.Op.like]: '%' + id + '%' }}
+                    { adminId: id },
+                    { memberIds: { [this.Op.like]: '%' + id + '%' }}
                 ]
             },
             limit: pageSize,
@@ -50,7 +50,7 @@ export default class Project extends Service {
     
     // 创建项目
     async create(project) {
-        project.creator=this.ctx.session.currentUser.id;
+        project.adminId=this.ctx.session.currentUser.id;
         const data = await this.ProjectModel.create(project);
         if (data) {
             return this.ServerResponse.success('项目创建成功',{id:data.id});

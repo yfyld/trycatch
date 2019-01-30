@@ -63,7 +63,7 @@ export default class Log extends Service {
         for (let i = startIndex; i <= endIndex; i++) {
             promises.push(this.getLog({startTime, endTime, errorId}, table[i]));
         }
-        
+  
         const [err, log] = await awaitWrapper(Promise.all([...promises]));
         if (err) {
             return this.ServerResponse.error('内部错误', this.ResponseCode.ERROR_ARGUMENT);
@@ -72,9 +72,9 @@ export default class Log extends Service {
                 const data = log.reduce((data, item) => {
                     return {
                         totalCount: data.totalCount + item.count,
-                        list: data.list.concat(item.rows)
+                        data: data.data.concat(item.rows)
                     }
-                }, {totalCount: 0, list: []} )
+                }, {totalCount: 0, data: []} )
                 return this.ServerResponse.success('查询成功', data);
             } else {
                 return this.ServerResponse.error('查询失败');

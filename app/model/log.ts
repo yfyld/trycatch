@@ -21,6 +21,10 @@ export default (app: Application) => {
       type: INTEGER,
       field: 'error_id'
     },
+    customId:{
+      type: STRING(30),
+      field: 'custom_id'
+    },
     month: STRING(10),
     version: STRING(10),
     created_at: {

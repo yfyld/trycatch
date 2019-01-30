@@ -38,6 +38,7 @@ for (let i = 0; i < year.length; i++) {
                 type: INTEGER,
                 field: 'error_id'
             },
+            customId: STRING(30),
             month: STRING(10),
             version: STRING(10),
             created_at: DATE,

@@ -24,12 +24,11 @@ export default class ErrorController extends Controller {
         ctx.body = await ctx.service.error.stat({...query});
     }
 
-    
+    // 批量修改 指定责任 状态 
     async updates() {
         interface RequestBody{
             errorList:number[],
             updateData:{
-                type?:string,
                 status?:string,
                 owner?:number
             }
@@ -39,8 +38,9 @@ export default class ErrorController extends Controller {
         ctx.body = await ctx.service.error.updates(requestBody);
     }
 
-    // 错误事件详情
-    async show() {
+
+    // 错误状态修改
+    async status() {
         const { ctx } = this;
         ctx.body = await ctx.service.error.status({...ctx.query});
     }

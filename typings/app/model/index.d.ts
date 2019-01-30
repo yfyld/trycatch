@@ -2,6 +2,7 @@
 // Do not modify this file!!!!!!!!!
 
 import 'egg';
+import ExportCustom from '../../../app/model/custom';
 import ExportError from '../../../app/model/error';
 import ExportId from '../../../app/model/id';
 import ExportIndex from '../../../app/model/index';
@@ -11,6 +12,7 @@ import ExportUser from '../../../app/model/user';
 
 declare module 'sequelize' {
   interface Sequelize {
+    Custom: ReturnType<typeof ExportCustom>;
     Error: ReturnType<typeof ExportError>;
     Id: ReturnType<typeof ExportId>;
     Index: ReturnType<typeof ExportIndex>;

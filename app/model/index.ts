@@ -10,7 +10,7 @@ export interface IProjectModel {
     name: string,
     language: string,
     frame: string,
-    member: string
+    memberIds: string
 
 }
 
