@@ -12,7 +12,7 @@ class AutoAlarm extends Subscription {
   }
   static get schedule() {
     return {
-      interval: '10m',
+      interval: '1m',
       type: 'all',
       immediate:true
     }

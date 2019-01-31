@@ -12,7 +12,8 @@ export default class Log extends Service {
   LogModel: Model<Instance<{}>, {}>
   IdModel: Model<Instance<{}>, {}>
   ErrorModel: Model<Instance<{}>, {}>
-  ProjectModel:Model<Instance<{}>, {}>
+  ProjectModel: Model<Instance<{}>, {}>
+  CustomModel: Model<Instance<{}>, {}>
   ServerResponse: typeof ServerResponse
   ResponseCode: IResponseCode
   Op: Operators
@@ -21,8 +22,9 @@ export default class Log extends Service {
     this.ctx = ctx
     this.LogModel = ctx.model.Log
     this.ErrorModel = ctx.model.Error
+    this.CustomModel = ctx.model.Custom
     this.IdModel = ctx.model.Id
-    this.ProjectModel=ctx.model.Project
+    this.ProjectModel = ctx.model.Project
     this.ServerResponse = ctx.response.ServerResponse
     this.ResponseCode = ctx.response.ResponseCode
     this.Op = ctx.app.Sequelize.Op
@@ -88,7 +90,7 @@ export default class Log extends Service {
       )
     } else {
       if (logs) {
-        return this.ServerResponse.success('查询成功', {list:logs})
+        return this.ServerResponse.success('查询成功', { list: logs })
       } else {
         return this.ServerResponse.error('查询失败')
       }
@@ -116,11 +118,26 @@ export default class Log extends Service {
 
   async create({ errorId, projectId, ...log }: CreateLogParams) {
     const id: number = await this.getId('logId')
+    let customId = this.ctx.cookies.get('TRYCATCH_IDENTIFY')
+    if (!customId) {
+      const custom: any = await this.CustomModel.create({
+        ua: this.ctx.request.headers['user-agent']
+      })
+      customId = custom.id
+      this.ctx.cookies.set(
+        'TRYCATCH_IDENTIFY',
+        customId,
+        {
+          expires: new Date('2099-01-01')
+        }
+      )
+    }
     const y_m = moment().format('YYYY_MM')
     await this.ctx.app.redis.zadd('id', String(id), y_m)
     const data = await this.LogModel.create({
       ...log,
       errorId,
+      customId,
       projectId,
       id,
       month: y_m
@@ -138,9 +155,13 @@ export default class Log extends Service {
         page: log.page,
         name: log.name,
         message: log.message,
-        ownerId:project.ownerId
+        ownerId: project.ownerId
       })
-      await this.ctx.app.redis.hset('errorCount', String(errorId),`1_${moment().format('YYYY-MM-DD')}_0` )
+      await this.ctx.app.redis.hset(
+        'errorCount',
+        String(errorId),
+        `1_${moment().format('YYYY-MM-DD')}_0`
+      )
     } else {
       error.eventCount = error.eventCount + 1
       if (error.status === 'SOLVED') {
