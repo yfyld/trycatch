@@ -23,7 +23,7 @@ export default {
   ],
   '/error-details/:errorId': ({ pathname, search, errorId }, state) => [
     {
-      action: actions.doGetEventListDataRequest({ errorId, page: 1 }),
+      action: actions.doGetEventListDataRequest({ errorId,...errorSearchParams}),
       ttl: CACHE_TIME,
       isExist: false
     }

@@ -19,10 +19,11 @@ interface Props {
   doErrorDetails: any,
   eventInfo:EventInfo
   errorInfo:ErrorInfo
-  eventListData:PageData<EventListDataItem>
+  eventListData:PageData<EventListDataItem>,
+  eventListMoreShow:boolean
 }
 
-const ErrorDetails = ({ errorInfo,eventInfo,eventListLoading,doErrorChange, doErrorDetails ,eventListData,doGetEventListDataRequest}: Props) => {
+const ErrorDetails = ({eventListMoreShow, errorInfo,eventInfo,eventListLoading,doErrorChange, doErrorDetails ,eventListData,doGetEventListDataRequest}: Props) => {
   const userMenu = (
     <Menu
       onClick={({ key }) =>
@@ -58,7 +59,7 @@ const ErrorDetails = ({ errorInfo,eventInfo,eventListLoading,doErrorChange, doEr
   )
 
 
-  const loadMore = !eventListLoading ? (
+  const loadMore = !eventListLoading&&eventListMoreShow ? (
     <div style={{
       textAlign: 'center', marginTop: 12, height: 32, lineHeight: '32px',
     }}
@@ -80,7 +81,7 @@ const ErrorDetails = ({ errorInfo,eventInfo,eventListLoading,doErrorChange, doEr
             loading={eventListLoading}
             itemLayout="horizontal"
             loadMore={loadMore}
-            dataSource={eventListData.data}
+            dataSource={eventListData.list}
             renderItem={item => (
               <List.Item>
                   <List.Item.Meta
@@ -133,7 +134,8 @@ const mapStateToprops = (state: StoreState) => {
     eventListLoading: state.work.eventListLoading,
     eventListData:state.work.eventListData,
     eventInfo:state.work.eventInfo,
-    errorInfo:state.work.errorInfo
+    errorInfo:state.work.errorInfo,
+    eventListMoreShow:state.work.eventListMoreShow
   }
 }
 

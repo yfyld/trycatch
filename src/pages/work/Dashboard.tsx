@@ -111,7 +111,7 @@ const Dashboard = ({ errorListLoading, doGetErrorAllData,errorChartData ,errorLi
         <Table rowSelection={{
           selectedRowKeys:rowSelectionKeys,
           onChange: doErrorListSelectionChange
-          }} rowKey="id" loading={errorListLoading} dataSource={errorListData.data} onChange={(pagination:any, filters:any, sorter:any)=>doGetErrorAllData(mapTableSearchParamsToParam({pagination, filters, sorter}))}>
+          }} rowKey="id" loading={errorListLoading} dataSource={errorListData.list} onChange={(pagination:any, filters:any, sorter:any)=>doGetErrorAllData(mapTableSearchParamsToParam({pagination, filters, sorter}))}>
           <Column
             width={400}
             title={<div>全选{rowSelectionKeys.length?selectionHandler:''}</div>}
@@ -213,7 +213,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 const mapStateToprops = (state: StoreState) => {
   return {
-    errorChartData: state.work.errorChartData.data.map(item=>({name:parseDate(item.date,'yyyy-MM-dd'),value:[item.date,item.count]})),
+    errorChartData: state.work.errorChartData.list.map(item=>({name:parseDate(item.date,'yyyy-MM-dd'),value:[item.date,item.count]})),
     errorListLoading: state.work.errorListLoading,
     rowSelectionKeys:state.work.rowSelectionKeys,
     errorListData:state.work.errorListData

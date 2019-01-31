@@ -24,6 +24,7 @@ export interface WorkState {
   eventInfo: EventInfo
   eventListData: PageData<EventListDataItem>
   eventListLoading: boolean
+  eventListMoreShow:boolean
   eventListParams: {
     page: number
     errorId: number
@@ -42,12 +43,12 @@ const initialState = {
 
   errorChartData: {
     totalCount: 0,
-    data: []
+    list: []
   },
 
   errorListData: {
     totalCount: 0,
-    data: []
+    list: []
   },
   rowSelectionKeys: [],
   errorInfo: {},
@@ -56,8 +57,9 @@ const initialState = {
     page: 1,
     errorId: null
   },
+  eventListMoreShow:false,
   eventListLoading: false,
-  eventListData: { totalCount: 0, data: [] },
+  eventListData: { totalCount: 0, list: [] },
   eventInfo: {}
 }
 
@@ -103,9 +105,10 @@ export const workReducer = (
       return update(state, {
         eventListParams: { page: { $apply: page => page + 1 } },
         eventListData: {
-          data: { $push: action.payload.data },
+          list: { $push: action.payload.list },
           totalCount: { $set: action.payload.totalCount }
         },
+        eventListMoreShow:{$set:action.payload.list.length===20?true:false},
         eventListLoading: { $set: false }
       })
 

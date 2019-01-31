@@ -71,23 +71,14 @@ const getEventListData: Epic<Action, Action, StoreState> = (action$, state$) =>
         ...state$.value.work.errorSearchParams,
         ...state$.value.work.eventListParams
       }).pipe(
-        map(response => {
-          if (response.data.data) {
-            response.data.data = [].concat(
-              state$.value.work.eventListData.data,
-              response.data.data
-            )
-          }
-          return response
-        }),
         mergeMap(response => {
           if (
             state$.value.work.eventListParams.page === 1 &&
-            response.data.data.length
+            response.data.list.length
           ) {
             // 默认获取第一条日志详情
             return [
-              actions.doGetEventInfoRequest(response.data.data[0].id),
+              actions.doGetEventInfoRequest(response.data.list[0].id),
               actions.doGetEventListDataSuccess(response)
             ]
           } else {

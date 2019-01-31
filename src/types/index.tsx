@@ -4,7 +4,7 @@ import {StoreState} from '@/store/reducers'
 
 export interface PageData<T>{
   totalCount:number,
-  data:T[]
+  list:T[]
 }
 export interface PageQuery{
   page?:number,
@@ -50,7 +50,7 @@ export interface ErrorChartDataItem {
 
 export interface ErrorChartData {
   totalCount: number
-  data: ErrorChartDataItem[]
+  list: ErrorChartDataItem[]
 }
 
 export enum Order {
@@ -86,7 +86,7 @@ export interface ErrorListDataItem {
 
 export interface ErrorListData {
   totalCount: number
-  data: ErrorListDataItem[]
+  list: ErrorListDataItem[]
 }
 
 export interface ErrorChangeParams {

@@ -23,7 +23,7 @@ export const projectReducer = (state: ProjectState = initialState, action: Actio
   switch (action.type) {
     
     case getType(actions.doGetProjectListSuccess):
-      return update(state,{projectList:{$set:action.payload.data}})
+      return update(state,{projectList:{$set:action.payload.list}})
 
 
     case getType(actions.doGetProjectDetailsSuccess):
