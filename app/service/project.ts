@@ -43,7 +43,7 @@ export default class Project extends Service {
         })
 
         if (data) {
-            return this.ServerResponse.success('查询成功', { totalCount: data.count || 0, data: data.rows || [] });
+            return this.ServerResponse.success('查询成功', { totalCount: data.count || 0, list: data.rows || [] });
         } else {
             return this.ServerResponse.error('查询失败');
         }
@@ -52,6 +52,7 @@ export default class Project extends Service {
     // 创建项目
     async create(project) {
         project.adminId=this.ctx.session.currentUser.id;
+        project.ownerId=project.adminId;
         const data = await this.ProjectModel.create(project);
         if (data) {
             return this.ServerResponse.success('项目创建成功',{id:data.id});

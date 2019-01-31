@@ -12,6 +12,7 @@ export default class Log extends Service {
   LogModel: Model<Instance<{}>, {}>
   IdModel: Model<Instance<{}>, {}>
   ErrorModel: Model<Instance<{}>, {}>
+  ProjectModel:Model<Instance<{}>, {}>
   ServerResponse: typeof ServerResponse
   ResponseCode: IResponseCode
   Op: Operators
@@ -21,6 +22,7 @@ export default class Log extends Service {
     this.LogModel = ctx.model.Log
     this.ErrorModel = ctx.model.Error
     this.IdModel = ctx.model.Id
+    this.ProjectModel=ctx.model.Project
     this.ServerResponse = ctx.response.ServerResponse
     this.ResponseCode = ctx.response.ResponseCode
     this.Op = ctx.app.Sequelize.Op
@@ -65,7 +67,7 @@ export default class Log extends Service {
     const sqls: string[] = []
     for (let i = startIndex; i <= endIndex; i++) {
       sqls.push(
-        ` SELECT  url, project_id  AS  projectId, error_id  AS  errorId, custom_id  AS  customId  FROM  log_${
+        ` SELECT id, url, project_id  AS  projectId, error_id  AS  errorId, custom_id  AS  customId  FROM  log_${
           table[i]
         }  WHERE  error_id=${errorId}  AND  updated_at  BETWEEN  '${startDate}'  AND  '${endDate}' `
       )
@@ -86,7 +88,7 @@ export default class Log extends Service {
       )
     } else {
       if (logs) {
-        return this.ServerResponse.success('查询成功', logs)
+        return this.ServerResponse.success('查询成功', {list:logs})
       } else {
         return this.ServerResponse.error('查询失败')
       }
@@ -123,8 +125,9 @@ export default class Log extends Service {
       id,
       month: y_m
     })
-    const error: any = await this.ErrorModel.findOne({ where: { id: errorId } })
+    const error: any = await this.ErrorModel.findById(errorId)
     if (!error) {
+      const project: any = await this.ProjectModel.findById(projectId)
       await this.ErrorModel.create({
         id: errorId,
         projectId,
@@ -134,8 +137,10 @@ export default class Log extends Service {
         url: log.url,
         page: log.page,
         name: log.name,
-        message: log.message
+        message: log.message,
+        ownerId:project.ownerId
       })
+      await this.ctx.app.redis.hset('errorCount', String(errorId),`1_${moment().format('YYYY-MM-DD')}_0` )
     } else {
       error.eventCount = error.eventCount + 1
       if (error.status === 'SOLVED') {

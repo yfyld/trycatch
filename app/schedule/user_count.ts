@@ -1,6 +1,8 @@
-const Subscription = require('egg').Subscription;
-
+import {Subscription} from "egg"
 class UserCount extends Subscription {
+  ErrorModel:any
+  LogModel:any
+  LogServer:any
   constructor(ctx){
     super(ctx);
     this.ErrorModel = ctx.model.Error;
@@ -33,9 +35,9 @@ class UserCount extends Subscription {
     }
 
     for(let error of errors){
-      const response=await this.ctx.service.log.list({errorId: error.id})
+      const response:any=await this.ctx.service.log.list({errorId: error.id})
 
-      const userCount=new Set(response.data.map(item => item.customId)).size;
+      const userCount=new Set(response.data.list.map(item => item.customId)).size;
 
       await this.ErrorModel.update({
         userCount
@@ -50,4 +52,5 @@ class UserCount extends Subscription {
   }
 }
 
-module.exports = UserCount;
+
+export default UserCount;

@@ -13,6 +13,10 @@ export default (app: Application) => {
     frame: STRING(10),
     memberIds: { type: STRING(1000),field:'member_ids'},
     adminId:{ type: INTEGER,field:'admin_id'},
+    ownerId: {
+      type: INTEGER,
+      field: 'owner_id'
+    },
     creator: STRING(10),
     created_at: DATE,
     updated_at: DATE,

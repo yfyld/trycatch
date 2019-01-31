@@ -77,7 +77,7 @@ export default class Error extends Service {
         if (err) {
             return this.ServerResponse.error('内部错误', this.ResponseCode.ERROR_ARGUMENT);
         } else {
-            return this.ServerResponse.success('查询成功', { totalCount: error.count || 0, data: error.rows || [] });
+            return this.ServerResponse.success('查询成功', { totalCount: error.count || 0, list: error.rows || [] });
         }
         
     }

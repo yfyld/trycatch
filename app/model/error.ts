@@ -41,6 +41,10 @@ export default (app: Application) => {
       defaultValue: 'JAVASCRIPT_ERROR'
     },
     description: STRING(300),
+    level: {
+      type: INTEGER,
+      defaultValue:1
+    },
     page: STRING(300),
     url: STRING(300),
     name: STRING(300),
