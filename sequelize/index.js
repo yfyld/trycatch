@@ -1,8 +1,8 @@
 const Sequelize = require('sequelize');
 
 
-const sequelize = new Sequelize('trycatch', 'yuhonyon', '342531', {
-    host: '97.64.36.18',
+const sequelize = new Sequelize('trycatch', 'yfyld', '342531', {
+    host: 'yfyld.online',
     port: '3333',
     dialect: 'mysql',
     define: {

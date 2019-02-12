@@ -17,10 +17,10 @@ export default (appInfo: EggAppInfo) => {
 
   config.sequelize = {
     dialect: 'mysql',
-    host: '97.64.36.18',
+    host: 'yfyld.online',
     port: 3333,
     database: 'trycatch',
-    username: 'yuhonyon',
+    username: 'yfyld',
     password: '342531',
     define: {
       underscored: true
@@ -34,7 +34,7 @@ export default (appInfo: EggAppInfo) => {
   };
   config.redis = {
     client: {
-      host: '97.64.36.18',
+      host: 'yfyld.online',
       port: 6666,
       password: '342531',
       db: 2

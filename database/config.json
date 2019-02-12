@@ -1,23 +1,23 @@
 {
   "development": {
-    "username": "yuhonyon",
+    "username": "yfyld",
     "password": "342531",
     "database": "trycatch",
-    "host": "97.64.36.18",
+    "host": "yfyld.online",
     "dialect": "mysql"
   },
   "test": {
-    "username": "yuhonyon",
+    "username": "yfyld",
     "password": "342531",
     "database": "trycatch",
-    "host": "97.64.36.18",
+    "host": "yfyld.online",
     "dialect": "mysql"
   },
   "production": {
     "username": "trycatch",
     "password": "342531",
     "database": "trycatch",
-    "host": "97.64.36.18",
+    "host": "yfyld.online",
     "dialect": "mysql"
   }
 }
