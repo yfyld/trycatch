@@ -9,6 +9,7 @@ import LoginLayout from '@/components/LoginLayout'
 import {Link} from "react-router-dom";
 
 import {Action} from "@/types"
+import style from "./Account.less"
 interface Props {
   form:WrappedFormUtils,
   doSubmit:(e:React.FormEvent,form:WrappedFormUtils)=>{}
@@ -20,6 +21,7 @@ const Login=({form,doSubmit}:Props)=>{
   const { getFieldDecorator } = form
   return (
     <LoginLayout>
+      <h2 className={style.title}>登录</h2>
       <Form onSubmit={(e)=>doSubmit(e,form)} className="login-form">
         <Form.Item>
           {getFieldDecorator('mobile', {
@@ -54,12 +56,13 @@ const Login=({form,doSubmit}:Props)=>{
           <Button
             type="primary"
             htmlType="submit"
-            className="login-form-button"
+            className={style.btn}
           >
-            登录
+            登&emsp;&emsp;录
           </Button>
-          没有账号 <Link to="/signup">注册!</Link>
-          <Link to="/project"> test</Link>
+          <div className={style.text}>
+          没有账号 <Link to="/signup">马上注册!</Link>
+          </div>
         </Form.Item>
       </Form>
     </LoginLayout>

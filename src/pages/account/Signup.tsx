@@ -7,7 +7,7 @@ import { Dispatch } from 'redux'
 import * as actions from '@/store/actions'
 import LoginLayout from '@/components/LoginLayout'
 import {Link} from "react-router-dom";
-
+import style from "./Account.less"
 import {Action} from "@/types"
 interface Props {
   form:WrappedFormUtils,
@@ -19,6 +19,7 @@ const Signup=({form,doSubmit}:Props)=>{
   const { getFieldDecorator } = form
   return (
     <LoginLayout>
+      <h2 className={style.title}>注册</h2>
       <Form onSubmit={(e)=>doSubmit(e,form)} className="login-form">
         <Form.Item>
           {getFieldDecorator('mobile', {
@@ -53,12 +54,13 @@ const Signup=({form,doSubmit}:Props)=>{
           <Button
             type="primary"
             htmlType="submit"
-            className="login-form-button"
+            className={style.btn}
           >
-            注册
+            注&emsp;&emsp;册
           </Button>
-          没有账号 <Link to="/login">登录</Link>
-          <Link to="/home"> test</Link>
+          <div className={style.text}>
+            已有账号 <Link to="/login">去登录</Link>
+          </div>
         </Form.Item>
       </Form>
     </LoginLayout>
