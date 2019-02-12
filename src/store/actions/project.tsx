@@ -1,7 +1,7 @@
 import * as constants from "@/constants";
 import { createAction } from "typesafe-actions";
 import { AxiosResponse } from 'axios';
-import {ProjectListItem,ProjectInfo,PageData} from "@/types"
+import {ProjectListItem,ProjectInfo,PageData,Member} from "@/types"
 import { WrappedFormUtils } from 'antd/lib/form/Form';
 
 export const doGetProjectListRequest = createAction(constants.GET_PROJECT_LIST_REQUEST);
@@ -20,3 +20,8 @@ export const doAddProjectToggle=createAction(constants.ADD_PROJECT_TOGGLE,resolv
 export const doAddProjectRequest = createAction(constants.ADD_PROJECT_REQUEST,resolve=>(form:WrappedFormUtils)=>resolve(form));
 export const doAddProjectSuccess = createAction(constants.ADD_PROJECT_SUCCESS);
 export const doAddProjectFailure = createAction(constants.ADD_PROJECT_FAILURE);
+
+
+export const doGetProjectMembersRequest = createAction(constants.GET_PROJECT_MEMBERS_REQUEST,resolve=>(projectId:number)=>resolve(projectId));
+export const doGetProjectMembersSuccess = createAction(constants.GET_PROJECT_MEMBERS_SUCCESS,resolve=>(response:AxiosResponse<Member[]>)=>resolve(response.data));
+export const doGetProjectMembersFailure = createAction(constants.GET_PROJECT_MEMBERS_FAILURE);

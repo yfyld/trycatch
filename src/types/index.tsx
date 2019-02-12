@@ -23,7 +23,7 @@ export interface ActionAny {
 
 
 export interface UserInfo {
-  nickName?: string
+  name?: string
   id?: string
   mobile?: string
   password?: string
@@ -33,6 +33,14 @@ export interface UserInfo {
 export interface ProjectListItem {
   name: string
   id: number
+}
+
+export interface  Member{
+  name?: string
+  id?: string
+  mobile?: string
+  isAdmin?:boolean
+  isOwner?:boolean
 }
 
 export interface ProjectInfo {
@@ -62,10 +70,10 @@ export enum Order {
 export interface ErrorSearchParams extends PageQuery {
   status?: string
   type?: string
+  level?:number
   projectId?:number
-  dateOrder?: Order
-  userOrder?: Order
-  eventOrder?: Order
+  order?: Order
+  orderKey?: string
   page?:number
   pageSize?:number
   endTime?:number,
@@ -94,6 +102,7 @@ export interface ErrorChangeParams {
   updateData:{
     ownerId?: number
     status?: string
+    level?: number
   }
 }
 

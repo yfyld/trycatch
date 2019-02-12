@@ -21,6 +21,12 @@ export function fetchProjectList(params?: object) {
   return from(fetch.get('/project', params))
 }
 
+export function fetchProjectMembers(projectId: number) {
+  return from(fetch.get(`/project/${projectId}/members`))
+}
+
+
+
 export function fetchProjectInfo(projectId:number,params?: object) {
   return from(fetch.get(`/project/${projectId}`, params))
 }
@@ -67,3 +73,4 @@ export function fetchEventList(params:any) {
 export function fetchEventInfo(eventId: number) {
   return from(fetch.get(`/log/${eventId}`))
 }
+

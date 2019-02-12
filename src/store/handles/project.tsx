@@ -11,9 +11,14 @@ export default {
   ],
   '/project/:projectId': ({ pathname, search ,projectId},state) => [
     {
-      action: actions.doGetProjectDetailsRequest(projectId),
+      action: actions.doGetProjectDetailsRequest(Number(projectId)),
       ttl: CACHE_TIME,
       isExist: false
+    },
+    {
+      action: actions.doGetProjectMembersRequest(Number(projectId)),
+      ttl: CACHE_TIME,
+      isExist: state.project.projectInfo.id===Number(projectId)&&state.project.projectMembers.length
     },
   ]
 };

@@ -35,6 +35,20 @@ const getProjectList: Epic<Action, Action, StoreState> = action$ =>
     )
   ) 
 
+
+  const getProjectMembers: Epic<Action, Action, StoreState> = action$ =>
+  action$.pipe(
+    filter(isActionOf(actions.doGetProjectMembersRequest)),
+    mergeMap(action =>
+      Api.fetchProjectMembers(action.payload).pipe(
+        map(actions.doGetProjectMembersSuccess),
+        catchError(() => {
+          return of(actions.doGetProjectMembersFailure())
+        })
+      )
+    )
+  )  
+
 const updateProjectDetails: Epic<Action, Action, StoreState> = (action$,state$)=>
   action$.pipe(
     filter(isActionOf(actions.doUpdateProjectDetailsRequest)),
@@ -69,4 +83,4 @@ const addProject: Epic<ActionAny, ActionAny, StoreState> = (action$,state$)=>
       })
     ))
   )
-export default [getProjectList, updateProjectDetails,getProjectDetail,addProject]
+export default [getProjectList, updateProjectDetails,getProjectDetail,addProject,getProjectMembers]

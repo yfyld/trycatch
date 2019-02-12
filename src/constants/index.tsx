@@ -60,6 +60,7 @@ export type UPDATE_PROJECT_DETAILS_SUCCESS = typeof UPDATE_PROJECT_DETAILS_SUCCE
 export type UPDATE_PROJECT_DETAILS_FAILUER = typeof UPDATE_PROJECT_DETAILS_FAILUER
 
 
+
 export const ADD_PROJECT_TOGGLE = 'ADD_PROJECT_TOGGLE'
 export const ADD_PROJECT_REQUEST = 'ADD_PROJECT_REQUEST'
 export const ADD_PROJECT_SUCCESS = 'ADD_PROJECT_SUCCESS'
@@ -69,6 +70,13 @@ export type ADD_PROJECT_REQUEST = typeof ADD_PROJECT_REQUEST
 export type ADD_PROJECT_SUCCESS = typeof ADD_PROJECT_SUCCESS
 export type ADD_PROJECT_FAILURE = typeof ADD_PROJECT_FAILURE
 
+
+export const GET_PROJECT_MEMBERS_REQUEST = 'GET_PROJECT_MEMBERS_REQUEST'
+export const GET_PROJECT_MEMBERS_SUCCESS = 'GET_PROJECT_MEMBERS_SUCCESS'
+export const GET_PROJECT_MEMBERS_FAILURE = 'GET_PROJECT_MEMBERS_FAILURE'
+export type GET_PROJECT_MEMBERS_REQUEST = typeof GET_PROJECT_MEMBERS_REQUEST
+export type GET_PROJECT_MEMBERS_SUCCESS = typeof GET_PROJECT_MEMBERS_SUCCESS
+export type GET_PROJECT_MEMBERS_FAILURE = typeof GET_PROJECT_MEMBERS_FAILURE
 // work
 
 export const GET_ERROR_LIST_REQUEST = 'GET_ERROR_LIST_REQUEST'
@@ -102,17 +110,17 @@ export const ERROR_STATUS = [
   },
   {
     text: '解决',
-    color: 'red',
+    color: 'green',
     value: 'SOLVED'
   },
   {
     text: '忽略',
-    color: 'red',
+    color: '#ccc',
     value: 'IGNORE'
   },
   {
     text: '处理中',
-    color: 'red',
+    color: 'orange',
     value: 'PROGRESS'
   }
 ]
@@ -129,6 +137,24 @@ export const ERROR_TYPE=[
   {
     text:"VUE错误",
     value:"VUE_ERROR"
+  }
+]
+
+export const ERROR_LEVEL=[
+  {
+    text:"一级",
+    color: 'blue',
+    value:1
+  },
+  {
+    text:"二级",
+    color: 'orange',
+    value:2
+  },
+  {
+    text:"三级",
+    color: 'red',
+    value:3
   }
 ]
 

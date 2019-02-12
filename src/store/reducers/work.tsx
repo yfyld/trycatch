@@ -25,6 +25,7 @@ export interface WorkState {
   eventListData: PageData<EventListDataItem>
   eventListLoading: boolean
   eventListMoreShow:boolean
+  eventInfoLoading:boolean
   eventListParams: {
     page: number
     errorId: number
@@ -59,6 +60,7 @@ const initialState = {
   },
   eventListMoreShow:false,
   eventListLoading: false,
+  eventInfoLoading:false,
   eventListData: { totalCount: 0, list: [] },
   eventInfo: {}
 }
@@ -71,7 +73,7 @@ export const workReducer = (
     case getType(actions.doGetErrorListDataRequest):
       return update(state, {
         errorListLoading: { $set: true },
-        errorSearchParams: { $set: action.payload }
+        errorSearchParams: { $set: {...state.errorSearchParams,...action.payload} }
       })
 
     case getType(actions.doGetErrorChartDataSuccess):
@@ -112,8 +114,11 @@ export const workReducer = (
         eventListLoading: { $set: false }
       })
 
+    case getType(actions.doGetEventInfoRequest):
+      return update(state, { eventInfoLoading:{ $set: true } })  
+
     case getType(actions.doGetEventInfoSuccess):
-      return update(state, { eventInfo: { $set: action.payload } })
+      return update(state, { eventInfo: { $set: action.payload },eventInfoLoading:{ $set: false } })
     case getType(actions.doGetErrorInfoSuccess):
       return update(state, { errorInfo: { $set: action.payload } })
     default:

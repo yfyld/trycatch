@@ -1,6 +1,6 @@
 import * as React from 'react'
 import FilterBar from './components/FilterBar'
-import { Button, Tooltip, Menu, Dropdown, List,Tabs } from 'antd'
+import { Button, Tooltip, Menu, Dropdown, List,Tabs,Spin } from 'antd'
 import style from './ErrorDetails.less'
 import * as actions from '@/store/actions'
 import { connect } from 'react-redux'
@@ -16,14 +16,16 @@ interface Props {
   eventListLoading: boolean
   doErrorChange: (params: ErrorChangeParams) => Action
   doGetEventListDataRequest:()=>Action
+  doGetEventInfoRequest:(eventId:number)=>Action
   doErrorDetails: any,
   eventInfo:EventInfo
   errorInfo:ErrorInfo
   eventListData:PageData<EventListDataItem>,
   eventListMoreShow:boolean
+  eventInfoLoading:boolean
 }
 
-const ErrorDetails = ({eventListMoreShow, errorInfo,eventInfo,eventListLoading,doErrorChange, doErrorDetails ,eventListData,doGetEventListDataRequest}: Props) => {
+const ErrorDetails = ({eventInfoLoading,doGetEventInfoRequest,eventListMoreShow, errorInfo,eventInfo,eventListLoading,doErrorChange, doErrorDetails ,eventListData,doGetEventListDataRequest}: Props) => {
   const userMenu = (
     <Menu
       onClick={({ key }) =>
@@ -71,7 +73,7 @@ const ErrorDetails = ({eventListMoreShow, errorInfo,eventInfo,eventListLoading,d
   return (
     <div className={style.wrapper}>
       <div className={style.filter}>
-        <FilterBar doGetErrorAllData={doErrorDetails} />
+        <FilterBar dashboard={false} doGetErrorAllData={doErrorDetails} />
       </div>
       <div className={style.table}>{selectionHandler}</div>
       <div className={style.content}>
@@ -83,7 +85,7 @@ const ErrorDetails = ({eventListMoreShow, errorInfo,eventInfo,eventListLoading,d
             loadMore={loadMore}
             dataSource={eventListData.list}
             renderItem={item => (
-              <List.Item>
+              <List.Item onClick={()=>doGetEventInfoRequest(item.id)}>
                   <List.Item.Meta
                     title={item.type}
                     description={item.url}
@@ -93,6 +95,7 @@ const ErrorDetails = ({eventListMoreShow, errorInfo,eventInfo,eventListLoading,d
           />
         </div>
         <div className={style.main}>
+        <Spin spinning={eventInfoLoading} />
         <Tabs defaultActiveKey="1">
         <TabPane tab="基本信息" key="1">
               <div>
@@ -123,7 +126,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
       },
       doGetEventListDataRequest:()=>{
           return actions.doGetEventListDataRequest({})
-      }
+      },
+      doGetEventInfoRequest:params=>actions.doGetEventInfoRequest(params)
     },
     dispatch
   )
@@ -135,7 +139,8 @@ const mapStateToprops = (state: StoreState) => {
     eventListData:state.work.eventListData,
     eventInfo:state.work.eventInfo,
     errorInfo:state.work.errorInfo,
-    eventListMoreShow:state.work.eventListMoreShow
+    eventListMoreShow:state.work.eventListMoreShow,
+    eventInfoLoading:state.work.eventInfoLoading
   }
 }
 

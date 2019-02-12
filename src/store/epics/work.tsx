@@ -53,7 +53,7 @@ const errorChange: Epic<Action, Action, StoreState> = (action$, state$) =>
         tap(()=>{message.success('修改成功')}),
         map(response=>{
           if (/dashboard/.test(state$.value.router.location.pathname)) {
-            return actions.doGetErrorChartDataRequest({})
+            return actions.doGetErrorListDataRequest({...state$.value.work.errorSearchParams})
           }else{
             return actions.doGetErrorInfoRequest(state$.value.work.errorInfo.id)
           }

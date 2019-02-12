@@ -2,7 +2,7 @@ import * as React from 'react'
 import FilterBar from './components/FilterBar'
 // import ErrorTable from './components/ErrorTable'
 import ErrorChartLine from './components/ErrorChartLine'
-import { Table, Tag,Button,Tooltip,Menu, Dropdown } from 'antd'
+import { Table, Tag,Button,Tooltip,Menu, Dropdown,Icon } from 'antd'
 import style from './Dashboard.less'
 import * as actions from '@/store/actions'
 import {connect} from 'react-redux'
@@ -10,11 +10,11 @@ import { parseDate ,findOne} from '@/utils'
 import { bindActionCreators } from 'redux'
 import { StoreState } from '@/store/reducers'
 import { Dispatch } from 'redux'
-import { Action, ErrorSearchParams, Order,ErrorChangeParams ,ErrorListData} from '@/types'
+import { Action, ErrorSearchParams, Order,ErrorChangeParams ,ErrorListData,Member} from '@/types'
 import { Link } from 'react-router-dom';
 import * as moment from "moment";
-import {ERROR_STATUS,ERROR_TYPE} from "@/constants"
-
+import {ERROR_STATUS,ERROR_TYPE,ERROR_LEVEL} from "@/constants"
+import {projectMembersMapSelector} from "@/store/selectors"
 const { Column } = Table
 
 interface ChartData{
@@ -28,8 +28,12 @@ interface Props {
   errorChartData:ChartData[],
   errorListData:ErrorListData,
   rowSelectionKeys:number[],
+  projectId:number,
+  projectMembers:Member[]
+  projectMembersMap:{[props:number]:Member}
   doErrorListSelectionChange:(params:number[])=>Action,
-  doErrorChange:(params:ErrorChangeParams)=>Action
+  doErrorChange:(params:ErrorChangeParams)=>Action,
+  errorSearchParams:ErrorSearchParams
 }
 
 interface TableSearchParams {
@@ -45,32 +49,42 @@ const mapTableSearchParamsToParam = ({
 }: TableSearchParams): ErrorSearchParams => {
   const params: ErrorSearchParams = {
     page: pagination.current,
-    pageSize: pagination.pageSize
+    pageSize: pagination.pageSize,
+    status:null,
+    order:null,
+    orderKey:null,
+    type:null,
+    level:null
   }
   for (const i in filters) {
-    if (filters.hasOwnProperty(filters[i])) {
+
+    if (filters.hasOwnProperty(i)) {
       params[i] = filters[i][0]
     }
   }
   if (sorter.field) {
-    params[sorter.field] = sorter.order
+    params.orderKey=sorter.field;
+    params.order=sorter.order
   }
-
+  console.log(params,filters,
+    sorter)
   return params
 }
 
 
-const userMenu=(keys:number[],doErrorChange:Function)=>(
-  <Menu onClick={({key})=>doErrorChange({userId:Number(key),errorList:keys})}>
-    <Menu.Item key={1}>
-      小王
-    </Menu.Item>
+const userMenu=(keys:number[],doErrorChange:Function,projectMembers)=>(
+  <Menu onClick={({key})=>doErrorChange({updateData:{ownerId:Number(key)},errorList:keys})}>
+    {projectMembers.map(item=>(
+      <Menu.Item key={item.id}>
+        {item.name}
+      </Menu.Item>
+    ))}
   </Menu>
 )
 
 
 const statusMenu=(keys:number[],doErrorChange:Function)=>(
-  <Menu onClick={({key})=>doErrorChange({status:key,errorList:keys})}>
+  <Menu onClick={({key})=>doErrorChange({updateData:{status:key},errorList:keys})}>
     {
       ERROR_STATUS.map(status=>(
         <Menu.Item key={status.value}>
@@ -81,24 +95,38 @@ const statusMenu=(keys:number[],doErrorChange:Function)=>(
   </Menu>
 )
 
+const levelMenu=(keys:number[],doErrorChange:Function)=>(
+  <Menu onClick={({key})=>doErrorChange({updateData:{level:Number(key)},errorList:keys})}>
+    {
+      ERROR_LEVEL.map(level=>(
+        <Menu.Item key={level.value}>
+          {level.text}
+        </Menu.Item>
+      ))
+    }
+  </Menu>
+)
 
 
 
-const Dashboard = ({ errorListLoading, doGetErrorAllData,errorChartData ,errorListData,rowSelectionKeys,doErrorListSelectionChange,doErrorChange}: Props) => {
+const Dashboard = ({errorSearchParams,projectMembers,projectMembersMap,projectId, errorListLoading, doGetErrorAllData,errorChartData ,errorListData,rowSelectionKeys,doErrorListSelectionChange,doErrorChange}: Props) => {
 
 
 
   const selectionHandler =(
     <span>&emsp;
-      <Dropdown trigger={["click"]} overlay={userMenu(rowSelectionKeys,doErrorChange)}>
+      <Dropdown trigger={["click"]} overlay={userMenu(rowSelectionKeys,doErrorChange,projectMembers)}>
           <Tooltip placement="right" title="指派"><Button shape="circle" icon="user" /></Tooltip>
       </Dropdown>
       <Dropdown trigger={["click"]} overlay={statusMenu(rowSelectionKeys,doErrorChange)}>
           <Tooltip placement="right" title="状态"><Button shape="circle" icon="setting" /></Tooltip>
       </Dropdown>
+      <Dropdown trigger={["click"]} overlay={levelMenu(rowSelectionKeys,doErrorChange)}>
+          <Tooltip placement="right" title="错误等级"><Button shape="circle" icon="setting" /></Tooltip>
+      </Dropdown>
     </span>
   );
-
+  
   return (
     <div className={style.wrapper}>
       <div className={style.filter}>
@@ -119,9 +147,9 @@ const Dashboard = ({ errorListLoading, doGetErrorAllData,errorChartData ,errorLi
             key="name"
             render={(text, record: any, index) => (
               <div>
-                <Link to={`/error-details/${record.id}`}>
+                <Link to={`/dashboard/${projectId}/${record.id}`}>
                   <strong>{record.type}</strong>
-                  {record.url}
+                  {record.url}1
                   <p>{record.name}</p>
                   <p>{record.message}</p>
                 </Link>
@@ -130,8 +158,8 @@ const Dashboard = ({ errorListLoading, doGetErrorAllData,errorChartData ,errorLi
                     {moment(record.created_at).fromNow()}~{moment(record.updated_at).fromNow()}
                   </span>
                   <span>
-                  <Dropdown trigger={["click"]} overlay={userMenu([record.id],doErrorChange)}>
-                      <Tag color="blue">{record.ownerName}</Tag>
+                  <Dropdown trigger={["click"]} overlay={userMenu([record.id],doErrorChange,projectMembers)}>
+                      <Tag><Icon type="user" />{projectMembersMap[record.ownerId]&&projectMembersMap[record.ownerId].name}</Tag>
                   </Dropdown>
                   </span>
                 </div>
@@ -140,21 +168,39 @@ const Dashboard = ({ errorListLoading, doGetErrorAllData,errorChartData ,errorLi
           />
           <Column
             filterMultiple={false}
+            filters={ERROR_LEVEL}
+            filteredValue={errorSearchParams.level?[errorSearchParams.level]:[]}
+            title="错误等级"
+            dataIndex="level"
+            key="level"
+            render={(level,record:any) =>{
+              const item=findOne(ERROR_LEVEL,level)
+              return (
+                <Dropdown trigger={["click"]} overlay={levelMenu([record.id],doErrorChange)}>
+                    <Tag color={item.color} >{item.text}</Tag>
+                </Dropdown>
+              )
+            }}
+          />
+          <Column
+            filterMultiple={false}
             filters={ERROR_TYPE}
+            filteredValue={errorSearchParams.type?[errorSearchParams.type]:[]}
             title="错误类型"
             dataIndex="type"
             key="type"
-            render={type => <Tag color="blue">{findOne(ERROR_TYPE,type).text}</Tag>}
+            render={type => <Tag>{findOne(ERROR_TYPE,type).text}</Tag>}
           />
           <Column
             filterMultiple={false}
             filters={ERROR_STATUS}
+            filteredValue={errorSearchParams.status?[errorSearchParams.status]:[]}
             title="状态"
             dataIndex="status"
             key="status"
             render={(status,record:any) =>(
               <Dropdown trigger={["click"]} overlay={statusMenu([record.id],doErrorChange)}>
-                  <Tag>{findOne(ERROR_STATUS,status).text}</Tag>
+                  <Tag color={findOne(ERROR_STATUS,status).color}>{findOne(ERROR_STATUS,status).text}</Tag>
               </Dropdown>
             )}
           />
@@ -216,7 +262,11 @@ const mapStateToprops = (state: StoreState) => {
     errorChartData: state.work.errorChartData.list.map(item=>({name:parseDate(item.date,'yyyy-MM-dd'),value:[item.date,item.count]})),
     errorListLoading: state.work.errorListLoading,
     rowSelectionKeys:state.work.rowSelectionKeys,
-    errorListData:state.work.errorListData
+    errorListData:state.work.errorListData,
+    projectId:Number(state.router.location.pathname.split("/")[2]),
+    projectMembers:state.project.projectMembers,
+    projectMembersMap:projectMembersMapSelector(state),
+    errorSearchParams:state.work.errorSearchParams
   }
 }
 

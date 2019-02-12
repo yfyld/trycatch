@@ -17,8 +17,7 @@ export default class Routes extends React.Component {
             <Route exact path="/project" component={ProjectList} />
             <Route exact path="/project/:projectId" component={ProjectDetails} />
             <Route exact path="/dashboard/:projectId" component={Dashboard} />
-            <Route exact path="/dashboard/" component={Dashboard} />
-            <Route exact path="/error-details/:errorId" component={ErrorDetails} />
+            <Route exact path="/dashboard/:projectId/:errorId" component={ErrorDetails} />
             <Redirect from="*" to="/home" />
           </Switch>
       </CoreLayout>
