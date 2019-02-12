@@ -8,6 +8,8 @@ module.exports = (app: Application) => {
 
     router.post(`${prefix}/:id/addMember`, controller.project.addMember);
     router.delete(`${prefix}/:id/deleteMember`, controller.project.deleteMember);
+    router.get(`${prefix}/:id/members`, controller.project.members);
+    
     router.resources('project', prefix, checkLogin, controller.project);
     
     

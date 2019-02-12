@@ -11,6 +11,12 @@ export default class ErrorController extends Controller {
         query.page = ctx.helper.parseInt(ctx.query.page)||1;
         query.pageSize = ctx.helper.parseInt(ctx.query.pageSize)||20;
         query.projectId = ctx.helper.parseInt(ctx.query.projectId)
+        if(query.level){
+            query.level = ctx.helper.parseInt(ctx.query.level)
+        }
+        if(query.order){
+           query.order=query.order==="ascend"?"ASC":"DESC";
+        }
         ctx.body = await ctx.service.error.list(query);
     }
 
@@ -24,13 +30,14 @@ export default class ErrorController extends Controller {
         ctx.body = await ctx.service.error.stat({...query});
     }
 
-    // 批量修改 指定责任 状态 
+    // 批量修改 指定责任 状态  等级
     async updates() {
         interface RequestBody{
             errorList:number[],
             updateData:{
                 status?:string,
-                owner?:number
+                owner?:number,
+                level?:number
             }
         }
         const { ctx } = this;

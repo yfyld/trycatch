@@ -153,16 +153,27 @@ export default class Project extends Service {
         }
 
         const [usersErr, users] = await awaitWrapper(this.UserModel.findAll({
+            attributes:["id","name","mobile"],
             where:{
-                [this.Op.in]:project.memberIds.split(',').map(item=>Number(item))
-            }
+                id:{[this.Op.in]:project.memberIds.split(',').map(item=>Number(item))}
+            },
+            raw: true
         }));
+
+        
         
         if (usersErr) {
             return this.ServerResponse.error('内部错误', this.ResponseCode.ERROR_ARGUMENT);
         }
-        
-        return this.ServerResponse.success('查询成功', users);
+        return this.ServerResponse.success('查询成功', users.map(item=>{
+            if(item.id===project.adminId){
+                item.isAdmin=true;
+            }
+            if(item.id===project.ownerId){
+                item.isOwner=true;
+            }
+            return item
+        }));
         
     }
 

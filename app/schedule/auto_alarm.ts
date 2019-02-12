@@ -74,7 +74,7 @@ class AutoAlarm extends Subscription {
           'https://oapi.dingtalk.com/robot/send?access_token=76dc9eda9d95b1ff3f0c77ee8e0a0ebe7b43a388dfebead943a97d5d25a81c5a',
           {
             msgtype: 'markdown',
-            markdown: { title: error.name||error.type, text: `### ${error.type}  ${error.name}  @${owner.mobile} \n > ${error.message} ${error.url} \n * 错误等级: ${error.level} \n * 用户数:   ${error.userCount} \n * 事件数:   ${error.userCount} \n * 版本:   ${error.version} \n * 创建时间:  ${moment(error.created_at).format('YYYY-MM-DD HH:mm:ss')} \n * 更新时间:  ${moment(error.updated_at).format('YYYY-MM-DD HH:mm:ss')} \n [查看详情>>>](http://127.0.0.1:7001/error-details/${error.id})` },
+            markdown: { title: error.name||error.type, text: `### ${error.type}  ${error.name}  @${owner.mobile} \n > ${error.message} ${error.url} \n * 错误等级: ${error.level} \n * 用户数:   ${error.userCount} \n * 事件数:   ${error.userCount} \n * 版本:   ${error.version} \n * 创建时间:  ${moment(error.created_at).format('YYYY-MM-DD HH:mm:ss')} \n * 更新时间:  ${moment(error.updated_at).format('YYYY-MM-DD HH:mm:ss')} \n [查看详情>>>](http://127.0.0.1:7001/${error.projectId}/${error.id})` },
             at: {
               atMobiles: [owner.mobile],
               isAtAll: false
