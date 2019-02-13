@@ -34,7 +34,9 @@ const errorMessage = (mes: string) => {
   if (mes === curMes) {
     return
   }
-  message.error(mes)
+  message.error(mes,()=>{
+    curMes=''
+  })
   curMes = mes
 }
 

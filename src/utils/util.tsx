@@ -1,7 +1,7 @@
 import { connect as connectComponent } from 'react-redux';
 import createHistory from 'history/createBrowserHistory';
 import { matchPath } from 'react-router-dom';
-import {StoreState} from "@/types"
+import {StoreState,Action} from "@/types"
 
 
 
@@ -15,7 +15,7 @@ export const connect = (mapStateToProps?: any, actions?: any) => {
 export const history = createHistory()
 
 
- export const mapLocationIntoActions = ({ pathname, search }:any, handlers:any,state:StoreState) => (Object as any).entries(handlers)
+ export const mapLocationIntoActions = ({ pathname, search }:any, handlers:any,state:StoreState):[{action:[Action]|Action,isExist:boolean}] => (Object as any).entries(handlers)
   .map(([expectedPath, handler]) => {
     const match = matchPath(pathname, { path: expectedPath, exact: true });
     return match

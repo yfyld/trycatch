@@ -58,7 +58,7 @@ const login: Epic<ActionAny, ActionAny, StoreState> = action$ =>
           )
         ),
         catchError(error => {
-          message.error('请填写正确的账号和密码')
+          // message.error('请填写正确的账号和密码')
           return of(actions.doLoginFailure())
         })
       )
@@ -100,7 +100,7 @@ const signup: Epic<ActionAny, ActionAny, StoreState> = action$ =>
           )
         ),
         catchError(error => {
-          message.error('请填写正确的项目信息')
+          message.error('请填写正确的注册信息')
           return of(actions.doSignupFailure())
         })
       )
