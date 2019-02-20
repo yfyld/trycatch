@@ -116,8 +116,8 @@ export default class Project extends Service {
             return this.ServerResponse.error('内部错误');
         } else {
             if (data) {
-                const members = data.members.split(',');
-                const addMembers = userIds.split(',');
+                const members = data.members ? data.members.split(',') : [];
+                const addMembers = userIds ? userIds.split(',') : [];
                 const member = addMembers.filter(item => _.findIndex(members, i => i === item) === -1).concat(members);
                 data.member = member.join(',');
                 data.update();
@@ -134,8 +134,8 @@ export default class Project extends Service {
             return this.ServerResponse.error('内部错误');
         } else {
             if (data) {
-                const members = data.members.split(',');
-                const addMembers = userIds.split(',');
+                const members = data.members ? data.members.split(',') : [];
+                const addMembers = userIds ? userIds.split(',') : [];
                 const member = members.filter(item => _.findIndex(addMembers, i => i === item) >= 0);
                 data.member = member.join(',');
                 data.update();
