@@ -21,17 +21,7 @@ export default class Error extends Service {
     this.Op = ctx.app.Sequelize.Op
   }
 
-  async show({ id, month }) {
-    const data = await this.LogModel.findOne({
-      where: {
-        id,
-        month
-      }
-    })
-    console.log(data)
-    return 12
-  }
-
+  
   async updates(updates) {
     const [err, errors] = await awaitWrapper(
       this.ErrorModel.update(updates.updateData, {
@@ -97,8 +87,6 @@ export default class Error extends Service {
     if (query.version) {
       selectOption.where.version = query.version
     }
-
-    console.log(selectOption)
 
     return this.ErrorModel.findAndCountAll(selectOption)
   }
