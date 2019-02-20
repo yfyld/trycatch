@@ -41,7 +41,12 @@ const AppHeader=({userInfo,doLogoutRequest}:Props)=>{
           
           <li>
             {
-              userInfo.id?<div>{userInfo.mobile},<a onClick={doLogoutRequest}>退出登录</a></div>:<Link to="/login">登录</Link>
+              userInfo.id ? (
+                              <div>
+                                {userInfo.mobile}&nbsp;&nbsp;
+                                <a onClick={doLogoutRequest}>退出登录</a>
+                              </div>
+                            ) : <Link to="/login">登录</Link>
             }
           </li>
         </ul>

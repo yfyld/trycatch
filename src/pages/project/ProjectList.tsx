@@ -7,7 +7,8 @@ import ProjectAdd from "./components/ProjectAdd"
 import {Button} from "antd"
 import * as actions from '@/store/actions'
 import { bindActionCreators,Dispatch } from 'redux'
-import {Action} from '@/types'
+import {Action} from '@/types';
+import style from './ProjectList.less';
 
 interface Props {
   projectList: ProjectListItem[],
@@ -17,12 +18,17 @@ interface Props {
 
 function ProjectList({projectList,doAddProjectToggle}:Props){
   return (
-    <div>
+    <div className={style.wrapper}>
+      <div className={style.action}> 
+        <Button type='primary' onClick={doAddProjectToggle}>新建项目</Button>
+      </div>
+      <div>
+        {projectList.map(project=>(
+          <ProjectListPane key={project.id} projectInfo={project}></ProjectListPane>
+        ))}
+      </div>
+      
       <ProjectAdd></ProjectAdd>
-      {projectList.map(project=>(
-        <ProjectListPane key={project.id} projectInfo={project}></ProjectListPane>
-      ))}
-      <div > <Button onClick={doAddProjectToggle}>新建项目</Button></div>
     </div>
   )
 }

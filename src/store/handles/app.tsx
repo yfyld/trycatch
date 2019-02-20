@@ -6,7 +6,6 @@ const exclude = ['', '/login', '/home', '/signup'];
 
 export default {
   '/*': ({ pathname, search },state:StoreState) => {
- 
     return [
       {
         action: actions.doGetUserInfoRequest(),
