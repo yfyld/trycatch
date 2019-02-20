@@ -149,7 +149,7 @@ const Dashboard = ({errorSearchParams,projectMembers,projectMembersMap,projectId
               <div>
                 <Link to={`/dashboard/${projectId}/${record.id}`}>
                   <strong>{record.type}</strong>
-                  {record.url}1
+                  <p className={style.url}>{record.url}</p>
                   <p>{record.name}</p>
                   <p>{record.message}</p>
                 </Link>
@@ -174,10 +174,10 @@ const Dashboard = ({errorSearchParams,projectMembers,projectMembersMap,projectId
             dataIndex="level"
             key="level"
             render={(level,record:any) =>{
-              const item=findOne(ERROR_LEVEL,level)
+              const item=findOne(ERROR_LEVEL,level);
               return (
                 <Dropdown trigger={["click"]} overlay={levelMenu([record.id],doErrorChange)}>
-                    <Tag color={item.color} >{item.text}</Tag>
+                    <Tag color={item ?item.color: "#fff"} >{item ? item.text : level}</Tag>
                 </Dropdown>
               )
             }}
@@ -189,7 +189,12 @@ const Dashboard = ({errorSearchParams,projectMembers,projectMembersMap,projectId
             title="错误类型"
             dataIndex="type"
             key="type"
-            render={type => <Tag>{findOne(ERROR_TYPE,type).text}</Tag>}
+            render={type => {
+              const item = findOne(ERROR_TYPE,type);
+              return (
+                <Tag>{item ? item.text : type}</Tag>
+              )
+            }}
           />
           <Column
             filterMultiple={false}
@@ -198,11 +203,14 @@ const Dashboard = ({errorSearchParams,projectMembers,projectMembersMap,projectId
             title="状态"
             dataIndex="status"
             key="status"
-            render={(status,record:any) =>(
-              <Dropdown trigger={["click"]} overlay={statusMenu([record.id],doErrorChange)}>
-                  <Tag color={findOne(ERROR_STATUS,status).color}>{findOne(ERROR_STATUS,status).text}</Tag>
-              </Dropdown>
-            )}
+            render={(status,record:any) =>{
+              const item = findOne(ERROR_STATUS,status);
+              return (
+                <Dropdown trigger={["click"]} overlay={statusMenu([record.id],doErrorChange)}>
+                    <Tag color={item ? item.color : "#fff"}>{item ?item.text: status}</Tag>
+                </Dropdown>
+              )
+            }}
           />
           <Column sorter title="时间" dataIndex="updated_at" key="updated_at" render={
             (date)=>(moment(date).fromNow())
