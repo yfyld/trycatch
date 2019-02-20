@@ -19,6 +19,7 @@ export default class UserController extends Controller {
   // 注册
   public async signup() {
     const { ctx } = this;
+    
     ctx.body = await ctx.service.user.signup(ctx.request.body);
   }
 

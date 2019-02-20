@@ -155,7 +155,9 @@ export default class Project extends Service {
         const [usersErr, users] = await awaitWrapper(this.UserModel.findAll({
             attributes:["id","name","mobile"],
             where:{
-                id:{[this.Op.in]:project.memberIds.split(',').map(item=>Number(item))}
+                id:{
+                    [this.Op.in]:project.memberIds ? project.memberIds.split(',').map(item=>Number(item)) : []
+                }
             },
             raw: true
         }));
@@ -163,6 +165,7 @@ export default class Project extends Service {
         
         
         if (usersErr) {
+            
             return this.ServerResponse.error('内部错误', this.ResponseCode.ERROR_ARGUMENT);
         }
         return this.ServerResponse.success('查询成功', users.map(item=>{
