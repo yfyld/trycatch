@@ -177,7 +177,7 @@ const Dashboard = ({errorSearchParams,projectMembers,projectMembersMap,projectId
               const item=findOne(ERROR_LEVEL,level);
               return (
                 <Dropdown trigger={["click"]} overlay={levelMenu([record.id],doErrorChange)}>
-                    <Tag color={item ?item.color: "#fff"} >{item ? item.text : level}</Tag>
+                    <Tag color={item ?item.color: undefined} >{item ? item.text : level}</Tag>
                 </Dropdown>
               )
             }}
@@ -207,7 +207,7 @@ const Dashboard = ({errorSearchParams,projectMembers,projectMembersMap,projectId
               const item = findOne(ERROR_STATUS,status);
               return (
                 <Dropdown trigger={["click"]} overlay={statusMenu([record.id],doErrorChange)}>
-                    <Tag color={item ? item.color : "#fff"}>{item ?item.text: status}</Tag>
+                    <Tag color={item ? item.color : undefined}>{item ?item.text: status}</Tag>
                 </Dropdown>
               )
             }}
