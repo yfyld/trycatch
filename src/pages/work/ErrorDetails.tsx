@@ -69,7 +69,6 @@ const ErrorDetails = ({eventInfoLoading,doGetEventInfoRequest,eventListMoreShow,
       <Button onClick={doGetEventListDataRequest}>加载更多</Button>
     </div>
   ) : null;
-
   return (
     <div className={style.wrapper}>
       <div className={style.filter}>
@@ -85,7 +84,7 @@ const ErrorDetails = ({eventInfoLoading,doGetEventInfoRequest,eventListMoreShow,
             loadMore={loadMore}
             dataSource={eventListData.list}
             renderItem={item => (
-              <List.Item onClick={()=>doGetEventInfoRequest(item.id)}>
+              <List.Item className={item.id === eventInfo.id ? style.selected: ''} onClick={()=>doGetEventInfoRequest(item.id)}>
                   <List.Item.Meta
                     title={item.type}
                     description={item.url}
@@ -95,7 +94,7 @@ const ErrorDetails = ({eventInfoLoading,doGetEventInfoRequest,eventListMoreShow,
           />
         </div>
         <div className={style.main}>
-        <Spin spinning={eventInfoLoading} />
+        <Spin spinning={eventInfoLoading}>
         <Tabs defaultActiveKey="1">
         <TabPane tab="基本信息" key="1">
               <div>
@@ -109,6 +108,7 @@ const ErrorDetails = ({eventInfoLoading,doGetEventInfoRequest,eventListMoreShow,
               
         </TabPane>
       </Tabs>
+      </Spin>
         </div>
       </div>
     </div>

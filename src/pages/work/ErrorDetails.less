@@ -10,7 +10,7 @@
   }
 }
 .filter{
-  
+  padding: 10px; 
 }
 .chart{
 
@@ -40,5 +40,18 @@
     .ant-list-item{
       cursor: pointer;
     }
+  }
+  
+}
+.selected {
+  position: relative;
+  &:after {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 2px;
+    top:0;
+    right: -1px;
+    background-color:@primary;
   }
 }
