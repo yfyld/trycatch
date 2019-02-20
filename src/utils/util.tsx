@@ -15,9 +15,10 @@ export const connect = (mapStateToProps?: any, actions?: any) => {
 export const history = createHistory()
 
 
- export const mapLocationIntoActions = ({ pathname, search }:any, handlers:any,state:StoreState):[{action:[Action]|Action,isExist:boolean}] => (Object as any).entries(handlers)
+ export const mapLocationIntoActions = ({ pathname, search }:any, handlers:any,state:StoreState):[{action:[Action]|Action,isExist:boolean, exclude?: string[]}] => (Object as any).entries(handlers)
   .map(([expectedPath, handler]) => {
     const match = matchPath(pathname, { path: expectedPath, exact: true });
+ 
     return match
       ? handler({ pathname, search, ...match.params },state)
       : [];

@@ -36,6 +36,11 @@ const triggerFetchOnLocationChange: Epic<Action, Action, StoreState> = (
         .filter(
           ({ isExist }) => (isExist ? false : true) // 缓存逻辑略全为true
         )
+        .filter(
+          ({exclude}) => {
+            return exclude ? (exclude.indexOf(location.pathname) === -1 && exclude.indexOf(`${location.pathname}/`) === -1) : true
+          }
+        )
         .map(({ action }) => action)
         .reduce((a, b) => a.concat(b), [])
     )

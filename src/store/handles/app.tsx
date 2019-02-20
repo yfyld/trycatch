@@ -8,7 +8,8 @@ export default {
       {
         action: actions.doGetUserInfoRequest(),
         ttl: CACHE_TIME,
-        isExist: !!state.app.userInfo.id
+        isExist: !!state.app.userInfo.id,
+        exclude: ['', '/login', '/home', '/signup']
       },
     ]
   }

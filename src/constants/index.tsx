@@ -144,17 +144,17 @@ export const ERROR_LEVEL=[
   {
     text:"一级",
     color: 'blue',
-    value:1
+    value:'1'
   },
   {
     text:"二级",
     color: 'orange',
-    value:2
+    value:'2'
   },
   {
     text:"三级",
     color: 'red',
-    value:3
+    value:'3'
   }
 ]
 
