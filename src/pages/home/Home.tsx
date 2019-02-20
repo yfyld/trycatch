@@ -36,7 +36,7 @@ export default class Home extends React.Component<Props> {
         
               <ul className="menu">
                 <li>
-                  <Link to="/project-list">我的项目</Link>
+                  <Link to="/project">我的项目</Link>
                 </li>
                 <li>
                   <Link to="/login">登录</Link>

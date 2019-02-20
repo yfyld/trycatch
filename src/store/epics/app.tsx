@@ -27,19 +27,19 @@ const triggerFetchOnLocationChange: Epic<Action, Action, StoreState> = (
   state$
 ) =>
   state$.pipe(
-    map(state => state.router.location),
+    map(state => {
+      return state.router.location;
+    }),
     delay(10),
     distinctUntilChanged(),
     withLatestFrom(state$),
     flatMap(([location, state]) =>
       mapLocationIntoActions(location, handles, state)
         .filter(
-          ({ isExist }) => (isExist ? false : true) // 缓存逻辑略全为true
-        )
-        .filter(
-          ({exclude}) => {
-            return exclude ? (exclude.indexOf(location.pathname) === -1 && exclude.indexOf(`${location.pathname}/`) === -1) : true
-          }
+          ({ isExist }) => {
+            const isHome = state.router.action === 'REPLACE'; // 说明回到了首页
+            return isHome ? false : (isExist ? false : true)
+          } // 缓存逻辑略全为true
         )
         .map(({ action }) => action)
         .reduce((a, b) => a.concat(b), [])
