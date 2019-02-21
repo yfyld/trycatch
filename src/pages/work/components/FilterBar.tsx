@@ -24,7 +24,7 @@ function SearchParamsTag({ERROR, value, ...props}) {
     const item = findOne(ERROR, newValue);
 
     return (
-        <Tag {...props}>{item ? item.text : value}</Tag>
+        <Tag style={{marginRight: 10}} {...props}>{item ? item.text : value}</Tag>
     )
 }
 
@@ -40,7 +40,7 @@ const FilterBar =({dashboard=true,doGetErrorAllData,errorSearchParams}:Props)=>{
                 errorSearchParams.status?<SearchParamsTag ERROR={ERROR_STATUS} value={errorSearchParams.status} key={errorSearchParams.status} onClose={()=>doGetErrorAllData({status:null})} closable={true} />:null,
                 errorSearchParams.type?<SearchParamsTag ERROR={ERROR_TYPE} value={errorSearchParams.type} key={errorSearchParams.type} onClose={()=>doGetErrorAllData({type:null})} closable={true} />:null,
             ]}
-            <ButtonGroup>
+            <ButtonGroup style={{marginRight: 10}}>
                 <Button onClick={()=>doGetErrorAllData({startTime:now-oneDay+1,endTime:now})}>今天</Button>
                 <Button onClick={()=>doGetErrorAllData({startTime:now-oneDay * 7+1,endTime:now})}>7天</Button>
                 <Button onClick={()=>doGetErrorAllData({startTime:now-oneDay * 30+1,endTime:now})}>30天</Button>

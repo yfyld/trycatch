@@ -132,8 +132,7 @@ const Dashboard = ({errorSearchParams,projectMembers,projectMembersMap,projectId
       <div className={style.filter}>
         <FilterBar doGetErrorAllData={doGetErrorAllData} />
       </div>
-      
-
+      <div className={style.content}>
       <div className={style.chart}>
         <ErrorChartLine data={errorChartData} />
       </div>
@@ -244,6 +243,9 @@ const Dashboard = ({errorSearchParams,projectMembers,projectMembersMap,projectId
           />
         </Table>
       </div>
+      </div>
+
+      
     </div>
   )
 }

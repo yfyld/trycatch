@@ -1,23 +1,23 @@
 .wrapper{
     position: relative;
     height: 100%;
-    overflow: auto;
     box-sizing: border-box;
-    padding-top: 42px;
 }
 .filter{
     padding: 10px;
     box-sizing: border-box;
-    position: fixed;
+    position: absolute;
     left: 0;
-    top: @header-height;
-    right: 20px;
+    top: 0;
+    width: 100%;
     background-color: #fff;
     z-index: 2;
 }
 .content {
     height: 100%;
     overflow: auto;
+    padding-top: 60px;
+    box-sizing: border-box;
 }
 .chart{
     height: 300px;
