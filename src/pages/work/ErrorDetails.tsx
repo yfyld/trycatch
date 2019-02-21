@@ -11,6 +11,8 @@ import { Dispatch } from 'redux'
 import { Action, ErrorChangeParams,EventListDataItem,PageData,EventInfo,ErrorInfo } from '@/types'
 // import * as moment from "moment";
 import { ERROR_STATUS } from '@/constants'
+import ErrorBehavior from './components/ErrorBehavior';
+import ErrorBasicInfo from './components/ErrorBasicInfo';
 const {TabPane} =Tabs;
 interface Props {
   eventListLoading: boolean
@@ -98,14 +100,14 @@ const ErrorDetails = ({eventInfoLoading,doGetEventInfoRequest,eventListMoreShow,
         <Tabs defaultActiveKey="1">
         <TabPane tab="基本信息" key="1">
               <div>
-              {eventInfo.source}
+              {eventInfo.source ? <ErrorBasicInfo /> : null}
               </div>
         </TabPane>
         <TabPane tab="用户行为" key="2">
-        <div>
-{eventInfo.source?JSON.stringify(JSON.parse(eventInfo.source).behavior):''}
-        </div>
-              
+        
+              {
+                eventInfo.source ? <ErrorBehavior /> : null
+              }
         </TabPane>
       </Tabs>
       </Spin>
