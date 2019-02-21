@@ -24,9 +24,9 @@ const AppHeader=({userInfo,doLogoutRequest}:Props)=>{
           <li>
             <Link to="/project">项目列表</Link>
           </li>
-          <li>
+          {/* <li>
             <Link to="/dashboard/1">错误列表</Link>
-          </li>
+          </li> */}
 
         </ul>
       </div>

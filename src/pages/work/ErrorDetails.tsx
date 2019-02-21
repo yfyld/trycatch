@@ -47,7 +47,7 @@ const ErrorDetails = ({eventInfoLoading,doGetEventInfoRequest,eventListMoreShow,
   )
 
   const selectionHandler = (
-    <span>
+    <span className='handler'>
       &emsp;
       <Dropdown trigger={['click']} overlay={userMenu}>
         <Tooltip placement="right" title="指派">
@@ -56,7 +56,7 @@ const ErrorDetails = ({eventInfoLoading,doGetEventInfoRequest,eventListMoreShow,
       </Dropdown>
       <Dropdown trigger={['click']} overlay={statusMenu}>
         <Tooltip placement="right" title="状态">
-          <Button shape="circle" icon="setting" />
+          <Button shape="circle" icon="question" />
         </Tooltip>
       </Dropdown>
     </span>

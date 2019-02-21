@@ -114,15 +114,15 @@ const Dashboard = ({errorSearchParams,projectMembers,projectMembersMap,projectId
 
 
   const selectionHandler =(
-    <span>&emsp;
+    <span className='handler'>&emsp;
       <Dropdown trigger={["click"]} overlay={userMenu(rowSelectionKeys,doErrorChange,projectMembers)}>
           <Tooltip placement="right" title="指派"><Button shape="circle" icon="user" /></Tooltip>
       </Dropdown>
       <Dropdown trigger={["click"]} overlay={statusMenu(rowSelectionKeys,doErrorChange)}>
-          <Tooltip placement="right" title="状态"><Button shape="circle" icon="setting" /></Tooltip>
+          <Tooltip placement="right" title="状态"><Button shape="circle" icon="question" /></Tooltip>
       </Dropdown>
       <Dropdown trigger={["click"]} overlay={levelMenu(rowSelectionKeys,doErrorChange)}>
-          <Tooltip placement="right" title="错误等级"><Button shape="circle" icon="setting" /></Tooltip>
+          <Tooltip placement="right" title="错误等级"><Button shape="circle" icon="exclamation" /></Tooltip>
       </Dropdown>
     </span>
   );
