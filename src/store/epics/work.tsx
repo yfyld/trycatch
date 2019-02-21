@@ -72,8 +72,9 @@ const getEventListData: Epic<Action, Action, StoreState> = (action$, state$) =>
         ...state$.value.work.eventListParams
       }).pipe(
         mergeMap(response => {
+          const page = state$.value.work.eventListParams.page;
           if (
-            state$.value.work.eventListParams.page === 1 &&
+            page === 1 &&
             response.data.list.length
           ) {
             // 默认获取第一条日志详情

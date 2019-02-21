@@ -104,10 +104,11 @@ export const workReducer = (
       })
 
     case getType(actions.doGetEventListDataSuccess):
+      const page = state.eventListParams.page;
       return update(state, {
         eventListParams: { page: { $apply: page => page + 1 } },
         eventListData: {
-          list: { $set: action.payload.list },
+          list: { $apply: list => page === 1 ? action.payload.list : list.concat(action.payload.list)},
           totalCount: { $set: action.payload.totalCount }
         },
         eventListMoreShow:{$set:action.payload.list.length===20?true:false},

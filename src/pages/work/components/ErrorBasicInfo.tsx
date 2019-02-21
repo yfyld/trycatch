@@ -64,10 +64,10 @@ function ErrorInfo({type, name, message, url, stack, version, errorId, ...props}
                         <span className={style.name}>插件版本</span>
                         <span>{version}</span>
                     </li>
-                    <li className={style.item}>
+                    {/* <li className={style.item}>
                         <span className={style.name}>事件ID</span>
                         <span>{errorId}</span>
-                    </li>
+                    </li> */}
                 </ul>
             </div>
         </div>

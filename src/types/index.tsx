@@ -5,6 +5,7 @@ import {StoreState} from '@/store/reducers'
 export interface PageData<T>{
   totalCount:number,
   list:T[]
+  
 }
 export interface PageQuery{
   page?:number,

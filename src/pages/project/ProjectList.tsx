@@ -22,7 +22,7 @@ function ProjectList({projectList,doAddProjectToggle}:Props){
       <div className={style.action}> 
         <Button type='primary' onClick={doAddProjectToggle}>新建项目</Button>
       </div>
-      <div>
+      <div className='clearfix'>
         {projectList.map(project=>(
           <ProjectListPane key={project.id} projectInfo={project}></ProjectListPane>
         ))}

@@ -65,7 +65,7 @@ const ErrorDetails = ({eventInfoLoading,doGetEventInfoRequest,eventListMoreShow,
 
   const loadMore = !eventListLoading&&eventListMoreShow ? (
     <div style={{
-      textAlign: 'center', marginTop: 12, height: 32, lineHeight: '32px',
+      textAlign: 'center', paddingTop: 12, paddingBottom: 12, lineHeight: '32px',
     }}
     >
       <Button onClick={doGetEventListDataRequest}>加载更多</Button>
@@ -76,7 +76,7 @@ const ErrorDetails = ({eventInfoLoading,doGetEventInfoRequest,eventListMoreShow,
       <div className={style.filter}>
         <FilterBar dashboard={false} doGetErrorAllData={doErrorDetails} />
       </div>
-      <div className={style.table}>{selectionHandler}</div>
+      <div className={style.handler}>{selectionHandler}</div>
       <div className={style.content}>
         <div className={style.list}>
           <List
@@ -96,21 +96,21 @@ const ErrorDetails = ({eventInfoLoading,doGetEventInfoRequest,eventListMoreShow,
           />
         </div>
         <div className={style.main}>
-        <Spin spinning={eventInfoLoading}>
-        <Tabs defaultActiveKey="1">
-        <TabPane tab="基本信息" key="1">
-              <div>
-              {eventInfo.source ? <ErrorBasicInfo /> : null}
-              </div>
-        </TabPane>
-        <TabPane tab="用户行为" key="2">
-        
-              {
-                eventInfo.source ? <ErrorBehavior /> : null
-              }
-        </TabPane>
-      </Tabs>
-      </Spin>
+          <Spin spinning={eventInfoLoading}>
+            <Tabs defaultActiveKey="1">
+              <TabPane tab="基本信息" key="1">
+                <div>
+                  {eventInfo.source ? <ErrorBasicInfo /> : null}
+                </div>
+              </TabPane>
+              <TabPane tab="用户行为" key="2">
+              
+                {
+                  eventInfo.source ? <ErrorBehavior /> : null
+                }
+              </TabPane>
+            </Tabs>
+          </Spin>
         </div>
       </div>
     </div>
