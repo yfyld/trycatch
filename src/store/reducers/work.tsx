@@ -107,7 +107,7 @@ export const workReducer = (
       return update(state, {
         eventListParams: { page: { $apply: page => page + 1 } },
         eventListData: {
-          list: { $push: action.payload.list },
+          list: { $set: action.payload.list },
           totalCount: { $set: action.payload.totalCount }
         },
         eventListMoreShow:{$set:action.payload.list.length===20?true:false},
