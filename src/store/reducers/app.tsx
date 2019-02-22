@@ -29,7 +29,10 @@ export const appReducer = (
 
     case getType(actions.doGetUserInfoSuccess):
       return update(state, { userInfo: { $set: action.payload } })
-
+    case getType(actions.doGetUserListSuccess): 
+      return update(state, {
+        userList: { $set: action.payload.list }
+      })
     default:
       return state
   }

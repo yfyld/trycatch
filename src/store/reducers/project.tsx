@@ -13,7 +13,8 @@ export interface ProjectState {
    projectId:number
    projectAddVisible:boolean,
    projectDetail: ProjectDetail,
-   projectMemberAddVisible: boolean
+   projectMemberAddVisible: boolean,
+   projectMemberSelectedKeys: number[]
 }
 
 const initialState = {
@@ -26,7 +27,8 @@ const initialState = {
     activeKey: '1',
     tabs: ['1']
   },
-  projectMemberAddVisible: false
+  projectMemberAddVisible: false,
+  projectMemberSelectedKeys: []
 };
 
 export const projectReducer = (state: ProjectState = initialState, action: Action): ProjectState => {
@@ -69,7 +71,10 @@ export const projectReducer = (state: ProjectState = initialState, action: Actio
       return update(state, {
         projectMemberAddVisible: { $set: action.payload }
       })
-    
+    case getType(actions.doSelectProjectMember):
+    return update(state, {
+      projectMemberSelectedKeys: { $set: action.payload }
+    })
     default:
       return state;
   }

@@ -17,7 +17,7 @@ export function fetchLogout() {
   return from(fetch.post('/user/logout'))
 }
 export function fetchUserList(params?: object) {
-  return from(fetch.get('/user/list', params))
+  return from(fetch.get('/user', params))
 }
 
 // 项目
@@ -29,7 +29,13 @@ export function fetchProjectMembers(projectId: number) {
   return from(fetch.get(`/project/${projectId}/members`))
 }
 
+export function fetchProjectMemberAdd(projectId, params?:object) {
+  return from(fetch.post(`/project/${projectId}/addMember`, params))
+}
 
+export function fetchProjectMemberDelete(projectId, params?: object) {
+  return from(fetch.delete(`/project/${projectId}/deleteMember`, params))
+}
 
 export function fetchProjectInfo(projectId:number,params?: object) {
   return from(fetch.get(`/project/${projectId}`, params))

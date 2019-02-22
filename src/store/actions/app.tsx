@@ -1,7 +1,7 @@
 import * as constants from "@/constants";
 import { createAction } from "typesafe-actions";
 import { AxiosResponse } from 'axios';
-import {UserInfo, User} from "@/types"
+import {UserInfo, PageData, User} from "@/types"
 import {WrappedFormUtils} from 'antd/lib/form/Form';
 
 
@@ -26,5 +26,5 @@ export const doGetUserInfoFailure = createAction(constants.GET_USER_INFO_FAILURE
 
 
 export const doGetUserListRequest = createAction(constants.GET_USER_LIST_REQUEST)
-export const doGetUserListSuccess = createAction(constants.GET_USER_LIST_SUCCESS, resolve => (response: AxiosResponse<User[]>)=>resolve(response.data));
+export const doGetUserListSuccess = createAction(constants.GET_USER_LIST_SUCCESS, resolve => (response: AxiosResponse<PageData<User>>)=>resolve(response.data));
 export const doGetUserListFailure = createAction(constants.GET_USER_LIST_FAILURE);

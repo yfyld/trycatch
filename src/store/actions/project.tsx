@@ -27,3 +27,11 @@ export const doGetProjectMembersSuccess = createAction(constants.GET_PROJECT_MEM
 export const doGetProjectMembersFailure = createAction(constants.GET_PROJECT_MEMBERS_FAILURE);
 
 export const doAddProjectMemberToggle = createAction(constants.ADD_PROJECT_MEMBER_TOGGLE, resolve => (toggle: boolean) => resolve(toggle));
+export const doAddProjectMemberRequest = createAction(constants.ADD_PROJECT_MEMBER_REQUEST, resolve => (form:WrappedFormUtils) => resolve(form));
+export const doAddProjectMemberSuccess = createAction(constants.ADD_PROJECT_MEMBER_SUCCESS)
+export const doAddProjectMemberFailure = createAction(constants.ADD_PROJECT_MEMBER_FAILURE)
+
+export const doSelectProjectMember = createAction(constants.SELECT_PROJECT_MEMBER, resolve => (selectedKeys: number[]) => resolve(selectedKeys))
+export const doDeleteProjectMemberRequest = createAction(constants.DELETE_PROJECT_MEMBER_REQUEST, resolve => (params:object) => resolve(params))
+export const doDeleteProjectMemberSuccess = createAction(constants.DELETE_PROJECT_MEMBER_SUCCESS)
+export const doDeleteProjectMemberFailure = createAction(constants.DELETE_PROJECT_MEMBER_FAILURE)
