@@ -123,10 +123,21 @@ const getUserInfo: Epic<ActionAny, ActionAny, StoreState> = action$ =>
     )
   )
 
+
+const getUserList: Epic<ActionAny, ActionAny, StoreState> = action$ => 
+  action$.pipe(
+    filter(isActionOf(actions.doGetUserListRequest)),
+    mergeMap(() => Api.fetchUserList().pipe(
+      map(actions.doGetUserListSuccess),
+      catchError(error => of(actions.doGetUserListFailure))
+    ))
+  )
+
 export default [
   login,
   signup,
   triggerFetchOnLocationChange,
   getUserInfo,
-  logout
+  logout,
+  getUserList
 ]

@@ -25,3 +25,5 @@ export const doAddProjectFailure = createAction(constants.ADD_PROJECT_FAILURE);
 export const doGetProjectMembersRequest = createAction(constants.GET_PROJECT_MEMBERS_REQUEST,resolve=>(projectId:number)=>resolve(projectId));
 export const doGetProjectMembersSuccess = createAction(constants.GET_PROJECT_MEMBERS_SUCCESS,resolve=>(response:AxiosResponse<Member[]>)=>resolve(response.data));
 export const doGetProjectMembersFailure = createAction(constants.GET_PROJECT_MEMBERS_FAILURE);
+
+export const doAddProjectMemberToggle = createAction(constants.ADD_PROJECT_MEMBER_TOGGLE, resolve => (toggle: boolean) => resolve(toggle));

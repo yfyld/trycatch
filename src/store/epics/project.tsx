@@ -83,4 +83,10 @@ const addProject: Epic<ActionAny, ActionAny, StoreState> = (action$,state$)=>
       })
     ))
   )
+
+
+  const doAddProjectMemberToggle = (action$) => 
+      action$.pipe(
+        filter(isActionOf(actions.doAddProjectMemberToggle))
+      )
 export default [getProjectList, updateProjectDetails,getProjectDetail,addProject,getProjectMembers]

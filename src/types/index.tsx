@@ -44,6 +44,12 @@ export interface  Member{
   isOwner?:boolean
 }
 
+export interface User {
+  name?: string,
+  id: string,
+  mobile: string
+}
+
 export interface ProjectInfo {
   name?: string
   id?: number

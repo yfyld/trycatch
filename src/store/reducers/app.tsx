@@ -1,16 +1,18 @@
 import { getType } from 'typesafe-actions'
 import update from 'immutability-helper'
 import * as actions from '../actions'
-import { Action,UserInfo } from '@/types'
+import { Action,UserInfo, User } from '@/types'
 
 export interface AppState {
   loading: boolean
-  userInfo: UserInfo
+  userInfo: UserInfo,
+  userList: User[]
 }
 
 const initialState=():AppState => ({
   loading: false,
   userInfo: {},
+  userList: []
 })
 
 export const appReducer = (

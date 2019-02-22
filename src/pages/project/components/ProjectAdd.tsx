@@ -18,7 +18,7 @@ const ProjectAdd = ({ visible, doSubmit, doCancel ,form}: Props) => {
   const {getFieldDecorator}=form;
   return (
     <Modal
-      title="Basic Modal"
+      title='添加项目'
       visible={visible}
       onOk={e=>doSubmit(form)}
       onCancel={doCancel}

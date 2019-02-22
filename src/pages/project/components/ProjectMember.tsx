@@ -1,10 +1,15 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators,Dispatch } from 'redux'
 import { Table, Icon, Tooltip, Button } from 'antd';
-import { StoreState, Member } from '@/types';
+import { StoreState, Member, Action } from '@/types';
+import * as actions from "@/store/actions"
+import ProjectMemberAdd from './ProjectMemberAdd';
 
 interface Props {
-    memberList: Member[]
+    memberList: Member[],
+    doAddProjectMemberToggle: () => {},
+    projectMemberAddVisible: boolean
 }
 
 function renderColumns() {
@@ -35,11 +40,11 @@ function renderColumns() {
     return columns;
 }
 
-function ProjectMember({memberList, ...props}: Props) {
+function ProjectMember({memberList, doAddProjectMemberToggle, projectMemberAddVisible, ...props}: Props) {
     return (
         <div>
             <div>
-                <Button type='primary'>添加项目成员</Button>
+                <Button type='primary' onClick={doAddProjectMemberToggle}>添加项目成员</Button>
             </div>
             <div>
                 <Table 
@@ -49,17 +54,22 @@ function ProjectMember({memberList, ...props}: Props) {
                     dataSource={memberList}
                 />
             </div>
-            
+        { projectMemberAddVisible && <ProjectMemberAdd /> }
         </div>
         
     )
 }
 const mapStateToProps = (state: StoreState) => {
-    const memberList = state.project.projectMembers;
+    const { projectMembers: memberList, projectMemberAddVisible } = state.project;
     return {
-        memberList
+        memberList,
+        projectMemberAddVisible
     }
 }
 
-export default connect(mapStateToProps)(ProjectMember)
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => bindActionCreators({
+    doAddProjectMemberToggle: () => actions.doAddProjectMemberToggle(true)
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectMember)
 
