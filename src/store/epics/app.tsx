@@ -74,7 +74,7 @@ const logout: Epic<ActionAny, ActionAny, StoreState> = action$ =>
   action$.pipe(
     filter(isActionOf(actions.doLogoutRequest)),
     mergeMap(action =>
-      Api.fetchLogin().pipe(
+      Api.fetchLogout().pipe(
         map(actions.doLogoutSuccess),
         tap(() => {
           message.success('退出成功')

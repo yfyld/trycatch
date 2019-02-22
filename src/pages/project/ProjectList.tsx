@@ -4,7 +4,7 @@ import { StoreState } from '@/store/reducers'
 import ProjectListPane from "./components/ProjectListPane"
 import {ProjectListItem} from "@/types"
 import ProjectAdd from "./components/ProjectAdd"
-import {Button} from "antd"
+import {Button,Empty} from "antd"
 import * as actions from '@/store/actions'
 import { bindActionCreators,Dispatch } from 'redux'
 import {Action} from '@/types';
@@ -24,9 +24,13 @@ function ProjectList({projectList,doAddProjectToggle}:Props){
       </div>
 
       <div className={style.project}>
-        {projectList.map(project=>(
-          <ProjectListPane key={project.id} projectInfo={project}></ProjectListPane>
-        ))}
+        {
+          projectList.length === 0 ? <Empty /> : (
+            projectList.map(project=>(
+              <ProjectListPane key={project.id} projectInfo={project}></ProjectListPane>
+            ))
+          )
+        }
       </div>
       
       <ProjectAdd></ProjectAdd>

@@ -12,6 +12,10 @@ export function fetchLogin(params?: object) {
 export function fetchSignup(params?: object) {
   return from(fetch.post('/user/signup', params))
 }
+
+export function fetchLogout() {
+  return from(fetch.post('/user/logout'))
+}
 export function fetchUserList(params?: object) {
   return from(fetch.get('/user/list', params))
 }

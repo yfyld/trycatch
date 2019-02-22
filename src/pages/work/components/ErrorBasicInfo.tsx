@@ -76,7 +76,6 @@ function ErrorInfo({type, name, message, url, stack, version, errorId, ...props}
 
 const mapStateToProps = (state: StoreState) => {
     const eventInfo = JSON.parse(state.work.eventInfo.source);
-    console.log(eventInfo);
     return {
         ...eventInfo.data,
         ...eventInfo.authInfo

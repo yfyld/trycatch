@@ -31,7 +31,7 @@ const Login=({form,doSubmit}:Props)=>{
           })(
             <Input
               prefix={
-                <Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />
+                <Icon type="mobile" style={{ color: 'rgba(0,0,0,.25)' }} />
               }
               placeholder="请输入手机号"
             />

@@ -15,10 +15,10 @@ export default {
       ttl: CACHE_TIME,
       isExist: false
     },
-    {
-      action: actions.doGetProjectMembersRequest(Number(projectId)),
-      ttl: CACHE_TIME,
-      isExist: state.project.projectInfo.id===Number(projectId)&&state.project.projectMembers.length
-    },
+    // {
+    //   action: actions.doGetProjectMembersRequest(Number(projectId)),
+    //   ttl: CACHE_TIME,
+    //   isExist: state.project.projectInfo.id===Number(projectId)&&state.project.projectMembers.length
+    // },
   ]
 };

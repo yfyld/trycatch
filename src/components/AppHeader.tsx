@@ -15,11 +15,11 @@ interface Props {
 const AppHeader=({userInfo,doLogoutRequest}:Props)=>{
   return  (
     <div className={style.wrapper}>
-      <div className={style.back}>
+      {/* <div className={style.back}>
         <Link to="/dashboard">控制台</Link>
-      </div>
+      </div> */}
       <div className="fl">
-        <div  className={style.project}>项目</div>
+        {/* <div  className={style.project}>项目</div> */}
         <ul className={style.nav}>
           <li>
             <Link to="/project">项目列表</Link>
@@ -43,7 +43,7 @@ const AppHeader=({userInfo,doLogoutRequest}:Props)=>{
             {
               userInfo.id ? (
                               <div>
-                                {userInfo.mobile}&nbsp;&nbsp;
+                                {userInfo.name || userInfo.mobile}&nbsp;&nbsp;
                                 <a onClick={doLogoutRequest}>退出登录</a>
                               </div>
                             ) : <Link to="/login">登录</Link>

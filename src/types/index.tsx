@@ -50,6 +50,12 @@ export interface ProjectInfo {
 }
 
 
+export interface ProjectDetail {
+  activeKey: string,
+  tabs: string[]
+}
+
+
 
 
 export interface ErrorChartDataItem {

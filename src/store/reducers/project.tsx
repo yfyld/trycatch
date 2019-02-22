@@ -1,6 +1,6 @@
 import { getType } from 'typesafe-actions';
 import * as actions from "../actions";
-import {ProjectListItem,ProjectInfo,Action,Member} from "@/types"
+import {ProjectListItem,ProjectInfo,Action,Member, ProjectDetail} from "@/types"
 import update from 'immutability-helper'
 
 
@@ -11,7 +11,8 @@ export interface ProjectState {
    projectInfo: ProjectInfo;
    projectMembers:Member[]
    projectId:number
-   projectAddVisible:boolean
+   projectAddVisible:boolean,
+   projectDetail: ProjectDetail
 }
 
 const initialState = {
@@ -20,6 +21,10 @@ const initialState = {
   projectMembers:[],
   projectId:null,
   projectAddVisible:false,
+  projectDetail: {
+    activeKey: '1',
+    tabs: ['1']
+  }
 };
 
 export const projectReducer = (state: ProjectState = initialState, action: Action): ProjectState => {
@@ -31,7 +36,14 @@ export const projectReducer = (state: ProjectState = initialState, action: Actio
 
 
     case getType(actions.doGetProjectDetailsSuccess):
-      return update(state,{projectInfo:{$set:action.payload},projectId:{$set:action.payload.id}})
+      return update(state,{
+        projectInfo:{$set:action.payload},
+        projectId:{$set:action.payload.id},
+        projectDetail: {
+          activeKey: { $set: '1'},
+          tabs: { $set: ['1']}
+        }
+      })
 
     case getType(actions.doAddProjectToggle):
       return update(state,{projectAddVisible:{$set:action.payload}})
@@ -40,7 +52,14 @@ export const projectReducer = (state: ProjectState = initialState, action: Actio
       return update(state,{projectAddVisible:{$set:false}})  
 
     case getType(actions.doGetProjectMembersSuccess):
-    return update(state,{projectMembers:{$set:action.payload}})  
+    const index = state.projectDetail.tabs.indexOf('3');
+    return update(state,{
+      projectMembers:{$set:action.payload},
+      projectDetail: {
+        tabs: { $apply: tabs => index === -1 ? tabs.concat('3') : tabs},
+        activeKey: { $set: '3' }
+      }
+    })  
 
     case getType(actions.doGetProjectMembersRequest):
     return update(state,{projectId:{$set:action.payload}})  
