@@ -116,11 +116,12 @@ export default class Project extends Service {
             return this.ServerResponse.error('内部错误');
         } else {
             if (data) {
-                const members = data.members ? data.members.split(',') : [];
-                const addMembers = userIds ? userIds.split(',') : [];
+                const members = data.memberIds ? data.memberIds.split(',') : [];
+                const addMembers = userIds ? (typeof userIds === 'string' ? userIds.split(',') : userIds) : [];
                 const member = addMembers.filter(item => _.findIndex(members, i => i === item) === -1).concat(members);
-                data.member = member.join(',');
-                data.update();
+                data.memberIds = member.join(',');
+                await data.save();
+                return this.ServerResponse.success('添加成功');
             } else {
                 return this.ServerResponse.error('项目不存在', this.ResponseCode.NO_CONTENT);
             }
@@ -134,11 +135,12 @@ export default class Project extends Service {
             return this.ServerResponse.error('内部错误');
         } else {
             if (data) {
-                const members = data.members ? data.members.split(',') : [];
-                const addMembers = userIds ? userIds.split(',') : [];
+                const members = data.memberIds ? data.memberIds.split(',') : [];
+                const addMembers = userIds ? (typeof userIds === 'string' ? userIds.split(',') : userIds) : [];
                 const member = members.filter(item => _.findIndex(addMembers, i => i === item) >= 0);
-                data.member = member.join(',');
-                data.update();
+                data.memberIds = member.join(',');
+                await data.save();
+                return this.ServerResponse.success('删除成功');
             } else {
                 return this.ServerResponse.error('项目不存在', this.ResponseCode.NO_CONTENT);
             }
