@@ -124,12 +124,12 @@ const getUserInfo: Epic<ActionAny, ActionAny, StoreState> = action$ =>
   )
 
 
-const getUserList: Epic<ActionAny, ActionAny, StoreState> = action$ => 
+const getUserList: Epic<Action, Action, StoreState> = action$ => 
   action$.pipe(
     filter(isActionOf(actions.doGetUserListRequest)),
     mergeMap(() => Api.fetchUserList().pipe(
       map(actions.doGetUserListSuccess),
-      catchError(error => of(actions.doGetUserListFailure))
+      catchError(error => of(actions.doGetUserListFailure()))
     ))
   )
 
