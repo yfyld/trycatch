@@ -5,7 +5,7 @@ import { Table, Button } from 'antd';
 import { StoreState, Member, Action } from '@/types';
 import * as actions from "@/store/actions"
 import ProjectMemberAdd from './ProjectMemberAdd';
-
+import style from './ProjectMember.less';
 
 interface Props {
     memberList: Member[],
@@ -44,7 +44,7 @@ function ProjectMember({className, memberList, doAddProjectMemberToggle, project
     };
     return (
         <div className={className}>
-            <div>
+            <div className={style.action}>
                 <Button type='primary' onClick={doAddProjectMemberToggle}>添加项目成员</Button>
                 <Button type='primary' disabled={selectedRowKeys.length === 0} onClick={() => { doDeleteProjectMember({userIds: selectedRowKeys.join(',')}) }}>删除项目成员</Button>
             </div>
