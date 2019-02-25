@@ -136,8 +136,8 @@ export default class Project extends Service {
         } else {
             if (data) {
                 const members = data.memberIds ? data.memberIds.split(',') : [];
-                const addMembers = userIds ? (typeof userIds === 'string' ? userIds.split(',') : userIds) : [];
-                const member = members.filter(item => _.findIndex(addMembers, i => i === item) >= 0);
+                const deleteMembers = userIds ? (typeof userIds === 'string' ? userIds.split(',') : userIds) : [];
+                const member = members.filter(item => _.findIndex(deleteMembers, i => i === item) === -1);
                 data.memberIds = member.join(',');
                 await data.save();
                 return this.ServerResponse.success('删除成功');

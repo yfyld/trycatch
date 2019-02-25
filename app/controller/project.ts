@@ -50,7 +50,7 @@ export default class ProjectController extends Controller {
     async deleteMember() {
         const { ctx } = this;
         const id = ctx.helper.parseInt(ctx.params.id);
-        ctx.body = await ctx.service.project.deleteMember(ctx.request.body, id);
+        ctx.body = await ctx.service.project.deleteMember(ctx.query, id);
     }
 
     async members() {
