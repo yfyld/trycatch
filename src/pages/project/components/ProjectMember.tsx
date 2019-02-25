@@ -46,7 +46,7 @@ function ProjectMember({className, memberList, doAddProjectMemberToggle, project
         <div className={className}>
             <div>
                 <Button type='primary' onClick={doAddProjectMemberToggle}>添加项目成员</Button>
-                <Button type='primary' disabled={selectedRowKeys.length === 0} onClick={() => { doDeleteProjectMember({userIds: selectedRowKeys}) }}>删除项目成员</Button>
+                <Button type='primary' disabled={selectedRowKeys.length === 0} onClick={() => { doDeleteProjectMember({userIds: selectedRowKeys.join(',')}) }}>删除项目成员</Button>
             </div>
             <div>
                 <Table 
@@ -74,7 +74,7 @@ const mapStateToProps = (state: StoreState) => {
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => bindActionCreators({
     doAddProjectMemberToggle: () => actions.doAddProjectMemberToggle(true),
     doSelectProjectMember: (selectedKeys: number[]) => actions.doSelectProjectMember(selectedKeys),
-    doDeleteProjectMember: (params:object) => actions.doDeleteProjectMemberRequest(params)
+    doDeleteProjectMember: (params:object) => actions.doDeleteProjectMemberRequest(params) 
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectMember)

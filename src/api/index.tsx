@@ -34,7 +34,7 @@ export function fetchProjectMemberAdd(projectId, params?:object) {
 }
 
 export function fetchProjectMemberDelete(projectId, params?: object) {
-  return from(fetch.delete(`/project/${projectId}/deleteMember`, params))
+  return from(fetch.delete(`/project/${projectId}/deleteMember`, { params }))
 }
 
 export function fetchProjectInfo(projectId:number,params?: object) {

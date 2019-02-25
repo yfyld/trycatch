@@ -85,7 +85,7 @@ const addProject: Epic<ActionAny, ActionAny, StoreState> = (action$,state$)=>
   )
 
 
-  const doAddProjectMemberToggle = (action$) => 
+  const addProjectMemberToggle = (action$) => 
       action$.pipe(
         filter(isActionOf(actions.doAddProjectMemberToggle)),
         map(() => actions.doGetUserListRequest())
@@ -114,8 +114,25 @@ const addProject: Epic<ActionAny, ActionAny, StoreState> = (action$,state$)=>
     filter(isActionOf(actions.doDeleteProjectMemberRequest)),
     mergeMap(action => Api.fetchProjectMemberDelete(state$.value.project.projectId, action.payload).pipe(
       tap(() => {message.success('删除成功')}),
-      map(actions.doDeleteProjectMemberSuccess),
-      catchError(error => of(actions.doDeleteProjectMemberFailure()))
-    ))
+      mergeMap(() => [
+        actions.doDeleteProjectMemberSuccess(),
+        actions.doGetProjectMembersRequest(state$.value.project.projectId)
+      ])
+      
+    )),
+    catchError(error => of(actions.doDeleteProjectMemberFailure()))
   )
-export default [getProjectList, updateProjectDetails,getProjectDetail,addProject,getProjectMembers, doAddProjectMemberToggle, addProjectMember,deleteProjectMember]
+
+  const deleteProject: Epic<Action, Action, StoreState> = (action$) => action$.pipe(
+    filter(isActionOf(actions.doDeleteProjectRequest)),
+    mergeMap(action => Api.fetchProjectDel(action.payload).pipe(
+      tap(() => message.success('删除成功')),
+      mergeMap(() => [
+        actions.doDeleteProjectSuccess(),
+        actions.doGetProjectListRequest()
+      ])
+      
+    )),
+    catchError(error => of(actions.doDeleteProjectFailure()))
+  )
+export default [getProjectList, updateProjectDetails,getProjectDetail,addProject,getProjectMembers, addProjectMemberToggle, addProjectMember,deleteProjectMember,deleteProject]

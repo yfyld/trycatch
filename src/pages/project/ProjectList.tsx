@@ -12,11 +12,12 @@ import style from './ProjectList.less';
 
 interface Props {
   projectList: ProjectListItem[],
-  doAddProjectToggle:()=>{}
+  doAddProjectToggle:()=>{},
+  doDeleteProject: (projectId: number) =>  {}
 }
 
 
-function ProjectList({projectList,doAddProjectToggle}:Props){
+function ProjectList({projectList,doAddProjectToggle,doDeleteProject}:Props){
   return (
     <div className={style.wrapper}>
       <div className={style.action}> 
@@ -27,7 +28,7 @@ function ProjectList({projectList,doAddProjectToggle}:Props){
         {
           projectList.length === 0 ? <Empty /> : (
             projectList.map(project=>(
-              <ProjectListPane key={project.id} projectInfo={project}></ProjectListPane>
+              <ProjectListPane onDelete={doDeleteProject} key={project.id} projectInfo={project}></ProjectListPane>
             ))
           )
         }
@@ -44,7 +45,8 @@ const mapStateToProps = (state:StoreState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>)=>bindActionCreators({
-  doAddProjectToggle:()=>actions.doAddProjectToggle(true)
+  doAddProjectToggle:()=>actions.doAddProjectToggle(true),
+  doDeleteProject: (projectId: number) => actions.doDeleteProjectRequest(projectId)
 },dispatch)
 
 export default connect(mapStateToProps,mapDispatchToProps)(React.memo(ProjectList))

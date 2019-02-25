@@ -62,7 +62,8 @@ export const projectReducer = (state: ProjectState = initialState, action: Actio
       projectDetail: {
         tabs: { $apply: tabs => index === -1 ? tabs.concat('3') : tabs},
         activeKey: { $set: '3' }
-      }
+      },
+      projectMemberSelectedKeys: { $set: []}
     })  
 
     case getType(actions.doGetProjectMembersRequest):

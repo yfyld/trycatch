@@ -35,3 +35,8 @@ export const doSelectProjectMember = createAction(constants.SELECT_PROJECT_MEMBE
 export const doDeleteProjectMemberRequest = createAction(constants.DELETE_PROJECT_MEMBER_REQUEST, resolve => (params:object) => resolve(params))
 export const doDeleteProjectMemberSuccess = createAction(constants.DELETE_PROJECT_MEMBER_SUCCESS)
 export const doDeleteProjectMemberFailure = createAction(constants.DELETE_PROJECT_MEMBER_FAILURE)
+
+
+export const doDeleteProjectRequest = createAction(constants.DELETE_PROJECT_REQUEST, resolve => (projectId: number) => resolve(projectId))
+export const doDeleteProjectSuccess = createAction(constants.DELETE_PROJECT_SUCCESS)
+export const doDeleteProjectFailure = createAction(constants.DELETE_PROJECT_FAILURE)
