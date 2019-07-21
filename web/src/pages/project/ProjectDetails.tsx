@@ -33,7 +33,9 @@ function ProjectDetails({ doProjectMembers, projectId, tabs}:Props){
     <div className={style.wrapper}>
       <Tabs defaultActiveKey="1" onChange={(activeKey) => { onChange(activeKey, tabs,  null, null, () => doProjectMembers(projectId))}}>
         <TabPane tab="基本信息" key="1">  
-           <ProjectInfo className={style.content}/>
+          <div className={style.content}>
+             <ProjectInfo />
+          </div>
         </TabPane>
         <TabPane tab="预警设置" key="2">
           Content of Tab Pane 2

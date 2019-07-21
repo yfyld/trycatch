@@ -134,6 +134,8 @@ export interface EventInfo {
 }
 
 export interface EventListDataItem {
+  url?: string;
+  type?: string;
   id?: number
   status?: string
 }

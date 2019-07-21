@@ -1,40 +1,19 @@
 {
-  "extends": "tslint:latest",
+  "defaultSeverity": "error",
+  "extends": ["tslint:recommended"],
+  "jsRules": {
+    "no-unused-expression": true
+  },
   "rules": {
-    "quotemark": [
-      true,
-      "single",
-      "jsx-double"
-    ],
-    "no-console": [
-      true,
-      "dir",
-      "log",
-      "error",
-      "warn"
-    ],
-    "space-before-function-paren": false,
-    "interface-name": [
-      true,
-      "never-prefix"
-    ],
-    "adjacent-overload-signatures": true,
-    "member-access": [
-      false
-    ],
-    "member-ordering": [
-      true,
-      {
-        "order": "fields-first"
-      }
-    ],
-    "object-literal-sort-keys": false,
-    "max-classes-per-file": [
-      true,
-      10
-    ],
-    "variable-name": false,
-    "align": [true, "statements"],
-  }
+    "quotemark": [true, "single"],
+    "member-access": [false],
+    "ordered-imports": [false],
+    "max-line-length": [true, 150],
+    "member-ordering": [false],
+    "interface-name": [false],
+    "arrow-parens": false,
+    "max-classes-per-file":false,
+    "object-literal-sort-keys": false
+  },
+  "rulesDirectory": []
 }
-

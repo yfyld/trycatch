@@ -14,6 +14,7 @@ const paths = require('./paths');
 const getClientEnvironment = require('./env');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const tsImportPluginFactory = require('ts-import-plugin');
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -164,7 +165,16 @@ module.exports = {
                 options: {
                   // disable type checker - we will use it in fork plugin
                   transpileOnly: true,
-                  configFile: paths.appTsProdConfig
+                  configFile: paths.appTsProdConfig,
+                  getCustomTransformers: () => ({
+                    before: [
+                      tsImportPluginFactory({
+                        libraryDirectory: 'es',
+                        libraryName: 'antd',
+                        style: true
+                      })
+                    ]
+                  })
                 }
               }
             ]
@@ -182,7 +192,72 @@ module.exports = {
           // use the "style" loader inside the async code so CSS from them won't be
           // in the main CSS file.
           {
-            test: /\.css$/,
+            test: /\.css|less$/,
+            exclude: [paths.appNodeModules,paths.appStyle],
+            loader: ExtractTextPlugin.extract(
+              Object.assign(
+                {
+                  fallback: {
+                    loader: require.resolve('style-loader'),
+                    options: {
+                      hmr: false
+                    }
+                  },
+                  use: [
+                    {
+                      loader: require.resolve('css-loader'),
+                      options: {
+                        importLoaders: 1,
+                        modules: true,
+                        localIdentName: '[path][name]__[local]--[hash:base64:5]'
+                      }
+                    },
+                    {
+                      loader: require.resolve('postcss-loader'),
+                      options: {
+                        // Necessary for external CSS imports to work
+                        // https://github.com/facebookincubator/create-react-app/issues/2677
+                        ident: 'postcss',
+                        plugins: () => [
+                          require('postcss-flexbugs-fixes'),
+                          autoprefixer({
+                            browsers: [
+                              '>1%',
+                              'last 4 versions',
+                              'Firefox ESR',
+                              'not ie < 9' // React doesn't support IE8 anyway
+                            ],
+                            flexbox: 'no-2009'
+                          })
+                        ]
+                      }
+                    },
+                    {
+                      loader: require.resolve('less-loader'),
+                      options: {
+                        javascriptEnabled: true
+                      }
+                    },
+                    {
+                      loader: require.resolve('sass-resources-loader'),
+                      options: {
+                        resources: [
+                          path.resolve(__dirname, '../src/styles/variables/default.less'),
+                          path.resolve(__dirname, '../src/styles/mixins/common.less')
+                        ]
+                      }
+                    }
+                  ]
+                },
+                extractTextPluginOptions
+              )
+            )
+            // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
+          },
+
+          {
+            test: /\.css|less$/,
+            include: [paths.appNodeModules,paths.appStyle],
             loader: ExtractTextPlugin.extract(
               Object.assign(
                 {
@@ -219,6 +294,12 @@ module.exports = {
                             flexbox: 'no-2009'
                           })
                         ]
+                      }
+                    },
+                    {
+                      loader: require.resolve('less-loader'),
+                      options: {
+                        javascriptEnabled: true
                       }
                     }
                   ]

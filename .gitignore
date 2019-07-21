@@ -5,6 +5,7 @@ coverage/
 .idea/
 run/
 logs/
+db/data/
 .DS_Store
 .vscode
 *.swp
@@ -25,7 +26,7 @@ config/**/*.map
 # testing
 /coverage
 
-/build
+/web/build
 
 *.log*
 /server/run/*.json

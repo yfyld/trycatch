@@ -1,40 +1,18 @@
 {
-  "compileOnSave": true,
   "compilerOptions": {
-    "target": "es2017",
     "module": "commonjs",
-    "strict": true,
-    "noImplicitAny": false,
-    "experimentalDecorators": true,
+    "declaration": true,
+    "removeComments": true,
     "emitDecoratorMetadata": true,
-    "charset": "utf8",
-    "allowJs": false,
-    "pretty": true,
-    "noEmitOnError": false,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "allowUnreachableCode": false,
-    "allowUnusedLabels": false,
-    "strictPropertyInitialization": false,
-    "noFallthroughCasesInSwitch": true,
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "inlineSourceMap": true,
-    "importHelpers": true
+    "experimentalDecorators": true,
+    "target": "es6",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./src",
+    "paths": {
+      "@": ["./"],
+      "@/*": ["./*"]
+    }
   },
-  "rootDirs": ["app","config","schedule"],
-  "baseUrl": ".",
-  "paths": {
-    "@/*": [
-      "app/*"
-    ],
-    "types/*":[
-      "types/*"
-    ]
-  },
-  "exclude": [
-    "app/public",
-    "app/views",
-    "node_modules*"
-  ]
+  "exclude": ["node_modules"]
 }
