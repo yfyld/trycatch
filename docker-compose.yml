@@ -7,7 +7,7 @@ services:
   #   volumes:
   #     - ./redis.conf:/usr/local/etc/redis/redis.conf
   #   networks:
-  #     - "mynet"
+  #     - "trycatch_net"
   #   ports:
   #     - "6666:6379"
 
@@ -38,7 +38,7 @@ services:
   #     - db
   #     - redis
   #   networks:
-  #     - "mynet"
+  #     - "trycatch_net"
   #   build:
   #     context: server
   
@@ -47,13 +47,13 @@ services:
   #   container_name: trycatch-web-container
   #   image: nginx
   #   networks:
-  #     - "mynet"
+  #     - "trycatch_net"
   #   volumes:
   #     - ./nginx.conf:/etc/nginx/conf.d/trycatch.conf
   #     - ./web/build/:/home/trycatch/web/
   #   ports:
   #     - "8060:8080"
 
-networks:
-  mynet:
-    driver: bridge
+# networks:
+#   trycatch_net:
+#     driver: bridge

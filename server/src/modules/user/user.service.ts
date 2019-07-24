@@ -7,6 +7,7 @@ import { AUTH } from '@/app.config';
 import { TokenResult } from './user.interface';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserDto } from './user.dto';
 
 @Injectable()
 export class UserService {
@@ -66,6 +67,7 @@ export class UserService {
     return isVerified ? payload.data : null;
   }
 
+
   public async signin({ username, password }): Promise<TokenResult> {
     const user = await this.userModel.findOne({ username });
     const extantAuthPwd = user && user.password;
@@ -90,9 +92,9 @@ export class UserService {
     return this.roleModel.find();
   }
 
-  public async addUser(userInfo: User): Promise<User> {
-    userInfo.password = this.decodeMd5(this.decodeBase64(userInfo.password));
-    const { id } = await this.userModel.save(userInfo);
+  public async addUser(user: UserDto): Promise<User> {
+    user.password = this.decodeMd5(this.decodeBase64(user.password));
+    const { id } = await this.userModel.save(user);
     return this.userModel.findOne(id);
   }
 }

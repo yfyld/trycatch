@@ -28,3 +28,18 @@ export class SignUpBody {
   @IsString({ message: '字符串？' })
   password: string;
 }
+
+
+export class UserDto {
+  @ApiModelProperty()
+  @IsDefined()
+  @IsNotEmpty({ message: '账号？' })
+  @IsString({ message: '字符串？' })
+  username: string;
+
+  @ApiModelProperty()
+  @IsDefined()
+  @IsNotEmpty({ message: '密码？' })
+  @IsString({ message: '字符串？' })
+  password: string;
+}

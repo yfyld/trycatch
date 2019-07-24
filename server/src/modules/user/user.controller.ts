@@ -7,15 +7,18 @@ import {
   HttpStatus,
   Query,
   Req,
+  UsePipes,
 } from '@nestjs/common';
 import { User, Role } from './user.model';
 import { UserService } from './user.service';
 import { HttpProcessor } from '@/decotators/http.decotator';
 import { JwtAuthGuard } from '@/guards/auth.guard';
+import { ValidationPipe } from '@/pipes/validation.pipe';
 import { TokenResult } from './user.interface';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Permissions } from '@/decotators/permissions.decotators';
 import { PermissionsGuard } from '@/guards/permission.guard';
+import { UserDto } from './user.dto'; 
 
 @Controller('user')
 export class UserController {
@@ -42,6 +45,7 @@ export class UserController {
   // }
 
   @Post('/signin')
+  @UsePipes(new ValidationPipe())
   @HttpProcessor.handle({ message: '登陆', error: HttpStatus.BAD_REQUEST })
   signin(@Body() body: any): Promise<TokenResult> {
     return this.userService.signin(body);
@@ -49,8 +53,9 @@ export class UserController {
 
   @HttpProcessor.handle('注册')
   @Post('/signup')
-  signup(@Body() userInfo: any): Promise<User> {
-    return this.userService.addUser(userInfo);
+  @UsePipes(new ValidationPipe())
+  signup(@Body() user: UserDto): Promise<User> {
+    return this.userService.addUser(user);
   }
 
   @HttpProcessor.handle('注销')
@@ -62,7 +67,8 @@ export class UserController {
   @ApiBearerAuth()
   @HttpProcessor.handle('获取用户信息')
   @Get('/info')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard,PermissionsGuard)
+  @Permissions('chakaninfo')
   getUserInfo(@Req() request: any): Promise<User> {
     return this.userService.getUserByUsername(request.user.username);
   }
