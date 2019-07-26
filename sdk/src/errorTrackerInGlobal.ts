@@ -3,12 +3,11 @@ import computedStackTrace from './utils/computedStackTrace';
 import CONS from './constant';
 import { sendData } from './send';
 
-export default class ErrorTrackerInGlobal {
-    static instance: null | object;
+class ErrorTrackerInGlobal {
+    static instance: null | ErrorTrackerInGlobal;
     oldErrorHandler: OnErrorEventHandlerNonNull;
     constructor() {
         this.oldErrorHandler = null;
-        this.install();
     }
 
     static getInstance() {
@@ -71,3 +70,5 @@ export default class ErrorTrackerInGlobal {
         return error;
     }
 }
+
+export default ErrorTrackerInGlobal.getInstance();

@@ -3,18 +3,18 @@ import CONS from './constant';
 import { Config } from './types';
 import { sendData } from './send';
 
-export default class ErrorTrackerInHttp {
-    static instance: null | object;
+class ErrorTrackerInHttp {
+    static instance: null | ErrorTrackerInHttp;
     ignoreHttpCodeList: number[];
-    constructor(config: Config) {
+    constructor() {
         this.traceHttpError = this.traceHttpError.bind(this);
         this.decideHttp = this.decideHttp.bind(this);
-        this.ignoreHttpCodeList = config.ignoreHttpCodeList || [];
-        this.install();
+        // this.ignoreHttpCodeList = config.ignoreHttpCodeList || [];
+       
     }
-    static getInstance(config: Config) {
+    static getInstance() {
         if (!ErrorTrackerInHttp.instance) {
-            ErrorTrackerInHttp.instance = new ErrorTrackerInHttp(config);
+            ErrorTrackerInHttp.instance = new ErrorTrackerInHttp();
         }
         return ErrorTrackerInHttp.instance;
     }
@@ -53,8 +53,10 @@ export default class ErrorTrackerInHttp {
             this.traceHttpError(e);
         }
     }
-    install() {
+    install({ignoreHttpCodeList = []}: { ignoreHttpCodeList?: number[]} = {}) {
+        this.ignoreHttpCodeList = ignoreHttpCodeList;
         if (window.addEventListener && !getFlag('watchRequest')) {
+            
             window.addEventListener('httpError', this.traceHttpError, false);
             window.addEventListener('httpLoadEnd', this.decideHttp, false);
             setFlag('watchRequest', true);
@@ -68,3 +70,5 @@ export default class ErrorTrackerInHttp {
         }
     }
 }
+
+export default ErrorTrackerInHttp.getInstance();

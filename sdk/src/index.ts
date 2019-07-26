@@ -6,11 +6,12 @@ import CONS from './constant';
 import { Config } from './types';
 import ErrorTrackerInGlobal from './errorTrackerInGlobal';
 import ErrorTrackerInHttp from './errorTrackerInHttp';
+import ErrorTrackerInVue from './errorTrackerInVue';
 
 export default class TryCatch {
     config: Config;
     behavior: object;
-    errorTracker: object;
+    errorTracker: any;
     constructor(config: Config = {}) {
         const defaults = {
             apikey: '',
@@ -31,9 +32,18 @@ export default class TryCatch {
         hijackFetch();
         this.config.hijackConsole && hijackConsole();
         this.behavior = Behavior.getInstance(this.config);
-        this.errorTracker = ErrorTrackerInGlobal.getInstance();
-        ErrorTrackerInHttp.getInstance(this.config);
+        this.errorTracker = ErrorTrackerInGlobal.install();
+        ErrorTrackerInHttp.install(this.config);
     }
+
+
+}
+
+const prototype = {
+    trackVue: ErrorTrackerInVue.install,
+    unTrackVue: ErrorTrackerInVue.uninstall,
+    trackHttp: ErrorTrackerInHttp.install,
+    unTrackHttp: ErrorTrackerInHttp.uninstall
 }
 
 const scriptDom: Element = document.querySelector('script[apikey]');

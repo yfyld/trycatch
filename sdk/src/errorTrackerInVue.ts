@@ -3,8 +3,17 @@ import CONS from './constant';
 import { Trace } from '@/types';
 import computedStackTrace from './utils/computedStackTrace';
 import { sendData } from './send';
+class ErrorTrackerInVue {
+    isInstall: boolean = false;
+    static instance: null | ErrorTrackerInVue;
+    static getInstance() {
+        if (!ErrorTrackerInVue.instance) {
+            ErrorTrackerInVue.instance = new ErrorTrackerInVue();
+        }
+        return ErrorTrackerInVue.instance;
+    }
 
-const ErrorTrackerInVue = {
+
     formatComponentName (vm: any): string {
         if (vm.$root === vm) { // 根组件
             return 'root';
@@ -13,7 +22,7 @@ const ErrorTrackerInVue = {
         return name ? 'component <' + name + '>' : 'anoymous component' + (
             vm._isVue && vm.$options && vm.$options.__file ? ' at ' + (vm.$options && vm.$options.__file) : ''
         )
-    },
+    }
 
     computedErrorStackTrace(err: any, vm: any, info: any, level: any) {
         let errInfo: Trace = {};
@@ -38,28 +47,31 @@ const ErrorTrackerInVue = {
             stack: errInfo.stack || [],
             time: Date.now()
         })
-    },
+    }
 
     install(Vue: any): false | void {
         if (getFlag('watchVue') || !Vue || !Vue.config) {
             return false;
         }
+
         setFlag('watchVue', true);
+        this.isInstall = true; 
+
         const hasConsole = typeof console !== 'undefined';
         Vue.config.warnHandler = (msg: any, vm: any, trace: any) => {
             if (hasConsole) {
                 getFlag('consoleInjected') ? console.error(`[Vue warn]: ${msg}${trace}`, 'infoFromTryCatch') : console.error(`[Vue warn]: ${msg}${trace}`);
             }
-            ErrorTrackerInVue.computedErrorStackTrace(msg, vm, trace, CONS.LEVEL.NORMAL);
+            this.computedErrorStackTrace(msg, vm, trace, CONS.LEVEL.NORMAL);
         }
 
         Vue.config.errorHandler = (err: any, vm: any, info: any) => {
             if (hasConsole) {
                 getFlag('consoleInjected') ? console.error(err, 'infoFromTryCatch') : console.error(err);
             }
-            ErrorTrackerInVue.computedErrorStackTrace(err, vm, info, CONS.LEVEL.HIGH);
+            this.computedErrorStackTrace(err, vm, info, CONS.LEVEL.HIGH);
         }
-    },
+    }
 
     uninstall (Vue: any): false | void {
         if (!this.isInstall || !Vue || !Vue.config) {
@@ -70,5 +82,7 @@ const ErrorTrackerInVue = {
         Vue.config.warnHandler = null;
         Vue.config.errorHandler = null;
     }
-
 }
+
+
+export default ErrorTrackerInVue.getInstance();

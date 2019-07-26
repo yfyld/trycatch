@@ -9,6 +9,9 @@ export function log(data: ErrorLog) {
         level: data.level,
         url: getLocationHref()
     }
-
+    // if(data.ex) {
+    //     error.name = data.ex.name;
+    //     error.message = data.ex.message;
+    // }
     sendData(error);
 }
