@@ -2,6 +2,7 @@ import { isError, getLocationHref, isString } from './utils/util';
 import computedStackTrace from './utils/computedStackTrace';
 import CONS from './constant';
 import { sendData } from './send';
+import { log } from './logError';
 
 class ErrorTrackerInGlobal {
     static instance: null | ErrorTrackerInGlobal;
@@ -68,6 +69,10 @@ class ErrorTrackerInGlobal {
             stack: [element]
         }
         return error;
+    }
+
+    log () {
+        return log.apply(this, arguments);
     }
 }
 

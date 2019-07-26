@@ -7,6 +7,7 @@ import { Config } from './types';
 import ErrorTrackerInGlobal from './errorTrackerInGlobal';
 import ErrorTrackerInHttp from './errorTrackerInHttp';
 import ErrorTrackerInVue from './errorTrackerInVue';
+import ErrorTrackerInPromise from './errorTrackerInPromise';
 
 export default class TryCatch {
     config: Config;
@@ -34,6 +35,7 @@ export default class TryCatch {
         this.behavior = Behavior.getInstance(this.config);
         this.errorTracker = ErrorTrackerInGlobal.install();
         ErrorTrackerInHttp.install(this.config);
+        ErrorTrackerInPromise.install();
     }
 
 
@@ -43,10 +45,17 @@ const prototype = {
     trackVue: ErrorTrackerInVue.install,
     unTrackVue: ErrorTrackerInVue.uninstall,
     trackHttp: ErrorTrackerInHttp.install,
-    unTrackHttp: ErrorTrackerInHttp.uninstall
+    unTrackHttp: ErrorTrackerInHttp.uninstall,
+    log: ErrorTrackerInGlobal.log
 }
 
+for (let i in prototype) {
+    TryCatch.prototype[i] = prototype[i];
+}
+
+
 const scriptDom: Element = document.querySelector('script[apikey]');
+
 
 if (scriptDom) {
     const userInfo = {
