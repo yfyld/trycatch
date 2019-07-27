@@ -1,3 +1,4 @@
+import { Auth } from '@/decotators/user.decorators';
 import {
   Controller,
   Get,
@@ -17,7 +18,7 @@ import { TokenResult } from './user.interface';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Permissions } from '@/decotators/permissions.decotators';
 import { PermissionsGuard } from '@/guards/permission.guard';
-import { UserDto } from './user.dto';
+import { SignUpDto, LoginDto } from './user.dto';
 
 @Controller('user')
 export class UserController {
@@ -45,29 +46,28 @@ export class UserController {
 
   @Post('/signin')
   @HttpProcessor.handle({ message: '登陆', error: HttpStatus.BAD_REQUEST })
-  signin(@Body() body: any): Promise<TokenResult> {
+  signin(@Body() body: LoginDto): Promise<TokenResult> {
     return this.userService.signin(body);
   }
 
   @HttpProcessor.handle('注册')
   @Post('/signup')
-  signup(@Body() user: UserDto): Promise<User> {
+  signup(@Body() user: SignUpDto): Promise<User> {
     return this.userService.addUser(user);
   }
 
-  @HttpProcessor.handle('注销')
-  @Post('/signout')
-  signout(@Body() user: UserDto): void {
-    return null;
-  }
+  // @HttpProcessor.handle('注销')
+  // @Post('/signout')
+  // signout(): void {
+  //   return null;
+  // }
 
   @ApiBearerAuth()
   @HttpProcessor.handle('获取用户信息')
   @Get('/info')
-  @UseGuards(JwtAuthGuard, PermissionsGuard)
-  @Permissions('chakaninfo', 'admin')
-  getUserInfo(@Req() request: any): Promise<User> {
-    return this.userService.getUserByUsername(request.user.username);
+  @UseGuards(JwtAuthGuard)
+  getUserInfo(@Auth() user: User): Promise<User> {
+    return this.userService.getUserByUsername(user.username);
   }
 
   @ApiBearerAuth()

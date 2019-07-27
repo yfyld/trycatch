@@ -9,11 +9,7 @@ import {
   QueryProjectsDto,
 } from './project.dto';
 import { User } from '@/modules/user/user.model';
-import {
-  PageQuery,
-  QueryListResult,
-  PageData,
-} from '@/interfaces/request.interface';
+import { QueryListResult, PageData } from '@/interfaces/request.interface';
 @Injectable()
 export class ProjectService {
   constructor(

@@ -16,7 +16,7 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     ports:
-      - "3333:3306"
+      - '3333:3306'
     volumes:
       - ./mysql.cnf:/etc/mysql/conf.d/mysql.cnf
       - ./db/data/:/var/lib/mysql
@@ -41,19 +41,17 @@ services:
   #     - "trycatch_net"
   #   build:
   #     context: server
-  
-    
-  # web:
-  #   container_name: trycatch-web-container
-  #   image: nginx
-  #   networks:
-  #     - "trycatch_net"
-  #   volumes:
-  #     - ./nginx.conf:/etc/nginx/conf.d/trycatch.conf
-  #     - ./web/build/:/home/trycatch/web/
-  #   ports:
-  #     - "8060:8080"
 
+  web:
+    container_name: trycatch-web-container
+    image: nginx
+    networks:
+      - 'trycatch_net'
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/trycatch.conf
+      # - ./web/build/:/home/trycatch/web/
+    ports:
+      - '8060:8080'
 # networks:
 #   trycatch_net:
 #     driver: bridge
