@@ -8,6 +8,7 @@ import {
   ManyToMany,
   JoinTable,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { User } from '../user/user.model';
 
@@ -27,6 +28,7 @@ export class Project {
   members: User[];
 
   @ManyToOne(type => User)
+  @JoinColumn()
   admin: User;
 
   @ManyToOne(type => User)

@@ -1,3 +1,6 @@
+import { QueryListResult } from '@/interfaces/request.interface';
+import { QueryList } from './../../decotators/query-list.decorators';
+import { PageQuery, PageData } from './../../interfaces/request.interface';
 import {
   Controller,
   Get,
@@ -9,6 +12,7 @@ import {
   Req,
   Delete,
   Param,
+  Put,
 } from '@nestjs/common';
 import { Project } from './project.model';
 import { ProjectService } from './project.service';
@@ -17,7 +21,16 @@ import { JwtAuthGuard } from '@/guards/auth.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Permissions } from '@/decotators/permissions.decotators';
 import { PermissionsGuard } from '@/guards/permission.guard';
-import { ProjectDto, AddProjectDto } from './project.dto';
+import {
+  ProjectDto,
+  AddProjectDto,
+  AddMembersDto,
+  DeleteMembersDto,
+  UpdateMembersDto,
+  QueryProjectsDto,
+} from './project.dto';
+import { Auth } from '@/decotators/user.decorators';
+import { User } from '@/modules/user/user.model';
 
 @Controller('project')
 export class ProjectController {
@@ -25,22 +38,23 @@ export class ProjectController {
 
   @Post('/')
   @HttpProcessor.handle({ message: '新建项目' })
-  addProject(@Body() body: AddProjectDto,@Req() request: any): Promise<ProjectDto> {
-    return this.projectService.addProject(body);
+  @UseGuards(JwtAuthGuard)
+  addProject(
+    @Body() body: AddProjectDto,
+    @Auth() user: User,
+  ): Promise<ProjectDto> {
+    return this.projectService.addProject(body, user);
   }
 
   @HttpProcessor.handle('编辑项目')
-  @Post('/:projectId')
-  signup(
-    @Param('projectId') projectId: number,
-    @Body() body: Project,
-  ): Promise<Project> {
-    return this.projectService.updateProject(projectId, body);
+  @Put('/')
+  updateProject(@Body() body: UpdateMembersDto): Promise<void> {
+    return this.projectService.updateProject(body);
   }
 
   @HttpProcessor.handle('删除项目')
   @Delete('/:projectId')
-  signout(@Param('projectId') projectId: number): Promise<boolean> {
+  signout(@Param('projectId') projectId: number): Promise<void> {
     return this.projectService.deleteProject(projectId);
   }
 
@@ -48,7 +62,7 @@ export class ProjectController {
   @HttpProcessor.handle('获取项目信息')
   @Get('/:projectId')
   @UseGuards(JwtAuthGuard)
-  getProjectInfo(@Req() projectId: number): Promise<Project> {
+  getProjectInfo(@Param('projectId') projectId: number): Promise<Project> {
     return this.projectService.getProjectById(projectId);
   }
 
@@ -56,7 +70,23 @@ export class ProjectController {
   @HttpProcessor.handle('获取项目列表')
   @UseGuards(JwtAuthGuard)
   @Get('/')
-  getProjects(): Promise<Project[]> {
-    return this.projectService.getProjects();
+  getProjects(
+    @QueryList() query: QueryListResult<QueryProjectsDto>,
+  ): Promise<PageData<Project>> {
+    return this.projectService.getProjects(query);
+  }
+
+  @Post('/add-members')
+  @HttpProcessor.handle({ message: '添加成员' })
+  @UseGuards(JwtAuthGuard)
+  addMembers(@Body() body: AddMembersDto): Promise<void> {
+    return this.projectService.addMembers(body.projectId, body.memberIds);
+  }
+
+  @Post('/delete-member')
+  @HttpProcessor.handle({ message: '删除成员' })
+  @UseGuards(JwtAuthGuard)
+  deleteMember(@Body() body: DeleteMembersDto): Promise<void> {
+    return this.projectService.deleteMember(body.projectId, body.memberId);
   }
 }

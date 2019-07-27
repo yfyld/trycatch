@@ -36,7 +36,7 @@ async function bootstrap() {
   app.use(compression());
   app.use(bodyParser.json({ limit: '5mb' }));
   app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(rateLimit({ max: 1000, windowMs: 15 * 60 * 1000 }));
+  //app.use(rateLimit({ max: 1000, windowMs: 15 * 60 * 1000 }));
 
   // const permissionsGuard = app
   // .select(AppModule)

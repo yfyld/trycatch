@@ -1,7 +1,13 @@
-
 import { IsString, IsDefined, IsNotEmpty } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 
 @Entity()
 export class Permission {
@@ -71,4 +77,20 @@ export class User {
   @ManyToMany(type => Permission)
   @JoinTable()
   permissions: Permission[];
+}
+
+@Entity()
+export class Team {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ApiModelProperty()
+  @IsDefined()
+  @IsString()
+  @Column()
+  name: string;
+
+  @ManyToMany(type => User)
+  @JoinTable()
+  users: User[];
 }

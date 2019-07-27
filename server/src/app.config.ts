@@ -1,4 +1,3 @@
-
 import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
 
 export const APP = {
@@ -7,14 +6,14 @@ export const APP = {
 };
 
 export const AUTH = {
-  jwtTokenSecret: 'aaaa',
-  expiresIn: 9990000009,
+  jwtTokenSecret: 'I am quiet handsome man',
+  expiresIn: 99999999999999,
   defaultPassword: '123456',
-  data: {username: 'root', roles: []},
+  data: { username: 'root', roles: [] },
 };
 
 export const CROSS_DOMAIN = {
-  allowedOrigins: ['http://127.0.0.1:5000', 'http://localhost:5000', 'http://localhost:61260'],
+  allowedOrigins: [],
 };
 
 export const MONGODB = {
@@ -26,7 +25,7 @@ export const MONGODB = {
 
 export const REDIS = {
   host: 'yfyld.online',
-  port:  6379,
+  port: 6379,
   ttl: null,
   defaultCacheTTL: 60 * 60 * 24,
 };
