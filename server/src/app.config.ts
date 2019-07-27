@@ -13,11 +13,7 @@ export const AUTH = {
 };
 
 export const CROSS_DOMAIN = {
-  allowedOrigins: [
-    'http://127.0.0.1:5000',
-    'http://localhost:5000',
-    'http://localhost:61260',
-  ],
+  allowedOrigins: [],
 };
 
 export const MONGODB = {
