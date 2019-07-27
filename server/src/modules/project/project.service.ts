@@ -2,6 +2,7 @@ import { Project } from './project.model';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AddProjectDto, ProjectDto } from './project.dto';
 
 @Injectable()
 export class ProjectService {
@@ -18,9 +19,9 @@ export class ProjectService {
     return this.projectModel.find();
   }
 
-  public async addProject(projectInfo: Project): Promise<Project> {
+  public async addProject(projectInfo: AddProjectDto): Promise<ProjectDto> {
     const { id } = await this.projectModel.save(projectInfo);
-    return this.projectModel.findOne(id);
+    return {id};
   }
 
   public async updateProject(
