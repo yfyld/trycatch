@@ -17,14 +17,15 @@ import { JwtAuthGuard } from '@/guards/auth.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Permissions } from '@/decotators/permissions.decotators';
 import { PermissionsGuard } from '@/guards/permission.guard';
+import { ProjectDto, AddProjectDto } from './project.dto';
 
 @Controller('project')
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
   @Post('/')
-  @HttpProcessor.handle({ message: '新建项目', error: HttpStatus.BAD_REQUEST })
-  signin(@Body() body: Project): Promise<Project> {
+  @HttpProcessor.handle({ message: '新建项目' })
+  addProject(@Body() body: AddProjectDto,@Req() request: any): Promise<ProjectDto> {
     return this.projectService.addProject(body);
   }
 

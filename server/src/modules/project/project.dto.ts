@@ -6,31 +6,33 @@ export class AddProjectDto {
     @IsDefined()
     @IsNotEmpty({ message: '项目名称不能为空' })
     name: string;
+}
 
-
+export class ProjectDto {
+    @ApiModelProperty()
+    id: number;
 }
 
 export class UpdateProjectDto {
     @ApiModelProperty()
-    @IsDefined()
-    @IsInt({message: '项目ID必须是整数'})
+    @IsNotEmpty({message: '项目ID不能为空'})
     id: number;
 
     
 }
 
 
-export class ProjectDto {
-    @ApiModelProperty()
-    @IsDefined()
-    @IsInt({message: '项目ID必须是整数'})
-    id: number;
+// export class ProjectDto {
+//     @ApiModelProperty()
+//     @IsDefined()
+//     @IsInt({message: '项目ID必须是整数'})
+//     id: number;
 
 
 
-    @ApiModelProperty()
-    @IsDefined()
-    @IsNotEmpty({ message: '项目名称不能为空' })
-    name: string;
+//     @ApiModelProperty()
+//     @IsDefined()
+//     @IsNotEmpty({ message: '项目名称不能为空' })
+//     name: string;
     
-}
+// }
