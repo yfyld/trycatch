@@ -58,6 +58,15 @@ export class UserService {
     const accessToken = this.jwtService.sign({ data });
     return Promise.resolve({ accessToken, expiresIn: AUTH.expiresIn });
   }
+  public async refreshToken(token): Promise<TokenResult> {
+    try {
+      const data = JSON.parse(this.decodeBase64(token.split('.')[1]));
+      const user = await this.userModel.findOne(data.id);
+      return this.createToken(user);
+    } catch (error) {
+      return null;
+    }
+  }
 
   public async validateAuthData(payload: any): Promise<any> {
     const user = await this.userModel.findOne({
@@ -66,7 +75,6 @@ export class UserService {
     const isVerified = payload.data.password === user.password; // lodash.isEqual(payload.data, {username:user.username});
     return isVerified ? payload.data : null;
   }
-
 
   public async signin({ username, password }): Promise<TokenResult> {
     const user = await this.userModel.findOne({ username });

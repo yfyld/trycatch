@@ -1,6 +1,13 @@
+import { UserService } from './../modules/user/user.service';
+import { Permissions } from '@/decotators/permissions.decotators';
+import { Observable } from 'rxjs';
 import { AuthGuard } from '@nestjs/passport';
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { HttpUnauthorizedError } from '@/errors/unauthorized.error';
+import { ExtractJwt } from 'passport-jwt';
+import * as passport from 'passport';
+
+type Type<T = any> = new (...args: any[]) => T;
 
 /**
  * @class JwtAuthGuard
@@ -9,8 +16,26 @@ import { HttpUnauthorizedError } from '@/errors/unauthorized.error';
  */
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
-  canActivate(context: ExecutionContext) {
-    return super.canActivate(context);
+  constructor(private readonly userService: UserService) {
+    super();
+  }
+
+  async canActivate(context: ExecutionContext): Promise<any> {
+    try {
+      return await super.canActivate(context);
+    } catch (TokenExpiredError) {
+      if (TokenExpiredError.response.error === 'jwt expired') {
+        const request = context.switchToHttp().getRequest();
+        const token = ExtractJwt.fromAuthHeaderAsBearerToken()(request);
+        const result = await this.userService.refreshToken(token);
+        // tslint:disable-next-line: max-line-length
+        if (result) {
+          request.headers.authorization = `Bearer ${result.accessToken}`;
+          return await super.canActivate(context);
+        }
+      }
+      return false;
+    }
   }
 
   /**
@@ -21,7 +46,8 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     if (authInfo && !error && !errInfo) {
       return authInfo;
     } else {
-      throw error || new HttpUnauthorizedError(null, errInfo && errInfo.message);
+      throw error ||
+        new HttpUnauthorizedError(null, errInfo && errInfo.message);
     }
   }
 }

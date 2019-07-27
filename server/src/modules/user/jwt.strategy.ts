@@ -7,14 +7,12 @@ import { AUTH } from '@/app.config';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-
   constructor(private readonly userService: UserService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: AUTH.jwtTokenSecret,
     });
   }
-
   async validate(payload: any) {
     const data = await this.userService.validateAuthData(payload);
     if (data) {
