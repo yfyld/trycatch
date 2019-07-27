@@ -10,9 +10,14 @@ export default {
       {
         action: actions.doGetUserInfoRequest(),
         ttl: CACHE_TIME,
-        isExist: (!!state.app.userInfo.id) || (exclude.indexOf(pathname) > -1 || exclude.indexOf(`${pathname}/`) > -1),
+        isExist: (!!state.app.isLogin) || (exclude.indexOf(pathname) > -1 || exclude.indexOf(`${pathname}/`) > -1),
         
       },
+      {
+        action: actions.doGetUserListRequest(),
+        ttl: CACHE_TIME,
+        isExist: (state.app.userList.length > 0 || (exclude.indexOf(pathname) > -1 || exclude.indexOf(`${pathname}/`) > -1))
+      }
     ]
   }
 };

@@ -2,10 +2,19 @@ import * as actions from '@/store/actions'
 import { ActionType } from 'typesafe-actions'
 import {StoreState} from '@/store/reducers'
 
+
+export interface ResponseOk<T> {
+  message: string,
+  result: T
+}
+
 export interface PageData<T>{
   totalCount:number,
   list:T[]
-  
+}
+
+export interface ListResult<T> {
+  result: PageData<T>
 }
 export interface PageQuery{
   page?:number,
@@ -24,9 +33,9 @@ export interface ActionAny {
 
 
 export interface UserInfo {
-  name?: string
+  username?: string
   id?: string
-  mobile?: string
+  nickName?: string
   password?: string
 }
 
@@ -45,14 +54,20 @@ export interface  Member{
 }
 
 export interface User {
-  name?: string,
+  username?: string,
   id: string,
-  mobile: string
+  nickName: string
+}
+
+export interface Project {
+  id: number
 }
 
 export interface ProjectInfo {
   name?: string
-  id?: number
+  id?: number,
+  members?: User[],
+  guarder?: User
 }
 
 

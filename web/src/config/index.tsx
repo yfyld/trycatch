@@ -1,4 +1,6 @@
 export default{
-  baseURL:"http://127.0.0.1/api/",
+  // baseEnvURL:"http://moapi.tongdun.cn/api/project/mock/1/",
+  baseEnvURL: "http://192.168.0.106:3300",
+  baseURL: "",
   useServerDate:false
 }

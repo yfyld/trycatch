@@ -24,16 +24,16 @@ const Login=({form,doSubmit}:Props)=>{
       <h2 className={style.title}>登录</h2>
       <Form onSubmit={(e)=>doSubmit(e,form)} className="login-form">
         <Form.Item>
-          {getFieldDecorator('mobile', {
+          {getFieldDecorator('username', {
             rules: [
-              { required: true, message: '请输入手机号' }
+              { required: true, message: '请输入用户名' }
             ]
           })(
             <Input
               prefix={
-                <Icon type="mobile" style={{ color: 'rgba(0,0,0,.25)' }} />
+                <Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />
               }
-              placeholder="请输入手机号"
+              placeholder="请输入用户名"
             />
           )}
         </Form.Item>

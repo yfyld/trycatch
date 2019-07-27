@@ -1,7 +1,7 @@
 import * as constants from "@/constants";
 import { createAction } from "typesafe-actions";
 import { AxiosResponse } from 'axios';
-import {ErrorChartData,ErrorSearchParams,ErrorListData,ErrorChangeParams,EventListDataItem,PageData,EventInfo,ErrorInfo} from "@/types"
+import {ErrorChartData,ErrorSearchParams,ErrorChangeParams,EventListDataItem,PageData,EventInfo,ErrorInfo, ErrorListDataItem} from "@/types"
 
 
 export const doGetErrorAllData = createAction(constants.GET_ERROR_ALL_DATA,resolve=>(params:ErrorSearchParams)=>resolve(params));
@@ -11,7 +11,7 @@ export const doGetErrorChartDataSuccess = createAction(constants.GET_ERROR_CHART
 export const doGetErrorChartDataFailure = createAction(constants.GET_ERROR_CHART_FAILURE);
 
 export const doGetErrorListDataRequest = createAction(constants.GET_ERROR_LIST_REQUEST,resolve=>(params:ErrorSearchParams)=>resolve(params));
-export const doGetErrorListDataSuccess = createAction(constants.GET_ERROR_LIST_SUCCESS,resolve=>(response:AxiosResponse<ErrorListData>)=>resolve(response.data));
+export const doGetErrorListDataSuccess = createAction(constants.GET_ERROR_LIST_SUCCESS,resolve=>(data: PageData<ErrorListDataItem>)=>resolve(data));
 export const doGetErrorListDataFailure = createAction(constants.GET_ERROR_LIST_FAILURE);
 
 
