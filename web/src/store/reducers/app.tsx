@@ -6,13 +6,15 @@ import { Action,UserInfo, User } from '@/types'
 export interface AppState {
   loading: boolean
   userInfo: UserInfo,
-  userList: User[]
+  userList: User[],
+  isLogin: boolean
 }
 
 const initialState=():AppState => ({
   loading: false,
   userInfo: {},
-  userList: []
+  userList: [],
+  isLogin: false
 })
 
 export const appReducer = (
@@ -21,14 +23,18 @@ export const appReducer = (
 ): AppState => {
   switch (action.type) {
     case getType(actions.doLoginSuccess):
-      return state
+      return state;
 
     case getType(actions.doLogoutSuccess):
       return update(state,  {$set: initialState()})
 
 
     case getType(actions.doGetUserInfoSuccess):
-      return update(state, { userInfo: { $set: action.payload } })
+      return update(state, { 
+        userInfo: { $set: action.payload },
+        isLogin: { $set: true } 
+
+      })
     case getType(actions.doGetUserListSuccess): 
       return update(state, {
         userList: { $set: action.payload.list }

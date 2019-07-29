@@ -1,11 +1,12 @@
 import * as actions from '../actions'
 import { Epic } from 'redux-observable'
-import { switchMap, map, filter, mergeMap, tap } from 'rxjs/operators'
-
+import { of } from 'rxjs';
+import { switchMap, map, filter, mergeMap, tap, catchError } from 'rxjs/operators'
+import { AxiosResponse } from 'axios';
 import { StoreState } from '@/store/reducers'
 import { isActionOf } from 'typesafe-actions'
 import * as Api from '@/api'
-import { Action } from '@/types'
+import { Action, ResponseOk, PageData, ErrorListDataItem } from '@/types'
 import {message} from "antd"
 
 const getErrorChartData: Epic<Action, Action, StoreState> = (action$, state$) =>
@@ -29,9 +30,11 @@ const getErrorListData: Epic<Action, Action, StoreState> = (action$, state$) =>
       ...action,
       payload: { ...state$.value.work.errorSearchParams }
     })),
-    switchMap(action => {
+    mergeMap(action => {
+      console.log(action);
       return Api.fetchErrorListData(action.payload).pipe(
-        map(actions.doGetErrorListDataSuccess)
+        map(({data: {result: { list = [], totalCount = 0}}}: AxiosResponse<ResponseOk<PageData<ErrorListDataItem>>>) => actions.doGetErrorListDataSuccess({list, totalCount})),
+        catchError(err => of(actions.doGetErrorListDataFailure()))
       )
     })
   )

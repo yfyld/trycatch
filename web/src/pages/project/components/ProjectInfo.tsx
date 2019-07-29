@@ -1,73 +1,105 @@
 import * as React from 'react'
-import { Form,Input,Button } from 'antd'
-import { WrappedFormUtils } from 'antd/lib/form/Form';
-import {connect} from "react-redux"
+import { Form, Input, Button, Select } from 'antd'
+import { WrappedFormUtils, FormComponentProps } from 'antd/lib/form/Form';
+import { connect } from "react-redux"
 import * as actions from '@/store/actions'
-import { bindActionCreators,Dispatch } from 'redux'
-import {Action,ProjectInfo,StoreState} from '@/types'
+import { bindActionCreators, Dispatch } from 'redux'
+import { Action, ProjectInfo, StoreState, User } from '@/types'
 
 
+const FormItem = Form.Item;
+const Option = Select.Option;
 
-interface Props{
-  form:WrappedFormUtils,
-  doSubmit:(e:React.FormEvent,form:WrappedFormUtils)=>{},
-  projectInfo:ProjectInfo,
-  className?: string
+interface Props extends FormComponentProps{
+	doSubmit: (e: React.FormEvent, form: WrappedFormUtils) => {},
+	projectInfo: ProjectInfo,
+	className?: string,
+	userList: User[]
 }
 
 
 
-function ProjectInfo({className,form,doSubmit,projectInfo}:Props){
-  const { getFieldDecorator,setFieldsValue } = form;
-  React.useEffect(()=>{
-    if(projectInfo.id){
-      setFieldsValue({
-        name:projectInfo.name
-      })
+function ProjectInfo({ className, form, doSubmit, projectInfo, userList }: Props) {
+	const { getFieldDecorator } = form;
+	// React.useEffect(() => {
+	// 	if (projectInfo.id) {
+	// 		setFieldsValue({
+	// 			name: projectInfo.name
+	// 		})
+	// 	}
+	// })
+	const formItemLayout = {
+        wrapperCol: {
+            span: 12
+        },
+        labelCol: {
+            span: 5
+        }
     }
-  },[projectInfo.id])
-  return (
-    <Form className={className} onSubmit={e=>doSubmit(e,form)}>
-    <Form.Item
-        label="项目名称"
-        labelCol={{ span: 5 }}
-        wrapperCol={{ span: 12 }}
-    >
-        {getFieldDecorator('name', {
-        rules: [{ required: true, message: '项目名称必填' }],
-        })(
-        <Input />
-        )}
-    </Form.Item>
-    
-    <Form.Item
-        wrapperCol={{ span: 12, offset: 5 }}
-    >
-        <Button type="primary" htmlType="submit">
-        保存
+    const formItemOffsetLayout = {
+        wrapperCol: {
+            span: 12,
+            offset: 5
+        }
+    }
+	return (
+		<Form className={className} onSubmit={e => doSubmit(e, form)}>
+			<FormItem
+				label="项目名称"
+				{...formItemLayout}
+			>
+				{getFieldDecorator('name', {
+					rules: [{ required: true, message: '项目名称必填' }],
+				})(
+					<Input placeholder='请输入'/>
+				)}
+			</FormItem>
+			<FormItem
+				label="项目负责人"
+				{...formItemLayout}
+			>
+				{
+					getFieldDecorator('admin', {
+						rules: [{ required: true, message: '项目负责人必选' }]
+					})(
+						<Select placeholder='请选择' showSearch>
+							{
+								userList.map((item: User) => <Option key={item.id} value={item.id}>{item.nickName || item.username}</Option>)
+							}
+						</Select>
+					)
+				}
+			</FormItem>
+			<FormItem
+				{...formItemOffsetLayout}
+			>
+				<Button type="primary" htmlType="submit">
+					保存
         </Button>
-    </Form.Item>
-    </Form>
-  )
+			</FormItem>
+		</Form>
+	)
 }
 
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>)=>bindActionCreators({
-  doSubmit:(e:React.FormEvent,form:WrappedFormUtils)=>{
-    e.preventDefault();
-    return actions.doUpdateProjectDetailsRequest(form)
-  }
-  
-},dispatch)
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => bindActionCreators({
+	doSubmit: (e: React.FormEvent, form: WrappedFormUtils) => {
+		e.preventDefault();
+		return actions.doUpdateProjectDetailsRequest(form)
+	}
+
+}, dispatch)
 
 
-const mapStateToProps = (state:StoreState) => {
-  const { projectInfo } = state.project;
-  return {
-  
-      projectInfo
-  
-  }
+const mapStateToProps = (state: StoreState) => {
+	const { userList } = state.app;
+	const { projectInfo } = state.project;
+	return {
+
+		projectInfo,
+		userList
+
+	}
 };
 
-export default connect(mapStateToProps,mapDispatchToProps)(Form.create()(ProjectInfo));
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(ProjectInfo));

@@ -34,12 +34,12 @@ function ProjectMemberAdd({visible, userList, memberList, doCancel, doSubmit, fo
             <Form>
                 <FormItem>
                     {
-                        getFieldDecorator('userIds', {
+                        getFieldDecorator('memberIds', {
                             rules: [{ required: true, message: '项目成员必选' }],
                         })(
-                            <Select mode='multiple'>
+                            <Select mode='multiple' placeholder='请选择' showSearch>
                                 {
-                                    userList.filter(item => memberList.findIndex(i => i.id === item.id) === -1).map(item => <Option key={item.id} value={item.id}>{item.name || item.mobile}</Option>)
+                                    userList.filter(item => memberList.findIndex(i => i.id === item.id) === -1).map(item => <Option key={item.id} value={item.id}>{item.nickName || item.username}</Option>)
                                 }
                             </Select>
                         )

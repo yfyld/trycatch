@@ -7,7 +7,7 @@ export function fetchUserInfo(params?: object) {
   return from(fetch.get('/user/info', params))
 }
 export function fetchLogin(params?: object) {
-  return from(fetch.post('/user/login', params))
+  return from(fetch.post('/user/signin', params))
 }
 export function fetchSignup(params?: object) {
   return from(fetch.post('/user/signup', params))
@@ -50,7 +50,7 @@ export function fetchProjectDel(projectId) {
 }
 
 export function fetchProjectAdd(params?: object) {
-  return from(fetch.post<{id:number}>(`/project`, params))
+  return from(fetch.post(`/project`, params))
 }
 
 // 错误

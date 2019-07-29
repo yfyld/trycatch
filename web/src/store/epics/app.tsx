@@ -16,11 +16,13 @@ import { of, bindNodeCallback } from 'rxjs'
 import { StoreState } from '@/store/reducers'
 import { isActionOf } from 'typesafe-actions'
 import * as Api from '@/api'
-import { ActionAny, Action } from '@/types'
+import { ActionAny, Action, ResponseOk, PageData, User } from '@/types'
 import { push } from 'connected-react-router'
 import { message } from 'antd'
 import { mapLocationIntoActions } from '@/utils'
 import handles from '@/store/handles'
+import { AxiosResponse } from 'axios';
+import instance from '@/api/http';
 
 const triggerFetchOnLocationChange: Epic<Action, Action, StoreState> = (
   action$,
@@ -53,17 +55,18 @@ const login: Epic<ActionAny, ActionAny, StoreState> = action$ =>
       bindNodeCallback(action.payload.validateFields)().pipe(
         mergeMap(params =>
           Api.fetchLogin(params).pipe(
-            map(actions.doGetUserInfoSuccess),
-            map(actions.doLoginSuccess),
-            tap(() => {
+            tap(({data: { result: { accessToken }}}: AxiosResponse<ResponseOk<{accessToken: string}>>) => {
+              instance.defaults.headers.Authorization = 'Bearer ' + accessToken;
+              localStorage.setItem('accessToken', accessToken);
               message.success('登录成功')
             }),
-            delay(300),
+            map(actions.doLoginSuccess),
+            
             mapTo(push('/project'))
           )
         ),
         catchError(error => {
-          // message.error('请填写正确的账号和密码')
+          message.error(error.message || '请填写正确的账号和密码')
           return of(actions.doLoginFailure())
         })
       )
@@ -77,9 +80,9 @@ const logout: Epic<ActionAny, ActionAny, StoreState> = action$ =>
       Api.fetchLogout().pipe(
         map(actions.doLogoutSuccess),
         tap(() => {
+          
           message.success('退出成功')
         }),
-        delay(300),
         mapTo(push('/login')),
 
         catchError(error => {
@@ -99,6 +102,7 @@ const signup: Epic<ActionAny, ActionAny, StoreState> = action$ =>
           Api.fetchSignup(params).pipe(
             map(actions.doSignupSuccess),
             tap(() => {
+
               message.success('注册成功')
             }),
             mapTo(push('/login'))
@@ -118,7 +122,9 @@ const getUserInfo: Epic<ActionAny, ActionAny, StoreState> = action$ =>
     mergeMap(() =>
       Api.fetchUserInfo().pipe(
         map(actions.doGetUserInfoSuccess),
-        catchError(error => of(actions.doGetUserInfoFailure()))
+        catchError(error => {
+          return of(actions.doGetUserInfoFailure())
+        })
       )
     )
   )
@@ -128,7 +134,7 @@ const getUserList: Epic<Action, Action, StoreState> = action$ =>
   action$.pipe(
     filter(isActionOf(actions.doGetUserListRequest)),
     mergeMap(() => Api.fetchUserList().pipe(
-      map(actions.doGetUserListSuccess),
+      map(({ data: { result: { list = [], totalCount = 0}}}: AxiosResponse<ResponseOk<PageData<User>>>) => actions.doGetUserListSuccess({list, totalCount})),
       catchError(error => of(actions.doGetUserListFailure()))
     ))
   )

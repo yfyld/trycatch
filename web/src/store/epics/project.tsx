@@ -5,16 +5,17 @@ import { mergeMap, map, filter, catchError ,tap} from 'rxjs/operators'
 import { bindNodeCallback ,of} from 'rxjs'
 import { StoreState } from '@/store/reducers'
 import { isActionOf } from 'typesafe-actions'
-import { Action ,ActionAny} from '@/types'
+import { Action ,ActionAny, ProjectListItem, PageData, ResponseOk, ProjectInfo, User, Project} from '@/types'
 import * as Api from '@/api'
 import { push } from 'connected-react-router'
+import { AxiosResponse } from 'axios';
 
 const getProjectList: Epic<Action, Action, StoreState> = action$ =>
   action$.pipe(
     filter(isActionOf(actions.doGetProjectListRequest)),
     mergeMap(action =>
       Api.fetchProjectList().pipe(
-        map(actions.doGetProjectListSuccess),
+        map(({data: { result: { list = [], totalCount = 0} }}: AxiosResponse<ResponseOk<PageData<ProjectListItem>>>) => actions.doGetProjectListSuccess({ list, totalCount })),
         catchError(() => {
           return of(actions.doGetProjectListFailure())
         })
@@ -27,7 +28,8 @@ const getProjectList: Epic<Action, Action, StoreState> = action$ =>
     filter(isActionOf(actions.doGetProjectDetailsRequest)),
     mergeMap(action =>
       Api.fetchProjectInfo(action.payload).pipe(
-        map(actions.doGetProjectDetailsSuccess),
+        // map(actions.doGetProjectDetailsSuccess),
+        map(({data: { result = {}}}: AxiosResponse<ResponseOk<ProjectInfo>>) => actions.doGetProjectDetailsSuccess(result)),
         catchError(() => {
           return of(actions.doGetProjectDetailsFailure())
         })
@@ -41,7 +43,7 @@ const getProjectList: Epic<Action, Action, StoreState> = action$ =>
     filter(isActionOf(actions.doGetProjectMembersRequest)),
     mergeMap(action =>
       Api.fetchProjectMembers(action.payload).pipe(
-        map(actions.doGetProjectMembersSuccess),
+        map(({data: { result: { list = [], totalCount = 0}}}: AxiosResponse<ResponseOk<PageData<User>>>) => actions.doGetProjectMembersSuccess({list, totalCount})),
         catchError(() => {
           return of(actions.doGetProjectMembersFailure())
         })
@@ -71,10 +73,13 @@ const addProject: Epic<ActionAny, ActionAny, StoreState> = (action$,state$)=>
     mergeMap(action=>bindNodeCallback(action.payload.validateFields)().pipe(
       mergeMap(params=>Api.fetchProjectAdd(params).pipe(
         tap(()=>{message.success('提交成功')}),
-        mergeMap((reponse)=>[
-          actions.doAddProjectSuccess(),
-          push(`/project/${reponse.data.id}`)
-        ])
+        mergeMap(({data: { result }}: AxiosResponse<ResponseOk<Project>>)=>{
+			
+			return [
+				actions.doAddProjectSuccess(),
+				push(`/project/${result.id}`)
+			  ]
+		})
       )),
       catchError((error) =>{
         console.log(error)
@@ -85,11 +90,11 @@ const addProject: Epic<ActionAny, ActionAny, StoreState> = (action$,state$)=>
   )
 
 
-  const addProjectMemberToggle = (action$) => 
-      action$.pipe(
-        filter(isActionOf(actions.doAddProjectMemberToggle)),
-        map(() => actions.doGetUserListRequest())
-      )
+  // const addProjectMemberToggle = (action$) => 
+  //     action$.pipe(
+  //       filter(isActionOf(actions.doAddProjectMemberToggle)),
+  //       map(() => actions.doGetUserListRequest())
+  //     )
 
   const addProjectMember:Epic<Action, Action, StoreState> = (action$, state$) => action$.pipe(
     filter(isActionOf(actions.doAddProjectMemberRequest)),
@@ -99,7 +104,8 @@ const addProject: Epic<ActionAny, ActionAny, StoreState> = (action$,state$)=>
         mergeMap(response => [
           actions.doAddProjectMemberSuccess(),
           actions.doAddProjectMemberToggle(false),
-          actions.doGetProjectMembersRequest(state$.value.project.projectId)
+          // actions.doGetProjectMembersRequest(state$.value.project.projectId)
+          actions.doGetProjectDetailsRequest(state$.value.project.projectId)
 
         ])
       )),
@@ -116,7 +122,8 @@ const addProject: Epic<ActionAny, ActionAny, StoreState> = (action$,state$)=>
       tap(() => {message.success('删除成功')}),
       mergeMap(() => [
         actions.doDeleteProjectMemberSuccess(),
-        actions.doGetProjectMembersRequest(state$.value.project.projectId)
+        // actions.doGetProjectMembersRequest(state$.value.project.projectId)
+        actions.doGetProjectDetailsRequest(state$.value.project.projectId)
       ])
       
     )),
@@ -133,6 +140,19 @@ const addProject: Epic<ActionAny, ActionAny, StoreState> = (action$,state$)=>
       ])
       
     )),
-    catchError(error => of(actions.doDeleteProjectFailure()))
+    catchError(error => {
+      message.error(error.message || '删除失败');
+      return of(actions.doDeleteProjectFailure())
+    })
   )
-export default [getProjectList, updateProjectDetails,getProjectDetail,addProject,getProjectMembers, addProjectMemberToggle, addProjectMember,deleteProjectMember,deleteProject]
+export default [
+  getProjectList, 
+  updateProjectDetails,
+  getProjectDetail,
+  addProject,
+  getProjectMembers, 
+  // addProjectMemberToggle, 
+  addProjectMember,
+  deleteProjectMember,
+  deleteProject
+]

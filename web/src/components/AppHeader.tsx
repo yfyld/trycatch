@@ -8,11 +8,12 @@ import * as actions from '@/store/actions'
 import { bindActionCreators,Dispatch } from 'redux'
 
 interface Props {
-  userInfo:UserInfo
+  userInfo:UserInfo,
+  isLogin: boolean,
   doLogoutRequest:()=>{}
 }
 
-const AppHeader=({userInfo,doLogoutRequest}:Props)=>{
+const AppHeader=({userInfo, isLogin, doLogoutRequest}:Props)=>{
   return  (
     <div className={style.wrapper}>
       {/* <div className={style.back}>
@@ -41,9 +42,9 @@ const AppHeader=({userInfo,doLogoutRequest}:Props)=>{
           
           <li>
             {
-              userInfo.id ? (
+              isLogin ? (
                               <div>
-                                {userInfo.name || userInfo.mobile}&nbsp;&nbsp;
+                                {userInfo.nickName || userInfo.username}&nbsp;&nbsp;
                                 <a onClick={doLogoutRequest}>退出登录</a>
                               </div>
                             ) : <Link to="/login">登录</Link>
@@ -56,7 +57,8 @@ const AppHeader=({userInfo,doLogoutRequest}:Props)=>{
 }
 
 const mapStateToProps = (state:StoreState) => ({
-  userInfo: state.app.userInfo
+  userInfo: state.app.userInfo,
+  isLogin: state.app.isLogin
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>)=>bindActionCreators({

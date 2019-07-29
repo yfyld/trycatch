@@ -1,15 +1,16 @@
 import * as React from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Spin } from 'antd';
 import { StoreState } from '@/types';
 
 
-function AuthRoute({auth, ...props}) {
-    return auth ? <Route {...props}/> : <Redirect to='/login'/>
+function AuthRoute({isLogin, ...props}) {
+    return isLogin ? <Route {...props}/> : <div className='loading-wrapper'><Spin /></div>
 }
 
 const mapStateToProps = (state: StoreState) => ({
-    auth: state.app.userInfo.id !== undefined && state.app.userInfo.id !== null
+    isLogin: state.app.isLogin
 })
 
 export default connect(mapStateToProps)(AuthRoute);
