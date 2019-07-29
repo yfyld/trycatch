@@ -18,7 +18,7 @@ import { TokenResult } from './user.interface';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Permissions } from '@/decotators/permissions.decotators';
 import { PermissionsGuard } from '@/guards/permission.guard';
-import { SignUpDto, LoginDto } from './user.dto';
+import { SignUpDto, LoginDto, UserListDto } from './user.dto';
 
 @Controller('user')
 export class UserController {
@@ -74,7 +74,7 @@ export class UserController {
   @HttpProcessor.handle('获取用户列表')
   @UseGuards(JwtAuthGuard)
   @Get('/')
-  getUsers(): Promise<User[]> {
+  getUsers(): Promise<UserListDto> {
     return this.userService.getUsers();
   }
 }

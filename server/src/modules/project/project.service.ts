@@ -1,3 +1,4 @@
+import { HttpBadRequestError } from './../../errors/bad-request.error';
 import { Project } from './project.model';
 import { Injectable } from '@nestjs/common';
 import { Repository, In } from 'typeorm';
@@ -83,6 +84,9 @@ export class ProjectService {
       relations: ['members'],
       where: { id: projectId },
     });
+    if (!project) {
+      throw new HttpBadRequestError('项目不存在');
+    }
     const members = await this.userModel.find({
       id: In(memberIds),
     });

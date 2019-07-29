@@ -7,7 +7,7 @@ import { AUTH } from '@/app.config';
 import { TokenResult } from './user.interface';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SignUpDto } from './user.dto';
+import { SignUpDto, UserListDto } from './user.dto';
 
 @Injectable()
 export class UserService {
@@ -20,12 +20,12 @@ export class UserService {
   ) {}
 
   // 密码编码
-  private decodeBase64(password) {
-    return password ? Base64.decode(password) : password;
+  private encodeBase64(password) {
+    return password ? Base64.encode(password) : password;
   }
 
   // md5 编码
-  private decodeMd5(password) {
+  private encodeMd5(password) {
     return createHash('md5')
       .update(password)
       .digest('hex');
@@ -60,7 +60,7 @@ export class UserService {
   }
   public async refreshToken(token): Promise<TokenResult> {
     try {
-      const data = JSON.parse(this.decodeBase64(token.split('.')[1]));
+      const data = JSON.parse(this.encodeBase64(token.split('.')[1]));
       const user = await this.userModel.findOne(data.id);
       return this.createToken(user);
     } catch (error) {
@@ -80,8 +80,8 @@ export class UserService {
     const user = await this.userModel.findOne({ username });
     const extantAuthPwd = user && user.password;
     const extantPassword =
-      extantAuthPwd || this.decodeMd5(AUTH.defaultPassword);
-    const submittedPassword = this.decodeMd5(this.decodeBase64(password));
+      extantAuthPwd || this.encodeMd5(AUTH.defaultPassword);
+    const submittedPassword = this.encodeMd5(this.encodeBase64(password));
     if (submittedPassword !== extantPassword) {
       return Promise.reject('密码不匹配');
     }
@@ -92,8 +92,9 @@ export class UserService {
     return this.userModel.findOne({ username });
   }
 
-  public getUsers(): Promise<User[]> {
-    return this.userModel.find({ select: ['username'] });
+  public async getUsers(): Promise<UserListDto> {
+    const users = await this.userModel.find({ select: ['username'] });
+    return { list: users };
   }
 
   public getRoles(): Promise<Role[]> {
@@ -101,8 +102,14 @@ export class UserService {
   }
 
   public async addUser(user: SignUpDto): Promise<User> {
-    user.password = this.decodeMd5(this.decodeBase64(user.password));
+    user.password = this.encodeMd5(this.encodeBase64(user.password));
     const { id } = await this.userModel.save(user);
     return this.userModel.findOne(id);
+  }
+
+  public async deleteUser(userId: number): Promise<void> {
+    const user = await this.userModel.findOne(userId);
+    this.userModel.remove(user);
+    return;
   }
 }
