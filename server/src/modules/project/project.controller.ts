@@ -18,7 +18,12 @@ import { Project } from './project.model';
 import { ProjectService } from './project.service';
 import { HttpProcessor } from '@/decotators/http.decotator';
 import { JwtAuthGuard } from '@/guards/auth.guard';
-import { ApiBearerAuth, ApiOperation, ApiUseTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiUseTags,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { Permissions } from '@/decotators/permissions.decotators';
 import { PermissionsGuard } from '@/guards/permission.guard';
 import {
@@ -37,6 +42,7 @@ export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
   @ApiOperation({ title: '新建项目', description: '' })
+  @ApiResponse({ status: 200, type: ProjectDto })
   @Post('/')
   @HttpProcessor.handle({ message: '新建项目' })
   @UseGuards(JwtAuthGuard)
@@ -63,6 +69,7 @@ export class ProjectController {
 
   @ApiOperation({ title: '获取项目信息', description: '' })
   @ApiBearerAuth()
+  @ApiResponse({ status: 200, type: Project })
   @HttpProcessor.handle('获取项目信息')
   @Get('/:projectId')
   @UseGuards(JwtAuthGuard)

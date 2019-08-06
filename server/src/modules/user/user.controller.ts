@@ -15,7 +15,12 @@ import { UserService } from './user.service';
 import { HttpProcessor } from '@/decotators/http.decotator';
 import { JwtAuthGuard } from '@/guards/auth.guard';
 import { TokenResult } from './user.interface';
-import { ApiBearerAuth, ApiUseTags, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiUseTags,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { Permissions } from '@/decotators/permissions.decotators';
 import { PermissionsGuard } from '@/guards/permission.guard';
 import { SignUpDto, LoginDto, UserListDto } from './user.dto';
@@ -26,6 +31,7 @@ export class UserController {
 
   @ApiOperation({ title: '获取权限列表', description: '' })
   @ApiBearerAuth()
+  @ApiResponse({ status: 200, type: Role, isArray: true })
   @HttpProcessor.handle('获取权限列表')
   @Get('/role')
   getRoles(): Promise<Role[]> {
@@ -67,6 +73,7 @@ export class UserController {
 
   @ApiOperation({ title: '获取用户信息', description: '' })
   @ApiBearerAuth()
+  @ApiResponse({ status: 200, type: User })
   @HttpProcessor.handle('获取用户信息')
   @Get('/info')
   @UseGuards(JwtAuthGuard)
@@ -76,6 +83,7 @@ export class UserController {
 
   @ApiOperation({ title: '获取用户列表', description: '' })
   @ApiBearerAuth()
+  @ApiResponse({ status: 200, type: UserListDto })
   @HttpProcessor.handle('获取用户列表')
   @UseGuards(JwtAuthGuard)
   @Get('/')
