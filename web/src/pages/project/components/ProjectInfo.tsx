@@ -21,13 +21,13 @@ interface Props extends FormComponentProps{
 
 function ProjectInfo({ className, form, doSubmit, projectInfo, userList }: Props) {
 	const { getFieldDecorator } = form;
-	// React.useEffect(() => {
-	// 	if (projectInfo.id) {
-	// 		setFieldsValue({
-	// 			name: projectInfo.name
-	// 		})
-	// 	}
-	// })
+	React.useEffect(() => {
+		if (projectInfo.id) {
+			form.setFieldsValue({
+				name: projectInfo.name
+			})
+		}
+	}, [projectInfo.id])
 	const formItemLayout = {
         wrapperCol: {
             span: 12

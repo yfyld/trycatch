@@ -22,15 +22,15 @@ export const doErrorChange = createAction(constants.ERROR_CHANGE,resolve=>(param
 
 
 export const doGetEventListDataRequest = createAction(constants.GET_EVENT_LIST_REQUEST,resolve=>(params:{page?:number,errorId?:number})=>resolve(params));
-export const doGetEventListDataSuccess = createAction(constants.GET_EVENT_LIST_SUCCESS,resolve=>(response:AxiosResponse<PageData<EventListDataItem>>)=>resolve(response.data));
+export const doGetEventListDataSuccess = createAction(constants.GET_EVENT_LIST_SUCCESS,resolve=>(data: PageData<EventListDataItem>)=>resolve(data));
 export const doGetEventListDataFailure = createAction(constants.GET_EVENT_LIST_FAILURE);
 
 
 export const doGetEventInfoRequest = createAction(constants.GET_EVENT_INFO_REQUEST,resolve=>(eventId:number)=>resolve(eventId));
-export const doGetEventInfoSuccess = createAction(constants.GET_EVENT_INFO_SUCCESS,resolve=>(response:AxiosResponse<EventInfo>)=>resolve(response.data));
+export const doGetEventInfoSuccess = createAction(constants.GET_EVENT_INFO_SUCCESS,resolve=>(data: EventInfo)=>resolve(data));
 export const doGetEventInfoFailure = createAction(constants.GET_EVENT_INFO_FAILURE);
 
 
 export const doGetErrorInfoRequest = createAction(constants.GET_ERROR_INFO_REQUEST,resolve=>(errorId:number)=>resolve(errorId));
-export const doGetErrorInfoSuccess = createAction(constants.GET_ERROR_INFO_SUCCESS,resolve=>(response:AxiosResponse<ErrorInfo>)=>resolve(response.data));
+export const doGetErrorInfoSuccess = createAction(constants.GET_ERROR_INFO_SUCCESS,resolve=>(data: ErrorInfo)=>resolve(data));
 export const doGetErrorInfoFailure = createAction(constants.GET_ERROR_INFO_FAILURE);

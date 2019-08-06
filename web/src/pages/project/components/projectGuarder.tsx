@@ -10,19 +10,19 @@ const Option = Select.Option;
 
 interface Props extends FormComponentProps {
     userList: User[],
-    guarder: User
+    guarder: User,
+    // projectInfo: ProjectInfo
 }
 
 function Guarder({form, userList, guarder}: Props) {
     const { getFieldDecorator
-        // , setFieldsValue
+        , setFieldsValue
      } = form;
-    // React.useEffect(()=>{
-    //     console.log(1);
-    //     setFieldsValue({
-    //         guarder: guarder.id
-    //       })
-    // }, [guarder.id])
+    React.useEffect(()=>{
+        setFieldsValue({
+            guarder: guarder.id
+          })
+    }, [guarder.id])
     const formItemLayout = {
         wrapperCol: {
             span: 12
@@ -60,7 +60,8 @@ function Guarder({form, userList, guarder}: Props) {
 const mapStateToProps = (state: StoreState) => {
     return {
         userList: state.app.userList,
-        guarder: state.project.projectGuarder
+        guarder: state.project.projectGuarder,
+        
     }
 }
 

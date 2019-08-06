@@ -6,7 +6,7 @@ import { AxiosResponse } from 'axios';
 import { StoreState } from '@/store/reducers'
 import { isActionOf } from 'typesafe-actions'
 import * as Api from '@/api'
-import { Action, ResponseOk, PageData, ErrorListDataItem } from '@/types'
+import { Action, ResponseOk, PageData, ErrorListDataItem, EventListDataItem, EventInfo, ErrorInfo } from '@/types'
 import {message} from "antd"
 
 const getErrorChartData: Epic<Action, Action, StoreState> = (action$, state$) =>
@@ -18,7 +18,8 @@ const getErrorChartData: Epic<Action, Action, StoreState> = (action$, state$) =>
     })),
     switchMap(action =>
       Api.fetchErrorChartData(action.payload).pipe(
-        map(actions.doGetErrorChartDataSuccess)
+        map(actions.doGetErrorChartDataSuccess),
+        catchError(err => of(actions.doGetErrorChartDataFailure()))
       )
     )
   )
@@ -31,7 +32,6 @@ const getErrorListData: Epic<Action, Action, StoreState> = (action$, state$) =>
       payload: { ...state$.value.work.errorSearchParams }
     })),
     mergeMap(action => {
-      console.log(action);
       return Api.fetchErrorListData(action.payload).pipe(
         map(({data: {result: { list = [], totalCount = 0}}}: AxiosResponse<ResponseOk<PageData<ErrorListDataItem>>>) => actions.doGetErrorListDataSuccess({list, totalCount})),
         catchError(err => of(actions.doGetErrorListDataFailure()))
@@ -60,7 +60,8 @@ const errorChange: Epic<Action, Action, StoreState> = (action$, state$) =>
           }else{
             return actions.doGetErrorInfoRequest(state$.value.work.errorInfo.id)
           }
-        })
+        }),
+        catchError(err => of(actions.doGetErrorInfoFailure()))
         
       )
     )
@@ -74,20 +75,23 @@ const getEventListData: Epic<Action, Action, StoreState> = (action$, state$) =>
         ...state$.value.work.errorSearchParams,
         ...state$.value.work.eventListParams
       }).pipe(
-        mergeMap(response => {
+        mergeMap(({ data: { result: { list = [], totalCount = 0 }}}: AxiosResponse<ResponseOk<PageData<EventListDataItem>>>) => {
           const page = state$.value.work.eventListParams.page;
           if (
             page === 1 &&
-            response.data.list.length
+            list.length
           ) {
             // 默认获取第一条日志详情
             return [
-              actions.doGetEventInfoRequest(response.data.list[0].id),
-              actions.doGetEventListDataSuccess(response)
+              actions.doGetEventInfoRequest(list[0].id),
+              actions.doGetEventListDataSuccess({list, totalCount})
             ]
           } else {
-            return [actions.doGetEventListDataSuccess(response)]
+            return [actions.doGetEventListDataSuccess({list, totalCount})]
           }
+        }),
+        catchError(err => {
+          return of(actions.doGetEventListDataFailure())
         })
       )
     )
@@ -98,7 +102,8 @@ const getEventInfo: Epic<Action, Action, StoreState> = action$ =>
     filter(isActionOf(actions.doGetEventInfoRequest)),
     switchMap(action =>
       Api.fetchEventInfo(action.payload).pipe(
-        map(actions.doGetEventInfoSuccess)
+        map(({data: { result }}: AxiosResponse<ResponseOk<EventInfo>>) => actions.doGetEventInfoSuccess(result)),
+        catchError(err => of(actions.doGetEventInfoFailure()))
       )
     )
   )
@@ -108,7 +113,8 @@ const getEventInfo: Epic<Action, Action, StoreState> = action$ =>
     filter(isActionOf(actions.doGetErrorInfoRequest)),
     switchMap(action =>
       Api.fetchErrorInfo(action.payload).pipe(
-        map(actions.doGetErrorInfoSuccess)
+        map(({data: { result }}: AxiosResponse<ResponseOk<ErrorInfo>>) => actions.doGetErrorInfoSuccess(result)),
+        catchError(err => of(actions.doGetErrorInfoFailure()))
       )
     )
   )  

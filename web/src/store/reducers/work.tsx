@@ -78,10 +78,10 @@ export const workReducer = (
 
 		case getType(actions.doGetErrorChartDataSuccess):
 			return update(state, { errorChartData: { $set: action.payload } })
-		case getType(actions.doGetErrorListDataFailure):
-			return update(state, {
-				errorListLoading: { $set: true }
-			})
+		// case getType(actions.doGetErrorListDataFailure):
+		// 	return update(state, {
+		// 		errorListLoading: { $set: false }
+		// 	})
 		case getType(actions.doGetErrorListDataSuccess):
 			return update(state, {
 				errorListData: { $set: action.payload },
@@ -89,7 +89,6 @@ export const workReducer = (
 				rowSelectionKeys: { $set: [] }
 			})
 		case getType(actions.doGetErrorListDataFailure):
-			console.log(1);
 			return update(state, {
 				errorListLoading: { $set: false }
 			})
