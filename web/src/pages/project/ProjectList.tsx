@@ -4,7 +4,7 @@ import { StoreState } from '@/store/reducers'
 import ProjectListPane from "./components/ProjectListPane"
 import { ProjectListItem } from "@/types"
 import ProjectAdd from "./components/ProjectAdd"
-import { Button, Empty } from "antd"
+import { Empty, Button } from "antd"
 import * as actions from '@/store/actions'
 import { bindActionCreators, Dispatch } from 'redux'
 import { Action } from '@/types';
@@ -17,27 +17,28 @@ interface Props {
 }
 
 
-function ProjectList({ projectList, doAddProjectToggle, doDeleteProject }: Props) {
+function ProjectList({ projectList, ...props }: Props) {
 	return (
 		<div className={style.wrapper}>
 			<div className={style.action}>
-				<Button type='primary' onClick={doAddProjectToggle}>新建项目</Button>
+				<Button type='primary' onClick={props.doAddProjectToggle}>新建项目</Button>
 			</div>
 
 			<div className={style.project}>
 				{
 					projectList.length === 0 ? <Empty /> : (
 						projectList.map((project: ProjectListItem) => (
-							<ProjectListPane onDelete={doDeleteProject} key={project.id} projectInfo={project} />
+							<ProjectListPane onDelete={props.doDeleteProject} key={project.id} projectInfo={project} />
 						))
 					)
 				}
 			</div>
 
-			<ProjectAdd></ProjectAdd>
+			<ProjectAdd/>
 		</div>
 	)
 }
+
 
 
 const mapStateToProps = (state: StoreState) => ({
@@ -50,3 +51,4 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => bindActionCreators({
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(React.memo(ProjectList))
+// export default connect(mapStateToProps, mapDispatchToProps)(ProjectList);

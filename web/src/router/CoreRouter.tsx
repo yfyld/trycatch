@@ -1,10 +1,9 @@
 import * as React from 'react'
-import { Suspense, lazy } from 'react'
+import { lazy, Suspense } from 'react'
 import { Switch, Redirect } from 'react-router-dom'
 import AuthRoute from './authRoute';
 import CoreLayout from '@/components/CoreLayout';
 import Loading from './routerLoading';
-
 
 const ProjectList = lazy(() => import('@/pages/project/ProjectList'))
 const ProjectDetails = lazy(() => import('@/pages/project/ProjectDetails'))
@@ -18,7 +17,7 @@ export default class Routes extends React.Component {
   public render() {
     return (
       <CoreLayout>
-        <Suspense fallback={Loading}>
+        <Suspense fallback={<Loading/>}>
           <Switch>
 
             <AuthRoute exact path="/project" component={ProjectList} />
@@ -31,5 +30,6 @@ export default class Routes extends React.Component {
 
       </CoreLayout>
     )
+    
   }
 }

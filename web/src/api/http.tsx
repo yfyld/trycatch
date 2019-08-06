@@ -72,6 +72,7 @@ instance.interceptors.request.use((config: AxiosRequestConfig) => {
     } 
     return config;
 }, (error: any) => {
+    Loading.remove();
     return Promise.reject(error);
 })
 
