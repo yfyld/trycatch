@@ -7,7 +7,11 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
+  OneToOne,
+  JoinColumn,
+  PrimaryColumn,
 } from 'typeorm';
+import { Project } from '../project/project.model';
 
 @Entity()
 export class Permission {
@@ -93,4 +97,20 @@ export class Team {
   @ManyToMany(type => User)
   @JoinTable()
   users: User[];
+}
+
+@Entity()
+export class ProjectRole {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @OneToOne(type => User)
+  @JoinColumn()
+  user: User;
+  @OneToOne(type => Role)
+  @JoinColumn()
+  role: Role;
+  @OneToOne(type => Project)
+  @JoinColumn()
+  project: Project;
 }

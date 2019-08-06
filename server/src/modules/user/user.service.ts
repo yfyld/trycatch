@@ -1,4 +1,4 @@
-import { User, Role, Permission } from './user.model';
+import { User, Role, Permission, ProjectRole } from './user.model';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Base64 } from 'js-base64';
@@ -16,6 +16,8 @@ export class UserService {
     private readonly userModel: Repository<User>,
     @InjectRepository(Role)
     private readonly roleModel: Repository<Role>,
+    // @InjectRepository(ProjectRole)
+    // private readonly projectRoleModel: Repository<ProjectRole>,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -93,13 +95,27 @@ export class UserService {
   }
 
   public async getUsers(): Promise<UserListDto> {
-    const users = await this.userModel.find({ select: ['username'] });
+    const users = await this.userModel.find({ select: ['username', 'id'] });
     return { list: users };
   }
 
   public getRoles(): Promise<Role[]> {
     return this.roleModel.find();
   }
+
+  // public async validateProjectPermission(
+  //   userId: number,
+  //   projectId: number,
+  //   permissions: string[],
+  // ): Promise<boolean> {
+  //   const projectRole = await this.projectRoleModel
+  //     .createQueryBuilder('role')
+  //     .leftJoinAndSelect('role.permissions', 'permission')
+  //     .where('user.id = :userId', { userId })
+  //     .where('project.id = :projectId', { projectId })
+  //     .getMany();
+  //   return true;
+  // }
 
   public async addUser(user: SignUpDto): Promise<User> {
     user.password = this.encodeMd5(this.encodeBase64(user.password));
