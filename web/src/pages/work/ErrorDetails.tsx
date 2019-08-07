@@ -30,16 +30,18 @@ interface Props {
 const ErrorDetails = ({eventInfoLoading,doGetEventInfoRequest,eventListMoreShow, errorInfo,eventInfo,eventListLoading,doErrorChange, doErrorDetails ,eventListData,doGetEventListDataRequest}: Props) => {
   const userMenu = (
     <Menu
-      onClick={({ key }) =>
-        doErrorChange({ updateData:{ownerId: Number(key)}, errorList: [errorInfo.id] })
-      }
+      // onClick={({ key }) =>
+        // doErrorChange({ updateData:{ownerId: Number(key)}, errorList: [errorInfo.id] })
+      // }
     >
       <Menu.Item key={1}>小王</Menu.Item>
     </Menu>
   )
 
   const statusMenu = (
-    <Menu onClick={({ key }) => doErrorChange({ updateData:{status: key}, errorList: [errorInfo.id] })}>
+    <Menu 
+    // onClick={({ key }) => doErrorChange({ updateData:{status: key}, errorList: [errorInfo.id] })}
+    >
       {ERROR_STATUS.map(status => (
         <Menu.Item key={status.value}>{status.text}</Menu.Item>
       ))}

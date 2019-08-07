@@ -23,11 +23,12 @@ class ErrorTrackerInPromise {
     }
 
     tracePromiseError(e: any) {
+        console.log(e);
         const error = {
-           type: CONS.REJECT_ERROR,
-           message: e.reason
+           type: CONS.PROMISE_ERROR,
+           message: JSON.stringify(e.reason),
+           url: e.document && e.document.URL || location.href
         }
-        console.log(error);
         sendData(error);
     }
 }

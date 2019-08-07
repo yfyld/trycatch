@@ -46,7 +46,8 @@ export interface ProjectListItem {
 }
 
 export interface  Member{
-  name?: string
+  username?: string
+  nickName?: string
   id?: string
   mobile?: string
   isAdmin?:boolean
@@ -67,7 +68,7 @@ export interface ProjectInfo {
   name?: string
   id?: number,
   members?: User[],
-  guarder?: User
+  guarderId?: number
 }
 
 
@@ -86,7 +87,7 @@ export interface ErrorChartDataItem {
 
 export interface ErrorChartData {
   totalCount: number
-  list: ErrorChartDataItem[]
+  data: ErrorChartDataItem[]
 }
 
 export enum Order {
@@ -126,12 +127,17 @@ export interface ErrorListData {
 }
 
 export interface ErrorChangeParams {
-  errorList: number[],
-  updateData:{
-    ownerId?: number
-    status?: string
-    level?: number
-  }
+  // errorList: number[],
+  // updateData:{
+  //   ownerId?: number
+  //   status?: string
+  //   level?: number
+  // }
+  guarderId?: number,
+  level?: number,
+  status?: number,
+  errorIds?: number[],
+  actionType?: string
 }
 
 

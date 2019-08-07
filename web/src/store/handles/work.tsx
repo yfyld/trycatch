@@ -16,10 +16,15 @@ export default {
       isExist: false
     },
     {
-      action: actions.doGetProjectMembersRequest(Number(projectId)),
+      action: actions.doGetProjectDetailsRequest(Number(projectId)),
       ttl: CACHE_TIME,
       isExist: state.project.projectId===Number(projectId)&&state.project.projectMembers.length
     },
+    {
+      action: actions.doGetErrorChartDataRequest({ ...errorSearchParams,projectId:Number(projectId) }),
+      ttl: CACHE_TIME,
+      isExist: false
+    }
   ],
   '/dashboard/:projectId/:errorId': ({ pathname, search,projectId, errorId }, state) => [
     {
@@ -28,7 +33,7 @@ export default {
       isExist: false
     },
     {
-      action: actions.doGetProjectMembersRequest(Number(projectId)),
+      action: actions.doGetProjectDetailsRequest(Number(projectId)),
       ttl: CACHE_TIME,
       isExist: state.project.projectId===Number(projectId)&&state.project.projectMembers.length
     }

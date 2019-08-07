@@ -73,10 +73,11 @@ const mapTableSearchParamsToParam = ({
 
 
 const userMenu=(keys:number[],doErrorChange:Function,projectMembers)=>(
-  <Menu onClick={({key})=>doErrorChange({updateData:{ownerId:Number(key)},errorList:keys})}>
+  <Menu 
+    onClick={({key})=>doErrorChange({guarderId: key, errorIds: keys, actionType: 'GUARDER'})}>
     {projectMembers.map(item=>(
       <Menu.Item key={item.id}>
-        {item.name || item.mobile}
+        {item.nickName || item.username}
       </Menu.Item>
     ))}
   </Menu>
@@ -84,7 +85,7 @@ const userMenu=(keys:number[],doErrorChange:Function,projectMembers)=>(
 
 
 const statusMenu=(keys:number[],doErrorChange:Function)=>(
-  <Menu onClick={({key})=>doErrorChange({updateData:{status:key},errorList:keys})}>
+  <Menu onClick={({key})=>doErrorChange({errorIds: keys, status: key, actionType: 'STATUS'})}>
     {
       ERROR_STATUS.map(status=>(
         <Menu.Item key={status.value}>
@@ -96,7 +97,7 @@ const statusMenu=(keys:number[],doErrorChange:Function)=>(
 )
 
 const levelMenu=(keys:number[],doErrorChange:Function)=>(
-  <Menu onClick={({key})=>doErrorChange({updateData:{level:Number(key)},errorList:keys})}>
+  <Menu onClick={({key})=>doErrorChange({errorIds:keys, level: key, actionType: 'LEVEL'})}>
     {
       ERROR_LEVEL.map(level=>(
         <Menu.Item key={level.value}>
@@ -160,7 +161,7 @@ const Dashboard = ({errorSearchParams,projectMembers,projectMembersMap,projectId
                   </span>
                   <span>
                   <Dropdown trigger={["click"]} overlay={userMenu([record.id],doErrorChange,projectMembers)}>
-                      <Tag><Icon type="user" />{projectMembersMap[record.ownerId]&&projectMembersMap[record.ownerId].name}</Tag>
+                      <Tag><Icon type="user" />{record.guarder&&record.guarder.name}</Tag>
                   </Dropdown>
                   </span>
                 </div>
@@ -220,21 +221,21 @@ const Dashboard = ({errorSearchParams,projectMembers,projectMembersMap,projectId
           <Column
             sorter
             title="事件数"
-            dataIndex="eventCount"
-            key="eventCount"
+            dataIndex="eventNum"
+            key="eventNum"
           />
 
-          <Column sorter title="用户数" dataIndex="userCount" key="userCount" />
+          <Column sorter title="用户数" dataIndex="userNum" key="userNum" />
           <Column
             filterMultiple={false}
             filters={[
               {
-                text: 'Joe',
-                value: 'Joe'
+                text: 'all',
+                value: 'all'
               },
               {
-                text: 'Jim',
-                value: 'Jim'
+                text: 'production',
+                value: 'production'
               }
             ]}
             title="版本"
@@ -271,7 +272,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 const mapStateToprops = (state: StoreState) => {
   return {
-    errorChartData: state.work.errorChartData.list.map(item=>({name:parseDate(item.date,'yyyy-MM-dd'),value:[item.date,item.count]})),
+    errorChartData: state.work.errorChartData.data.map(item=>({name:parseDate(item.date,'yyyy-MM-dd'),value:[item.date,item.count]})),
     errorListLoading: state.work.errorListLoading,
     rowSelectionKeys:state.work.rowSelectionKeys,
     errorListData:state.work.errorListData,

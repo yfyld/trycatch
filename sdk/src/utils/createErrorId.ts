@@ -40,17 +40,19 @@ export default function(data: IError) {
     let id: string;
     let hashId: number;
     const regex = /timestamp=\w*|t=\w*|ts=\w*|userId=\-?\w*|token=\w*/gi;
-    const locationUrl = data.url.replace(regex, '');
+    const locationUrl = (data.url).replace(regex, '');
     const year = getErrorTag();
     if (data.type === CONS.HTTP_ERROR) {
         const reqUrl = data.request.url.replace(regex, '');
         id = data.type + locationUrl + data.request.method + data.response.status + reqUrl;
-    } else if (data.type === CONS.JAVASCRIPT_ERROR) {
+    } else if (data.type === CONS.JAVASCRIPT_ERROR || data.type === CONS.VUE_ERROR) {
         if (data.stack && data.stack.length) {
             id = data.type + data.stack[0].line + data.stack[0].column + locationUrl + data.name + data.message;
         } else {
             id = data.type + data.name + data.message + locationUrl;
         }
+    } else {
+        id = data.type + data.message + locationUrl;
     }
     hashId = hashCode(id);
    

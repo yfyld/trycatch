@@ -55,7 +55,7 @@ export function fetchProjectAdd(params?: object) {
 
 // 错误
 export function fetchErrorChartData(params?: object) {
-  return from(fetch.get(`/error/by-date`, params))
+  return from(fetch.get(`/stat/error`, params))
 }
 
 export function fetchErrorListData(params?: object) {
@@ -71,16 +71,16 @@ export function fetchErrorInfo(errorId: number) {
 }
 
 
-export function fetchErrorChange(params: ErrorChangeParams) {
-  return from(fetch.put(`/error/updates`, params))
+export function fetchErrorChange(data: ErrorChangeParams) {
+  return from(fetch.put(`/error`, data))
 }
 
 
 export function fetchEventList(params:any) {
-  return from(fetch.get(`/log`,params))
+  return from(fetch.get(`/error/log`,params))
 }
 
-export function fetchEventInfo(eventId: number) {
-  return from(fetch.get(`/log/${eventId}`))
+export function fetchEventInfo(params) {
+  return from(fetch.get(`/error/log-info`, params))
 }
 

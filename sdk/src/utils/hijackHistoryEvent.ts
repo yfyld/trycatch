@@ -31,6 +31,7 @@ export default function() {
         }
     }
 
+
     const oldPushState = window.history.pushState;
     oldPushState && (
         window.history.pushState = function(state, title, url) {

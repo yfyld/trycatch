@@ -6,7 +6,7 @@ import { AxiosResponse } from 'axios';
 import { StoreState } from '@/store/reducers'
 import { isActionOf } from 'typesafe-actions'
 import * as Api from '@/api'
-import { Action, ResponseOk, PageData, ErrorListDataItem, EventListDataItem, EventInfo, ErrorInfo } from '@/types'
+import { Action, ResponseOk, PageData, ErrorListDataItem, EventListDataItem, EventInfo, ErrorInfo, ErrorChartData } from '@/types'
 import {message} from "antd"
 
 const getErrorChartData: Epic<Action, Action, StoreState> = (action$, state$) =>
@@ -18,7 +18,7 @@ const getErrorChartData: Epic<Action, Action, StoreState> = (action$, state$) =>
     })),
     switchMap(action =>
       Api.fetchErrorChartData(action.payload).pipe(
-        map(actions.doGetErrorChartDataSuccess),
+        map(({ data: { result: { data = [], totalCount = 0 } }}: AxiosResponse<ResponseOk<ErrorChartData>>) => actions.doGetErrorChartDataSuccess({data, totalCount})),
         catchError(err => of(actions.doGetErrorChartDataFailure()))
       )
     )

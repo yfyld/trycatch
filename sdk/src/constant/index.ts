@@ -7,8 +7,8 @@ const CONS = {
     LOG_ERROR: 'LOG_ERROR',
     HTTP_ERROR: 'HTTP_ERROR',
     VUE_ERROR: 'VUE_ERROR',
-    REJECT_ERROR: 'REJECT_ERROR',
-    SERVER_URL: '//',
+    PROMISE_ERROR: 'PROMISE_ERROR',
+    SERVER_URL: 'http://moapi.tongdun.cn/api/project/mock/1/error',
     MAX_ERROR_COUNT: 3,
     LEVEL: {
         CRITICAL: 1,

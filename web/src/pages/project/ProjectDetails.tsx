@@ -8,7 +8,6 @@ import { bindActionCreators, Dispatch } from 'redux'
 import { Action, StoreState } from '@/types'
 import ProjectMember from './components/ProjectMember';
 import ProjectInfo from './components/ProjectInfo';
-import ProjectGuarder from './components/projectGuarder';
 import style from './ProjectDetails.less';
 
 const TabPane = Tabs.TabPane
@@ -37,12 +36,6 @@ function ProjectDetails({ doProjectMembers, projectId, tabs }: Props) {
 					<div className={style.content}>
 						<ProjectInfo />
 					</div>
-				</TabPane>
-				<TabPane tab="预警设置" key="2">
-					<div className={style.content}>
-						<ProjectGuarder />
-					</div>
-
 				</TabPane>
 				<TabPane tab="成员管理" key="3">
 					<ProjectMember className={style.content} />

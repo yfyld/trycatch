@@ -44,7 +44,7 @@ const initialState = {
 
 	errorChartData: {
 		totalCount: 0,
-		list: []
+		data: []
 	},
 
 	errorListData: {

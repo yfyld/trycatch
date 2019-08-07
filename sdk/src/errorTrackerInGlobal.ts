@@ -21,6 +21,7 @@ class ErrorTrackerInGlobal {
         const self = this;
         this.oldErrorHandler = window.onerror;
         window.onerror = function(message: string, url?: string, lineNo?: number, columnNo?: number, e?: any) {
+            console.log(e);
             self.traceGlobalError(message, url, lineNo, columnNo, e);
             
         }

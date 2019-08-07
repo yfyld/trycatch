@@ -16,7 +16,8 @@ const getProjectList: Epic<Action, Action, StoreState> = action$ =>
     mergeMap(action =>
       Api.fetchProjectList().pipe(
         map(({data: { result: { list = [], totalCount = 0} }}: AxiosResponse<ResponseOk<PageData<ProjectListItem>>>) => actions.doGetProjectListSuccess({ list, totalCount })),
-        catchError(() => {
+        catchError((error) => {
+          message.warning(error.message || '查询失败');
           return of(actions.doGetProjectListFailure())
         })
       )
@@ -61,7 +62,7 @@ const updateProjectDetails: Epic<Action, Action, StoreState> = (action$,state$)=
       )),
       catchError((error) =>{
         console.log(error)
-        message.error("请填写正确的项目信息")
+        message.error(error.message || "更新失败");
         return of(actions.doUpdateProjectDetailsFailure())
       })
     ))

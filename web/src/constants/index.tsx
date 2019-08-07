@@ -173,6 +173,10 @@ export const ERROR_TYPE=[
   {
     text:"VUE错误",
     value:"VUE_ERROR"
+  },
+  {
+    text: "PROMISE错误",
+    value: "PROMISE_ERROR"
   }
 ]
 

@@ -24,9 +24,9 @@ interface Props {
 function renderColumns() {
     const columns = [{
         title: '姓名',
-        dataIndex: 'name',
-        key: 'name',
-        render :(name, record:Member) => name || record.mobile
+        dataIndex: 'nickName',
+        key: 'nickName',
+        render :(name, record:Member) => name || record.username || record.mobile
     }, {
         title: '手机号',
         dataIndex: 'mobile',
