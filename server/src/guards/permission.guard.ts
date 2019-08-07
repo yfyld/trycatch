@@ -2,10 +2,14 @@ import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
 import { HttpForbiddenError } from '@/errors/forbidden.error';
+import { UserService } from '@/modules/user/user.service';
+import { User } from '@/modules/user/user.model';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
-  constructor(private readonly reflector: Reflector) {}
+  constructor(
+    private readonly reflector: Reflector,
+  ) {}
 
   canActivate(
     context: ExecutionContext,
@@ -34,7 +38,11 @@ export class PermissionsGuard implements CanActivate {
     }
     if (request.params.projectId) {
       return true;
-      // return this.projectService.validateUserPermission( request.params.projectId, request.user._id, permissions);
+      // return this.userService.validateProjectPermission(
+      //   request.params.projectId,
+      //   request.user._id,
+      //   permissions,
+      // );
     }
     this.handleError();
     return false;

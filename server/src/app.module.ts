@@ -1,3 +1,4 @@
+import { SearchModule } from './providers/elasticsearch/search.module';
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { UserModule } from './modules/user/user.module';
@@ -7,7 +8,7 @@ import { DatabaseModule } from './providers/database/database.module';
 import { PermissionsGuard } from './guards/permission.guard';
 
 @Module({
-  imports: [DatabaseModule, UserModule, ProjectModule],
+  imports: [DatabaseModule, UserModule, ProjectModule, SearchModule],
   controllers: [AppController],
   providers: [PermissionsGuard],
 })

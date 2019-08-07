@@ -42,16 +42,37 @@ services:
   #   build:
   #     context: server
 
-  web:
-    container_name: trycatch-web-container
-    image: nginx
-    networks:
-      - 'trycatch_net'
+  # web:
+  #   container_name: trycatch-web-container
+  #   image: nginx
+  #   networks:
+  #     - 'trycatch_net'
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/conf.d/trycatch.conf
+  #     # - ./web/build/:/home/trycatch/web/
+  #   ports:
+  #     - '8060:8080'
+
+  es01:
+    image: elasticsearch:7.3.0
+    container_name: trycatch-elasticsearch-container
+    environment:
+      - node.name=es01
+      # - discovery.seed_hosts=es02
+      - cluster.initial_master_nodes=es01 #,es02
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/trycatch.conf
-      # - ./web/build/:/home/trycatch/web/
+      - ./esdata01:/usr/share/elasticsearch/data
     ports:
-      - '8060:8080'
-# networks:
-#   trycatch_net:
-#     driver: bridge
+      - 9600:9200
+    networks:
+      - trycatch_net
+networks:
+  trycatch_net:
+    driver: bridge
