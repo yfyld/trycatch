@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators,Dispatch } from 'redux'
 import { Table, Button } from 'antd';
 import findIndex from 'lodash/findIndex';
-import { StoreState, Member, Action } from '@/types';
+import { StoreState, Member, Action, ProjectMemberOperate } from '@/types';
 import * as actions from "@/store/actions"
 import ProjectMemberAdd from './ProjectMemberAdd';
 import style from './ProjectMember.less';
@@ -16,7 +16,8 @@ interface Props {
     className?: string,
     doSelectProjectMember: (selectedKeys: number[]) => {},
     selectedRowKeys: number[],
-    doDeleteProjectMember: (params:object) => {}
+    doDeleteProjectMember: (data: ProjectMemberOperate) => {},
+    projectId: number
 }
 
 
@@ -35,16 +36,31 @@ function renderColumns() {
         title: '角色',
         dataIndex: 'role',
         key: 'role'
-    }]
+    },
+    // {
+    //     title: '操作',
+    //     dataIndex: 'id',
+    //     key: 'action',
+    //     render: (id) => (
+    //         <div>
+    //             <Tooltip title='删除'>
+    //                 <Icon type='delete'/>
+    //             </Tooltip>
+    //         </div>
+    //     )
+    // }
+]
     return columns;
 }
 
-function ProjectMember({className, memberList, doAddProjectMemberToggle, projectMemberAddVisible, doSelectProjectMember, doDeleteProjectMember, ...props}: Props) {
+function ProjectMember({projectId, className, memberList, doAddProjectMemberToggle, projectMemberAddVisible, doSelectProjectMember, doDeleteProjectMember, ...props}: Props) {
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const rowSelection = {
-        selectedRowKeys: selectedRowKeys.filter((i: number) => findIndex(memberList, (j: number): boolean => j === i) !== -1),
+        // selectedRowKeys,
+        selectedRowKeys: selectedRowKeys.filter((i: number) => findIndex(memberList, (j: Member): boolean => j.id === i) !== -1),
         onChange: (selectedKeys) => {
         //   doSelectProjectMember(selectedKeys);
+         
             setSelectedRowKeys(selectedKeys)
         }
     };
@@ -52,7 +68,7 @@ function ProjectMember({className, memberList, doAddProjectMemberToggle, project
         <div className={className}>
             <div className={style.action}>
                 <Button type='primary' onClick={doAddProjectMemberToggle}>添加项目成员</Button>
-                <Button type='primary' disabled={selectedRowKeys.length === 0} onClick={() => { doDeleteProjectMember({memberIds: selectedRowKeys.join(',')}) }}>删除项目成员</Button>
+                <Button type='primary' disabled={selectedRowKeys.length === 0} onClick={() => { doDeleteProjectMember({memberIds: selectedRowKeys, projectId}) }}>删除项目成员</Button>
             </div>
             <div>
                 <Table 
@@ -69,18 +85,19 @@ function ProjectMember({className, memberList, doAddProjectMemberToggle, project
     )
 }
 const mapStateToProps = (state: StoreState) => {
-    const { projectMembers: memberList = [], projectMemberAddVisible, projectMemberSelectedKeys: selectedRowKeys } = state.project;
+    const { projectMembers: memberList = [], projectMemberAddVisible, projectMemberSelectedKeys: selectedRowKeys, projectId } = state.project;
     return {
         memberList,
         projectMemberAddVisible,
-        selectedRowKeys
+        selectedRowKeys,
+        projectId
     }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => bindActionCreators({
     doAddProjectMemberToggle: () => actions.doAddProjectMemberToggle(true),
     doSelectProjectMember: (selectedKeys: number[]) => actions.doSelectProjectMember(selectedKeys),
-    doDeleteProjectMember: (params:object) => actions.doDeleteProjectMemberRequest(params) 
+    doDeleteProjectMember: (data: ProjectMemberOperate) => actions.doDeleteProjectMemberRequest(data) 
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectMember)

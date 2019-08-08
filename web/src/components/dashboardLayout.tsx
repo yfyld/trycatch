@@ -1,12 +1,12 @@
 import * as React from 'react';
-import AppHeader from "./AppHeader"
 import style from "./layout.less"
+import DashboardHeader from './dashboardHeader';
 
 const CoreLayout=(props:{children:any})=>{
   return (
     <div className={style.wrapper}>
         <div className={style.header}>
-          <AppHeader />
+          <DashboardHeader />
         </div>
         <div className={style.content}>
           {props.children}
@@ -14,6 +14,7 @@ const CoreLayout=(props:{children:any})=>{
     </div>
   )
 }
+
 
 
 export default  CoreLayout

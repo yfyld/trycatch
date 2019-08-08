@@ -1,9 +1,13 @@
 .wrapper{
   height:@header-height;
-  background: @primary;
+  line-height: @header-height;
+  // background: @primary;
+  background: #fff;
   color: #fff;
   padding:0 25px;
   width:100%;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
 }
 
 .back{
@@ -11,22 +15,31 @@
   line-height: @header-height;
 }
 
-.nav{
+.logo {
   float: left;
+}
+
+.user {
+  margin-right: 8px;
+  color: @font;
+  cursor: pointer;
+  &-icon {
+    margin-right :5px;
+  }
+}
+
+.nav{
+  float: right;
   list-style: none;
   line-height: @header-height;
-  >li{
+  &-item {
     float: left;
-    >a{
-      display: block;
-      color: @font;
-      line-height: @header-height;
-      padding: 0 10px;
-    }
-    >div{
-      padding: 0 10px;
-      
-    }
+  }
+  .link {
+    display: block;
+    color: @font;
+    line-height: @header-height;
+    padding: 0 20px;
   }
 }
 

@@ -1,71 +1,25 @@
 import * as React from 'react'
-import style from './AppHeader.less'
+import style from './header.less'
 import { Link } from 'react-router-dom'
-import {connect} from "react-redux"
-import {StoreState,UserInfo,Action} from "@/types"
+import logo from "@/assets/imgs/logo-b.png"
+import RightHeader from './rightHeader';
 
-import * as actions from '@/store/actions'
-import { bindActionCreators,Dispatch } from 'redux'
 
-interface Props {
-  userInfo:UserInfo,
-  isLogin: boolean,
-  doLogoutRequest:()=>{}
-}
 
-const AppHeader=({userInfo, isLogin, doLogoutRequest}:Props)=>{
-  return  (
+
+
+const AppHeader = () => {
+  return (
     <div className={style.wrapper}>
-      {/* <div className={style.back}>
-        <Link to="/dashboard">控制台</Link>
-      </div> */}
-      <div className="fl">
-        {/* <div  className={style.project}>项目</div> */}
-        <ul className={style.nav}>
-          <li>
-            <Link to="/project">项目列表</Link>
-          </li>
-          {/* <li>
-            <Link to="/dashboard/1">错误列表</Link>
-          </li> */}
-
-        </ul>
+      <div className={style.logo}>
+        <Link to="/">
+          <img src={logo} alt="" />
+        </Link>
       </div>
-      <div className="fr">
-        <ul className={style.nav}>
-          <li>
-            <Link to="/home">首页</Link>
-          </li>
-          <li>
-            <Link to="/home">文档</Link>
-          </li>
-          
-          <li>
-            {
-              isLogin ? (
-                              <div>
-                                {userInfo.nickName || userInfo.username}&nbsp;&nbsp;
-                                <a onClick={doLogoutRequest}>退出登录</a>
-                              </div>
-                            ) : <Link to="/login">登录</Link>
-            }
-          </li>
-        </ul>
-      </div>
+      <RightHeader />
     </div>
   )
 }
 
-const mapStateToProps = (state:StoreState) => ({
-  userInfo: state.app.userInfo,
-  isLogin: state.app.isLogin
-});
-
-const mapDispatchToProps = (dispatch: Dispatch<Action>)=>bindActionCreators({
-  doLogoutRequest:()=>{
-    return actions.doLogoutRequest()
-  }
-},dispatch)
-
-export default connect(mapStateToProps,mapDispatchToProps)(React.memo(AppHeader));
+export default AppHeader;
 

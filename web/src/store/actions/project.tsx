@@ -1,6 +1,6 @@
 import * as ACTIONTYPE from "@/constants/actionType";
 import { createAction } from "typesafe-actions";
-import {ProjectListItem,ProjectInfo, PageData, User } from "@/types"
+import {ProjectListItem,ProjectInfo, PageData, User, ProjectMemberOperate } from "@/types"
 import { WrappedFormUtils } from 'antd/lib/form/Form';
 
 export const doGetProjectListRequest = createAction(ACTIONTYPE.GET_PROJECT_LIST_REQUEST);
@@ -32,7 +32,7 @@ export const doAddProjectMemberSuccess = createAction(ACTIONTYPE.ADD_PROJECT_MEM
 export const doAddProjectMemberFailure = createAction(ACTIONTYPE.ADD_PROJECT_MEMBER_FAILURE)
 
 export const doSelectProjectMember = createAction(ACTIONTYPE.SELECT_PROJECT_MEMBER, resolve => (selectedKeys: number[]) => resolve(selectedKeys))
-export const doDeleteProjectMemberRequest = createAction(ACTIONTYPE.DELETE_PROJECT_MEMBER_REQUEST, resolve => (params:object) => resolve(params))
+export const doDeleteProjectMemberRequest = createAction(ACTIONTYPE.DELETE_PROJECT_MEMBER_REQUEST, resolve => (data: ProjectMemberOperate) => resolve(data))
 export const doDeleteProjectMemberSuccess = createAction(ACTIONTYPE.DELETE_PROJECT_MEMBER_SUCCESS)
 export const doDeleteProjectMemberFailure = createAction(ACTIONTYPE.DELETE_PROJECT_MEMBER_FAILURE)
 

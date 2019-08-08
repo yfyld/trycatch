@@ -36,6 +36,26 @@ const allErrorNumber = {};
     
 */
 
+/**
+ 
+    type: 'RESOURCE_ERROR',
+    url: 'http://',
+    src: 'http://',
+    elapsedTime: 12,
+    tagName: 'img',
+    level: 3
+ */
+
+ /**
+    type: 'VUE_ERROR',
+    message: 'abcd',
+    level: 3,
+    componentName: 'A',
+    propsData: {data: 1},
+    name: 'abcd',
+    stack: [],
+    time: 1234
+  */
 export default function(data: IError) {
     let id: string;
     let hashId: number;

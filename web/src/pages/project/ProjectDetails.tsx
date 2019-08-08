@@ -31,7 +31,7 @@ function ProjectDetails({ doProjectMembers, projectId, tabs }: Props) {
 
 	return (
 		<div className={style.wrapper}>
-			<Tabs defaultActiveKey="1" >
+			<Tabs defaultActiveKey="1" tabPosition="left">
 				<TabPane tab="基本信息" key="1">
 					<div className={style.content}>
 						<ProjectInfo />

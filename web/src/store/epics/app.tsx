@@ -16,7 +16,7 @@ import { of, bindNodeCallback } from 'rxjs'
 import { StoreState } from '@/store/reducers'
 import { isActionOf } from 'typesafe-actions'
 import * as Api from '@/api'
-import { ActionAny, Action, ResponseOk, PageData, User } from '@/types'
+import { ActionAny, Action, ResponseOk, PageData, User, UserInfo, Project } from '@/types'
 import { push } from 'connected-react-router'
 import { message } from 'antd'
 import { mapLocationIntoActions } from '@/utils'
@@ -121,7 +121,7 @@ const getUserInfo: Epic<ActionAny, ActionAny, StoreState> = action$ =>
     filter(isActionOf(actions.doGetUserInfoRequest)),
     mergeMap(() =>
       Api.fetchUserInfo().pipe(
-        map(actions.doGetUserInfoSuccess),
+        map(({data: { result}}: AxiosResponse<ResponseOk<UserInfo>>) => actions.doGetUserInfoSuccess(result)),
         catchError(error => {
           return of(actions.doGetUserInfoFailure())
         })
@@ -139,11 +139,23 @@ const getUserList: Epic<Action, Action, StoreState> = action$ =>
     ))
   )
 
+
+const getProjectAllList: Epic<Action, Action, StoreState> = action$ => 
+      action$.pipe(
+        filter(isActionOf(actions.doGetProjectAllListRequest)),
+        mergeMap(() => Api.fetchProjectAllList().pipe(
+          map(({data: { result: { list = [], totalCount = 0 }}}: AxiosResponse<ResponseOk<PageData<Project>>>) => actions.doGetProjectAllListSuccess({list, totalCount})),
+          catchError(error => of(actions.doGetProjectAllListFailure()))
+        ))
+      )
+
+
 export default [
   login,
   signup,
   triggerFetchOnLocationChange,
   getUserInfo,
   logout,
-  getUserList
+  getUserList,
+  getProjectAllList
 ]

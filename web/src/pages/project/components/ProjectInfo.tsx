@@ -66,7 +66,7 @@ function ProjectInfo({ className, form, doSubmit, projectInfo, userList }: Props
 					})(
 						<Select placeholder='请选择' showSearch>
 							{
-								userList.map((item: User) => <Option key={item.id} value={item.id}>{item.nickName}</Option>)
+								userList.map((item: User) => <Option key={item.id+''} value={item.id}>{item.nickName}</Option>)
 							}
 						</Select>
 					)

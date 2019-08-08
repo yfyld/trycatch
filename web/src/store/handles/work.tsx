@@ -24,7 +24,13 @@ export default {
       action: actions.doGetErrorChartDataRequest({ ...errorSearchParams,projectId:Number(projectId) }),
       ttl: CACHE_TIME,
       isExist: false
+    },
+    {
+      action: actions.doGetProjectAllListRequest(),
+      ttl: CACHE_TIME,
+      isExist: false
     }
+
   ],
   '/dashboard/:projectId/:errorId': ({ pathname, search,projectId, errorId }, state) => [
     {
@@ -36,6 +42,11 @@ export default {
       action: actions.doGetProjectDetailsRequest(Number(projectId)),
       ttl: CACHE_TIME,
       isExist: state.project.projectId===Number(projectId)&&state.project.projectMembers.length
+    },
+    {
+      action: actions.doGetProjectAllListRequest(),
+      ttl: CACHE_TIME,
+      isExist: false
     }
   ]
 }

@@ -1,7 +1,11 @@
 import fetch from './http';
 import { from } from 'rxjs';
-import {ErrorChangeParams} from "@/types"
+import {ErrorChangeParams, ProjectMemberOperate} from "@/types"
 // 全局
+
+export function fetchProjectAllList() {
+  return from(fetch.get('/project/all'));
+}
 
 export function fetchUserInfo(params?: object) {
   return from(fetch.get('/user/info', params))
@@ -33,8 +37,8 @@ export function fetchProjectMemberAdd(projectId, params?:object) {
   return from(fetch.post(`/project/${projectId}/addMember`, params))
 }
 
-export function fetchProjectMemberDelete(projectId, params?: object) {
-  return from(fetch.delete(`/project/${projectId}/deleteMember`, { params }))
+export function fetchProjectMemberDelete(data: ProjectMemberOperate) {
+  return from(fetch.delete(`/project/delete-member`, { params: data }))
 }
 
 export function fetchProjectInfo(projectId:number,params?: object) {
@@ -84,3 +88,6 @@ export function fetchEventInfo(params) {
   return from(fetch.get(`/error/log-info`, params))
 }
 
+// export function fetchEventChart(params) {
+  
+// }

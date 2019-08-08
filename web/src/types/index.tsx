@@ -43,12 +43,13 @@ export interface UserInfo {
 export interface ProjectListItem {
   name: string
   id: number
+  description?: string
 }
 
 export interface  Member{
   username?: string
   nickName?: string
-  id?: string
+  id: number
   mobile?: string
   isAdmin?:boolean
   isOwner?:boolean
@@ -56,19 +57,21 @@ export interface  Member{
 
 export interface User {
   username?: string,
-  id: string,
+  id: number,
   nickName: string
 }
 
 export interface Project {
-  id: number
+  id: number,
+  name: string
 }
 
 export interface ProjectInfo {
   name?: string
   id?: number,
   members?: User[],
-  guarderId?: number
+  guarderId?: number,
+  description?: string
 }
 
 
@@ -77,7 +80,10 @@ export interface ProjectDetail {
   tabs: string[]
 }
 
-
+export interface ProjectMemberOperate {
+  projectId: number,
+  memberIds: number[]
+}
 
 
 export interface ErrorChartDataItem {
