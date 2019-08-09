@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { Icon } from 'antd';
+import { Link } from 'react-router-dom';
+import { Icon, Card, Avatar } from 'antd';
 import { ProjectListItem } from "@/types";
 import style from "./ProjectListPane.less";
-import { Link } from 'react-router-dom';
+import defaultImg from "@/assets/imgs/default.jpeg";
 
-
+const { Meta } = Card;
 
 interface Props {
 	projectInfo: ProjectListItem,
@@ -17,18 +18,16 @@ function ProjectListPane({ projectInfo, onDelete }: Props) {
 	return (
 
 		<div className={style.wrapper}>
-			<h3 className={style.name}>
-				{projectInfo.name}
-				<Icon className={style.delete} type='delete' onClick={() => { onDelete(projectInfo.id) }} />
-			</h3>
-			<p>
-				<Icon type='warning' className='danger' /> 
-				<Link to={`/dashboard/${projectInfo.id}`}>查看项目异常信息</Link>
-			</p>
-			<p>
-				<Icon type='profile' className='info' /> 
-				<Link to={`/project/${projectInfo.id}`}>查看项目信息</Link>
-			</p>
+			<Card
+				actions={[<Link to={`/project/${projectInfo.id}`} key='project'><Icon type='edit'/></Link>, <Link to={`/dashboard/${projectInfo.id}`} key='error'><Icon type='exclamation-circle'/></Link>,  <Icon type='delete' key='delete' onClick={() => {onDelete(projectInfo.id)}}/>]}
+				cover={<img src={defaultImg}/>}
+			>
+				<Meta 
+					avatar={<Avatar>{projectInfo.name.substring(0,3)}</Avatar>}
+					title={projectInfo.name}
+					description={projectInfo.description}
+				/>
+			</Card>
 		</div>
 	)
 }

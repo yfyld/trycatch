@@ -5,86 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <!-- <script apikey="abcd" src="/dist/trycatch.js"></script> -->
+    <script apikey="abcd" src="/dist/trycatch.js"></script>
     <script>
-        // 监听不到静态资源找不到的错误
-        // window.onerror = function(msg, url, line, col, error) {
-        //   console.log('错误信息', msg);
-        //   console.log('错误url', url);
-        //   console.log('错误行号', line);
-        //   console.log('错误列号', col);
-        //   console.log('错误详情', error);
-        //   console.log(typeof error);
-        //   console.log(error.stack);
-        //   console.log(error.message);
-        //     console.log(Object.prototype.toString.call(error));
-        // }
-        
-// function makeError () {
-//   var name = "geoff"
-//   var msg = "Hi, " + Name
-//   console.log(msg)
-// }
-
-// makeError()
+        function a() {
+            b();
+        }
+        function b() {
+            c();
+        }
+        function c() {
+            console.log(d);
+        }
+        a();
     </script>
-    <script>
-    //   throw new Error('abcd');
-    var data = "partnerCode=demo4231&projectName=222";
-    var xhr = new XMLHttpRequest();
-
-        xhr.addEventListener("readystatechange", function () {
-            // console.log(this);
-        if (this.readyState === 4) {
-        }
-        });
-        xhr.onerror= function(e) {
-            console.log(e);
-        }
-
     
-
-        xhr.open("GET", "http://127.0.0.1:5555/get/200");
-
-        xhr.send(data);
-    // setTimeout(() => {
-    //     throw new Error('abcd');
-    // }, 2000)
-    window.onerror = function() {
-        console.log(arguments);
-        return true;
-    }
-    // try {
-    //     console.log(n);
-    // }catch(e) {
-    //     console.log(1);
-    //     throw e;
-    // }
-    window.onload = function() {
-        console.log(window.a);
-    }
-
-    // new Promise((resolve, reject) => {
-    //     reject(new Error());
-    // })
-    // window.addEventListener('unhandledrejection', function(e) {
-    //     e.preventDefault();
-    //     console.log(e);
-    //     console.log(typeof e.reason)
-    // })
-    window.addEventListener('error', function(e) {
-        console.log(e);
-    }, true);
-    // console.log(a);
-    </script>
-    <script>
-        window.a = 'abcd';
-    </script>
+    
 </head>
 <body>
-    <!-- <img src="abcd"/> -->
     <button>122</button>
     <button>222</button>
-    <!-- <script src="1.js"></script> -->
 </body>
 </html>

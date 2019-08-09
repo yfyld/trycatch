@@ -76,6 +76,5 @@ export function sendData(data: IError) {
 
 function _sendToServer(data: IError | IError[]) {
     const packageData = _generatePackageData(data);
-    console.log(packageData);
     return http(packageData);
 }

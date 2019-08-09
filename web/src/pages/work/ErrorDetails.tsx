@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { StoreState } from '@/store/reducers'
 import { Dispatch } from 'redux'
-import { Action, ErrorChangeParams,EventListDataItem,PageData,EventInfo,ErrorInfo } from '@/types'
+import { Action, ErrorChangeParams,EventListDataItem,PageData,EventInfo,ErrorInfo, Member } from '@/types'
 // import * as moment from "moment";
 import { ERROR_STATUS } from '@/constants'
 import ErrorBehavior from './components/ErrorBehavior';
@@ -24,22 +24,28 @@ interface Props {
   errorInfo:ErrorInfo
   eventListData:PageData<EventListDataItem>,
   eventListMoreShow:boolean
-  eventInfoLoading:boolean
+  eventInfoLoading:boolean,
+  projectMembers: Member[]
 }
 
-const ErrorDetails = ({eventInfoLoading,doGetEventInfoRequest,eventListMoreShow, errorInfo,eventInfo,eventListLoading,doErrorChange, doErrorDetails ,eventListData,doGetEventListDataRequest}: Props) => {
+const ErrorDetails = ({eventInfoLoading,doGetEventInfoRequest,eventListMoreShow, errorInfo,eventInfo,eventListLoading,doErrorChange, doErrorDetails ,eventListData,doGetEventListDataRequest,projectMembers}: Props) => {
   const userMenu = (
-    <Menu
-      onClick={({ key }) =>
-        doErrorChange({ updateData:{ownerId: Number(key)}, errorList: [errorInfo.id] })
-      }
+    <Menu 
+    // onClick={({key})=>doErrorChange({guarderId: key, errorIds: keys, actionType: 'GUARDER'})}
     >
-      <Menu.Item key={1}>小王</Menu.Item>
-    </Menu>
+    {projectMembers.map(item=>(
+      <Menu.Item key={item.id}>
+        {item.nickName || item.username}
+      </Menu.Item>
+    ))}
+  </Menu>
+    
   )
 
   const statusMenu = (
-    <Menu onClick={({ key }) => doErrorChange({ updateData:{status: key}, errorList: [errorInfo.id] })}>
+    <Menu 
+    // onClick={({ key }) => doErrorChange({ updateData:{status: key}, errorList: [errorInfo.id] })}
+    >
       {ERROR_STATUS.map(status => (
         <Menu.Item key={status.value}>{status.text}</Menu.Item>
       ))}
@@ -136,13 +142,17 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 })
 
 const mapStateToprops = (state: StoreState) => {
+  const { project, work } = state;
+  const { projectMembers } = project;
+  const { eventListLoading, eventListData, eventInfo, errorInfo, eventListMoreShow, eventInfoLoading } = work;
   return {
-    eventListLoading: state.work.eventListLoading,
-    eventListData:state.work.eventListData,
-    eventInfo:state.work.eventInfo,
-    errorInfo:state.work.errorInfo,
-    eventListMoreShow:state.work.eventListMoreShow,
-    eventInfoLoading:state.work.eventInfoLoading
+    eventListLoading,
+    eventListData,
+    eventInfo,
+    errorInfo,
+    eventListMoreShow,
+    eventInfoLoading,
+    projectMembers
   }
 }
 

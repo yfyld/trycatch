@@ -9,6 +9,7 @@ import { Action ,ActionAny, ProjectListItem, PageData, ResponseOk, ProjectInfo, 
 import * as Api from '@/api'
 import { push } from 'connected-react-router'
 import { AxiosResponse } from 'axios';
+// import store from '@/store/configureStore';
 
 const getProjectList: Epic<Action, Action, StoreState> = action$ =>
   action$.pipe(
@@ -16,7 +17,8 @@ const getProjectList: Epic<Action, Action, StoreState> = action$ =>
     mergeMap(action =>
       Api.fetchProjectList().pipe(
         map(({data: { result: { list = [], totalCount = 0} }}: AxiosResponse<ResponseOk<PageData<ProjectListItem>>>) => actions.doGetProjectListSuccess({ list, totalCount })),
-        catchError(() => {
+        catchError((error) => {
+          message.warning(error.message || '查询失败');
           return of(actions.doGetProjectListFailure())
         })
       )
@@ -61,7 +63,7 @@ const updateProjectDetails: Epic<Action, Action, StoreState> = (action$,state$)=
       )),
       catchError((error) =>{
         console.log(error)
-        message.error("请填写正确的项目信息")
+        message.error(error.message || "更新失败");
         return of(actions.doUpdateProjectDetailsFailure())
       })
     ))
@@ -74,10 +76,11 @@ const addProject: Epic<ActionAny, ActionAny, StoreState> = (action$,state$)=>
       mergeMap(params=>Api.fetchProjectAdd(params).pipe(
         tap(()=>{message.success('提交成功')}),
         mergeMap(({data: { result }}: AxiosResponse<ResponseOk<Project>>)=>{
-			
+          console.log(push(`/project/${result.id}`))
 			return [
-				actions.doAddProjectSuccess(),
-				push(`/project/${result.id}`)
+        actions.doAddProjectSuccess(),
+        push(`/project/${result.id}`)
+				// store.dispatch(push(`/project/${result.id}`))
 			  ]
 		})
       )),
@@ -118,7 +121,7 @@ const addProject: Epic<ActionAny, ActionAny, StoreState> = (action$,state$)=>
 
   const deleteProjectMember:Epic<Action, Action, StoreState> = (action$, state$) => action$.pipe(
     filter(isActionOf(actions.doDeleteProjectMemberRequest)),
-    mergeMap(action => Api.fetchProjectMemberDelete(state$.value.project.projectId, action.payload).pipe(
+    mergeMap(action => Api.fetchProjectMemberDelete(action.payload).pipe(
       tap(() => {message.success('删除成功')}),
       mergeMap(() => [
         actions.doDeleteProjectMemberSuccess(),

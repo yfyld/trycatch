@@ -10,8 +10,7 @@ export interface ProjectState {
 
 	projectList: ProjectListItem[];
 	projectInfo: ProjectInfo;
-	projectMembers: User[]
-	projectGuarder: User | {},
+	projectMembers: User[],
 	projectId: number
 	projectAddVisible: boolean,
 	projectDetail: ProjectDetail,
@@ -29,7 +28,6 @@ const initialState = {
 		activeKey: '1',
 		tabs: ['1']
 	},
-	projectGuarder: {},
 	projectMemberAddVisible: false,
 	projectMemberSelectedKeys: []
 };
@@ -48,7 +46,6 @@ export const projectReducer = (state: ProjectState = initialState, action: Actio
 				projectInfo: { $set: action.payload },
 				projectId: { $set: action.payload.id },
 				projectMembers: { $set: action.payload.members },
-				projectGuarder: { $set: action.payload.guarder },
 				projectDetail: {
 					activeKey: { $set: '1' },
 					tabs: { $set: ['1'] }

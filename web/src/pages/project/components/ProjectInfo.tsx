@@ -22,9 +22,11 @@ interface Props extends FormComponentProps{
 function ProjectInfo({ className, form, doSubmit, projectInfo, userList }: Props) {
 	const { getFieldDecorator } = form;
 	React.useEffect(() => {
+		console.log(1);
 		if (projectInfo.id) {
 			form.setFieldsValue({
-				name: projectInfo.name
+				name: projectInfo.name,
+				guarderId: projectInfo.guarderId
 			})
 		}
 	}, [projectInfo.id])
@@ -54,17 +56,17 @@ function ProjectInfo({ className, form, doSubmit, projectInfo, userList }: Props
 					<Input placeholder='请输入'/>
 				)}
 			</FormItem>
-			<FormItem
-				label="项目负责人"
-				{...formItemLayout}
-			>
+			<FormItem label='项目预警人' {...formItemLayout}>
 				{
-					getFieldDecorator('admin', {
-						rules: [{ required: true, message: '项目负责人必选' }]
+					getFieldDecorator('guarderId', {
+						rules: [{
+							required: true,
+							message: '项目预警人必选'
+						}]
 					})(
 						<Select placeholder='请选择' showSearch>
 							{
-								userList.map((item: User) => <Option key={item.id} value={item.id}>{item.nickName || item.username}</Option>)
+								userList.map((item: User) => <Option key={item.id+''} value={item.id}>{item.nickName}</Option>)
 							}
 						</Select>
 					)

@@ -73,7 +73,6 @@ export default class Behavior {
             }
             this.behaviorList.push(this.getHttpBehavior(e.detail));
         }
-
         if (this.behaviorList.length > this.config.behavior) {
             this.behaviorList = this.behaviorList.slice(-this.config.behavior, this.behaviorList.length)
         }
@@ -83,8 +82,8 @@ export default class Behavior {
         if (window.addEventListener && !getFlag('watchBehavior')) {
             window.addEventListener('click', this.addBehavior, true);
             window.addEventListener('DOMContentLoaded', this.addBehavior);
-            if (typeof window.onpopstate !== undefined) {
-
+            if (typeof window.onpopstate === undefined) {
+                window.addEventListener('hashchange', this.addBehavior);
             }
             window.addEventListener('historyPushState', this.addBehavior);
             window.addEventListener('historyPopstate', this.addBehavior);
@@ -98,6 +97,9 @@ export default class Behavior {
         if (window.addEventListener) {
             window.removeEventListener('click', this.addBehavior);
             window.removeEventListener('DOMContentLoaded', this.addBehavior);
+            if (typeof window.onpopstate === 'undefined') {
+                window.removeEventListener('hashchange', this.addBehavior);
+            }
             window.removeEventListener('historyPushState', this.addBehavior);
             window.removeEventListener('historyReplaceState', this.addBehavior);
             window.removeEventListener('historyPopstate', this.addBehavior);
