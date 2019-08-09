@@ -1,5 +1,5 @@
-import { createParamDecorator } from '@nestjs/common';
 import { QueryListResult } from '@/interfaces/request.interface';
+import { createParamDecorator } from '@nestjs/common';
 
 export const QueryList = createParamDecorator(
   (data, req): QueryListResult<any> => {

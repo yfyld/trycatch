@@ -1,0 +1,83 @@
+@startuml
+(*) --> "买家购买商品"
+
+if "客户所属校验" then
+note left
+买家是否属于卖家的客户
+customer.creator_company_id = #{sellerCompanyId}
+end note
+  -->[是] "客户所属校验成功" as customer_check
+else
+  -->[否] "无权限购买该商品"
+endif
+
+customer_check --> if "商品所属校验" then
+                note left
+                当前商品是否属于卖家
+                item_sku.shop_id = #{shopId}
+                end note
+                  -->[是] "商品所属校验成功" as item_check
+                else
+                  -->[否] "无权限购买该商品"
+                endif
+
+item_check --> if "商品上下架校验" then
+                note left
+                当前商品是否上架
+                item_sku.is_available = 1
+                end note
+                  -->[是] "商品上下架校验成功" as item_available_check
+                else
+                  -->[否] "无权限购买该商品"
+                endif 
+        
+item_available_check --> if "客户商品经营范围校验" then
+                        note left
+                        当前商品设置了器械分类
+                        !(item.fast_category_flag1 = 0 and item.fast_category_flag2 = 0 and item.fast_category_flag3 = 0)
+                        客户经营范围是否包含当前商品的器械分类
+                        item.fast_category_flag1 = customer.fast_category_flag1 & item.fast_category_flag1
+                        item:fast_category_flag2 = customer:fast_category_flag2 & item.fast_category_flag2
+                        item:fast_category_flag3 = customer:fast_category_flag3 & item.fast_category_flag3
+                        end note
+                          -->[是] "客户商品经营范围校验成功" as item_customer_check
+                        else
+                          -->[否] "无权限购买该商品"
+                        endif 
+
+item_customer_check --> if "客户产品线校验" then
+                        note left
+                        客户能购买的产品线是否包含当前商品所属的产品线
+                        dynamic_customer.source_type = 3
+                        dynamic_customer.target_type = 1
+                        dynamic_customer.target_id = #{buyerCompanyId}
+                        dynamic_customer.source_id  = item.business_id
+                        end note
+                          -->[是] "客户产品线校验成功" as customer_businessline_check
+                        else
+                          -->[否] "无权限购买该商品"
+                        endif 
+
+customer_businessline_check --> if "一客一价可销售校验" then
+                                note left
+                                针对当前客户没有配置一客一价
+                                dynamic_customer.source_type = 1
+                                dynamic_customer.target_type = 1
+                                dynamic_customer.target_id = #{buyerCompanyId}
+                                dynamic_customer.source_id = item_sku.id
+                                针对当前客户配置的一客一价是可销售
+                                dynamic_customer.source_type = 1
+                                dynamic_customer.target_type = 1
+                                dynamic_customer.target_id = #{buyerCompanyId}
+                                dynamic_customer.source_id = item_sku.id
+                                dynamic_customer.is_available = true
+                                end note
+                                  -->[是] "一客一价可销售校验成功" as dynamic_customer_check
+                                else
+                                  -->[否] "无权限购买该商品"
+                                endif   
+         
+dynamic_customer_check --> "可购买当前商品"
+"可购买当前商品" --> (*)
+"无权限购买该商品" --> (*)
+@enduml

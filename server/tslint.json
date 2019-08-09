@@ -1,6 +1,5 @@
 {
   "defaultSeverity": "error",
-  "extends": ["tslint:recommended"],
   "jsRules": {
     "no-unused-expression": true
   },
@@ -12,7 +11,7 @@
     "member-ordering": [false],
     "interface-name": [false],
     "arrow-parens": false,
-    "max-classes-per-file":false,
+    "max-classes-per-file": false,
     "object-literal-sort-keys": false
   },
   "rulesDirectory": []

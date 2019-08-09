@@ -1,4 +1,6 @@
 import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
+import * as path from 'path';
+import { isProdMode } from './app.environment';
 
 export const APP = {
   port: 3300,
@@ -39,4 +41,16 @@ export const ORMCONFIG: MysqlConnectionOptions = {
   database: 'trycatch',
   entities: [__dirname + '/**/*.model{.ts,.js}'],
   synchronize: true,
+};
+
+export const MULTER_OPTIONS = {
+  fileSize: 100000,
+  path: path.join(__dirname, 'publics/uploads'),
+};
+
+export const BASE_URL = {
+  webUrl: isProdMode ? 'http://trycatch.yfyld.cn' : 'http://localhost:5000',
+  serverUrl: isProdMode
+    ? 'http://trycatch.yfyld.cn/api'
+    : 'http://localhost:3300',
 };
