@@ -5,14 +5,17 @@ import { IError, PackageData } from './types'
 import Behavior from './behavior'
 import { getConfig, Config } from './config'
 import { oneOf } from './utils/util'
+import { trycatchInfo } from './trycatchInfo'
 
 const behavior = Behavior.getInstance()
 const allData: IError[] = []
 let timer: any = null
 function _generatePackageData(data: IError | IError[]) {
-  const packageData: PackageData = {}
-  packageData.data = data
-  packageData.behavior = behavior.behaviorList
+  const packageData: PackageData = {
+    data: data,
+    behavior: behavior.behaviorList,
+    libInfo: trycatchInfo
+  }
   return packageData
 }
 

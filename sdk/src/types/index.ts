@@ -1,3 +1,5 @@
+import { TrycatchInfo } from '@/trycatchInfo'
+
 export interface Trace {
   name?: string
   message?: string
@@ -85,9 +87,9 @@ export interface HttpDetailData {
 }
 
 export interface PackageData {
-  data?: IError | IError[]
-  behavior?: Behavior[]
-  authInfo?: object
+  data: IError | IError[]
+  behavior: Behavior[]
+  libInfo: TrycatchInfo
 }
 
 export interface BehaviorClick {
