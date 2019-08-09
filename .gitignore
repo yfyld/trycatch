@@ -27,7 +27,7 @@ config/**/*.map
 /coverage
 
 /web/build
-
+/sdk/dist
 *.log*
 /server/run/*.json
 
