@@ -35,11 +35,11 @@ export function fetchProjectMembers(projectId: number) {
 }
 
 export function fetchProjectMemberAdd(projectId, params?:object) {
-  return from(fetch.post(`/project/${projectId}/addMember`, params))
+  return from(fetch.post(`/project/add-members`, {...params, projectId}))
 }
 
 export function fetchProjectMemberDelete(data: ProjectMemberOperate) {
-  return from(fetch.delete(`/project/delete-member`, { params: data }))
+  return from(fetch.post(`/project/delete-members`, data))
 }
 
 export function fetchProjectInfo(projectId:number,params?: object) {

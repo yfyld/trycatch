@@ -99,14 +99,14 @@ export class ProjectService {
 
   public async deleteMember(
     projectId: number,
-    memberId: number,
+    memberIds: number[],
   ): Promise<void> {
     const project = await this.projectModel.findOne({
       relations: ['members'],
       where: { id: projectId },
     });
 
-    project.members = project.members.filter(item => item.id !== memberId);
+    project.members = project.members.filter(item => (memberIds.findIndex(id => id === item.id) === -1));
     this.projectModel.save(project);
     return;
   }

@@ -29,9 +29,9 @@ function renderColumns() {
         key: 'nickName',
         render :(name, record:Member) => name || record.username || record.mobile
     }, {
-        title: '手机号',
-        dataIndex: 'mobile',
-        key: 'mobile'
+        title: '用户名',
+        dataIndex: 'username',
+        key: 'username'
     }, {
         title: '角色',
         dataIndex: 'role',
