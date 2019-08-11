@@ -41,16 +41,16 @@ const FilterBar =({dashboard=true,doGetErrorAllData,errorSearchParams}:Props)=>{
                 errorSearchParams.type?<SearchParamsTag ERROR={ERROR_TYPE} value={errorSearchParams.type} key={errorSearchParams.type} onClose={()=>doGetErrorAllData({type:null})} closable={true} />:null,
             ]}
             <ButtonGroup style={{marginRight: 10}}>
-                <Button onClick={()=>doGetErrorAllData({startTime:now-oneDay+1,endTime:now})}>今天</Button>
-                <Button onClick={()=>doGetErrorAllData({startTime:now-oneDay * 7+1,endTime:now})}>7天</Button>
-                <Button onClick={()=>doGetErrorAllData({startTime:now-oneDay * 30+1,endTime:now})}>30天</Button>
-                <Button onClick={()=>doGetErrorAllData({startTime:now-oneDay * 90+1,endTime:now})}>90天</Button>
+                <Button onClick={()=>doGetErrorAllData({startDate:now-oneDay+1,endDate:now})}>今天</Button>
+                <Button onClick={()=>doGetErrorAllData({startDate:now-oneDay * 7+1,endDate:now})}>7天</Button>
+                <Button onClick={()=>doGetErrorAllData({startDate:now-oneDay * 30+1,endDate:now})}>30天</Button>
+                <Button onClick={()=>doGetErrorAllData({startDate:now-oneDay * 90+1,endDate:now})}>90天</Button>
             </ButtonGroup>
             <RangePicker
                 allowClear={false}
-                value={[moment(errorSearchParams.startTime), moment(errorSearchParams.endTime)]}
+                value={[moment(errorSearchParams.startDate), moment(errorSearchParams.endDate)]}
                 format={dateFormat}
-                onChange={dates=>{doGetErrorAllData({startTime:dates[0].toDate().setHours(0,0,0,0),endTime:dates[1].toDate().setHours(23,59,59,999)})}}
+                onChange={dates=>{doGetErrorAllData({startDate:dates[0].toDate().setHours(0,0,0,0),endDate:dates[1].toDate().setHours(23,59,59,999)})}}
             />
 
         </div>

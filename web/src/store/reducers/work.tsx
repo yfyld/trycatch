@@ -10,10 +10,12 @@ import {
 	ErrorInfo,
 	EventInfo,
 	EventListDataItem,
-	PageData
+	PageData,
+	EventChartData
 } from '@/types'
 
 export interface WorkState {
+	errorId: number,
 	errorChartData: ErrorChartData
 	errorListData: ErrorListData
 	errorSearchParams: ErrorSearchParams
@@ -26,22 +28,26 @@ export interface WorkState {
 	eventListLoading: boolean
 	eventListMoreShow: boolean
 	eventInfoLoading: boolean
+	errorInfoLoading: boolean
 	eventListParams: {
 		page: number
 		errorId: number
-	}
+	},
+	eventChartData: EventChartData,
 }
 
 const initialState = {
+	errorId: null,
 	errorSearchParams: {
+
 		page: 1,
 		pageSize: 20,
-		startTime: Date.now() - 30 * 24 * 3600000,
-		endTime: Date.now()
+		startDate: Date.now() - 30 * 24 * 3600000,
+		endDate: Date.now()
 	},
 	loading: false,
 	errorListLoading: false,
-
+	errorInfoLoading: false,
 	errorChartData: {
 		totalCount: 0,
 		data: []
@@ -62,7 +68,13 @@ const initialState = {
 	eventListLoading: false,
 	eventInfoLoading: false,
 	eventListData: { totalCount: 0, list: [] },
-	eventInfo: {}
+	eventInfo: {},
+	eventChartData: {
+		trendStat: { data: [], totalCount: 0 },
+		osStat: { data: [], totalCount: 0 },
+		browserStat: { data: [], totalCount: 0 },
+		deviceStat: { data: [], totalCount: 0 }
+	}
 }
 
 export const workReducer = (
@@ -130,7 +142,14 @@ export const workReducer = (
 		case getType(actions.doGetEventInfoSuccess):
 			return update(state, { eventInfo: { $set: action.payload }, eventInfoLoading: { $set: false } })
 		case getType(actions.doGetErrorInfoSuccess):
-			return update(state, { errorInfo: { $set: action.payload } })
+			return update(state, { 
+				errorInfo: { $set: action.payload },
+				errorId: { $set: action.payload.id }
+			 })
+		case getType(actions.doGetEventChartDataSuccess):
+			return update(state, {
+				eventChartData: { $set: action.payload }
+			})
 		default:
 			return state
 	}

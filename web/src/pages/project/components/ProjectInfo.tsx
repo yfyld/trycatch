@@ -22,7 +22,6 @@ interface Props extends FormComponentProps{
 function ProjectInfo({ className, form, doSubmit, projectInfo, userList }: Props) {
 	const { getFieldDecorator } = form;
 	React.useEffect(() => {
-		console.log(1);
 		if (projectInfo.id) {
 			form.setFieldsValue({
 				name: projectInfo.name,
@@ -69,6 +68,13 @@ function ProjectInfo({ className, form, doSubmit, projectInfo, userList }: Props
 								userList.map((item: User) => <Option key={item.id+''} value={item.id}>{item.nickName}</Option>)
 							}
 						</Select>
+					)
+				}
+			</FormItem>
+			<FormItem label='项目描述' {...formItemLayout}>
+				{
+					getFieldDecorator('description')(
+						<Input.TextArea />
 					)
 				}
 			</FormItem>

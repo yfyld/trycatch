@@ -3,6 +3,7 @@ import { getConfig, setConfig, SetConfig } from './config'
 import { hijackXMLHttpRequest, hijackFetch } from './hijack/hijackRequest'
 import Behavior from './behavior'
 import errorTrackerInGlobal from './errorTrackerInGlobal'
+import errorTrackerInResource from './errorTrackerInResource'
 import errorTrackerInHttp from './errorTrackerInHttp'
 import errorTrackerInPromise from './errorTrackerInPromise'
 import hijackConsole from './hijack/hijackConsole'
@@ -21,6 +22,7 @@ const install = function(conf?: SetConfig) {
 
   Behavior.getInstance(config).install()
   errorTrackerInGlobal.install()
+  errorTrackerInResource.install()
   errorTrackerInHttp.install(config)
   errorTrackerInPromise.install()
   errorTrackerInHttp.install()

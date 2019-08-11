@@ -17,7 +17,8 @@ export interface Config {
   ignoreHttpCodeList: number[]
   excludeUrlList: string[]
   ignoreFunc: Function
-  maxErrorCount: { once: number; oneDay: number }
+  maxErrorCount: { once: number; oneDay: number },
+  guarderId: number
 }
 
 export interface SetConfig {
@@ -33,7 +34,8 @@ export interface SetConfig {
   ignoreHttpCodeList?: number[]
   excludeUrlList?: string[]
   ignoreFunc?: Function
-  maxErrorCount?: { once: number; oneDay: number }
+  maxErrorCount?: { once: number; oneDay: number },
+  guarderId?: number
 }
 
 //default config
@@ -49,7 +51,8 @@ let config: Config = {
   ignoreFunc: () => {},
   ignoreHttpCodeList: [400, 401],
   excludeUrlList: [],
-  maxErrorCount: { once: 3, oneDay: 10 }
+  maxErrorCount: { once: 3, oneDay: 10 },
+  guarderId: null
 }
 
 //script trycatch-key  config

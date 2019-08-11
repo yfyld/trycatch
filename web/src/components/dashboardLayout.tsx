@@ -1,8 +1,13 @@
 import * as React from 'react';
 import style from "./layout.less"
 import DashboardHeader from './dashboardHeader';
+import * as actions from '@/store/actions';
 
-const CoreLayout=(props:{children:any})=>{
+const DashboardLayout=(props:{children:any})=>{
+    React.useEffect(() => {
+        console.log(1);
+        actions.doGetProjectAllListRequest();
+    }, [])
   return (
     <div className={style.wrapper}>
         <div className={style.header}>
@@ -17,4 +22,4 @@ const CoreLayout=(props:{children:any})=>{
 
 
 
-export default  CoreLayout
+export default  DashboardLayout

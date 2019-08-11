@@ -1,5 +1,5 @@
 import { ERROR_TYPE, ERROR_LEVEL } from './constant/index'
-import { setFlag, getFlag } from './utils/util'
+import { setFlag, getFlag, getLocationHref } from './utils/util'
 import { Trace } from './types'
 import computedStackTrace from './utils/computedStackTrace'
 import { sendData } from './send'
@@ -51,7 +51,8 @@ class ErrorTrackerInVue {
       propsData,
       name: errInfo.name,
       stack: errInfo.stack || [],
-      time: Date.now()
+      time: Date.now(),
+      url: getLocationHref()
     })
   }
 

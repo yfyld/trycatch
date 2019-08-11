@@ -81,3 +81,8 @@ export function findOne<V,T extends FindOneArr<V>>(arr:T[],value:V):T{
   return arr.find(item=>item.value===value)
 }
 
+
+export function getPercentByNumber(num: number, total: number) {
+  return (num / total * 100).toFixed(2) + '%'
+}
+

@@ -30,7 +30,7 @@ function ErrorBehavior({behaviorList, ...props}) {
 }
 
 const mapStateToProps = (state: StoreState) => {
-    const behaviorList = JSON.parse(state.work.eventInfo.source).behavior
+    const behaviorList = state.work.eventInfo.behavior;
     return {
         behaviorList
     }

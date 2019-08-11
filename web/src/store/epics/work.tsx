@@ -6,7 +6,7 @@ import { AxiosResponse } from 'axios';
 import { StoreState } from '@/store/reducers'
 import { isActionOf } from 'typesafe-actions'
 import * as Api from '@/api'
-import { Action, ResponseOk, PageData, ErrorListDataItem, EventListDataItem, EventInfo, ErrorInfo, ErrorChartData } from '@/types'
+import { Action, ResponseOk, PageData, ErrorListDataItem, EventListDataItem, EventInfo, ErrorInfo, ErrorChartData, EventChartData } from '@/types'
 import {message} from "antd"
 
 const getErrorChartData: Epic<Action, Action, StoreState> = (action$, state$) =>
@@ -51,14 +51,15 @@ const getErrorAllData: Epic<Action, Action, StoreState> = (action$, state$) =>
 const errorChange: Epic<Action, Action, StoreState> = (action$, state$) =>
   action$.pipe(
     filter(isActionOf(actions.doErrorChange)),
-    switchMap(action =>
-      Api.fetchErrorChange(action.payload).pipe(
+    switchMap(({payload: { requestInfo, ...data}}) =>
+      Api.fetchErrorChange(data).pipe(
         tap(()=>{message.success('修改成功')}),
         map(response=>{
-          if (/dashboard/.test(state$.value.router.location.pathname)) {
-            return actions.doGetErrorListDataRequest({...state$.value.work.errorSearchParams})
+          if (requestInfo) {
+            return actions.doGetErrorInfoRequest(state$.value.work.errorId)
+            
           }else{
-            return actions.doGetErrorInfoRequest(state$.value.work.errorInfo.id)
+            return actions.doGetErrorListDataRequest({...state$.value.work.errorSearchParams})
           }
         }),
         catchError(err => of(actions.doGetErrorInfoFailure()))
@@ -119,6 +120,18 @@ const getEventInfo: Epic<Action, Action, StoreState> = action$ =>
     )
   )  
 
+  const getEventChartData: Epic<Action, Action, StoreState> = action$ => 
+        action$.pipe(
+          filter(isActionOf(actions.doGetEventChartDataRequest)),
+          mergeMap(action => Api.fetchEventChart(action.payload).pipe(
+            map(({data: { result }}: AxiosResponse<ResponseOk<EventChartData>>) => actions.doGetEventChartDataSuccess(result)),
+            catchError(err => {
+              message.warning(err.message || '请求失败');
+              return of(actions.doGetEventChartDataFailure())
+            })
+          ))
+        )
+
 export default [
   getErrorListData,
   getErrorChartData,
@@ -126,5 +139,6 @@ export default [
   errorChange,
   getEventListData,
   getEventInfo,
-  getErrorInfo
+  getErrorInfo,
+  getEventChartData
 ]

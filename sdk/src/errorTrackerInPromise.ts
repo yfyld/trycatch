@@ -1,5 +1,5 @@
-import { ERROR_TYPE } from './constant/index'
-import { getFlag, setFlag } from './utils/util'
+import { ERROR_TYPE, ERROR_LEVEL } from './constant/index'
+import { getFlag, setFlag, getLocationHref } from './utils/util'
 import { sendData } from './send'
 
 class ErrorTrackerInPromise {
@@ -12,10 +12,10 @@ class ErrorTrackerInPromise {
   }
 
   install() {
-    if (getFlag('promiseInjected')) {
+    if (getFlag('watchPromise')) {
       return
     }
-    setFlag('promiseInjected', true)
+    setFlag('watchPromise', true)
     if (window.addEventListener) {
       window.addEventListener('unhandledrejection', this.tracePromiseError)
     }
@@ -28,7 +28,9 @@ class ErrorTrackerInPromise {
     const error = {
       type: ERROR_TYPE.PROMISE_ERROR,
       message: JSON.stringify(e.reason),
-      url: (e.document && e.document.URL) || location.href
+      url: getLocationHref(),
+      level: ERROR_LEVEL.NORMAL,
+      time: Date.now()
     }
     sendData(error)
   }
