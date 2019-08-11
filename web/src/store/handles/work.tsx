@@ -4,8 +4,8 @@ import * as actions from '@/store/actions'
 const errorSearchParams = {
   page: 1,
   pageSize: 20,
-  startTime: new Date().setHours(0,0,0,0) - 30 * 24 * 3600000,
-  endTime: new Date().setHours(23,59,59,999)
+  startDate: new Date().setHours(0,0,0,0) - 30 * 24 * 3600000,
+  endDate: new Date().setHours(23,59,59,999)
 }
 
 export default {
@@ -24,11 +24,6 @@ export default {
       action: actions.doGetErrorChartDataRequest({ ...errorSearchParams,projectId:Number(projectId) }),
       ttl: CACHE_TIME,
       isExist: false
-    },
-    {
-      action: actions.doGetProjectAllListRequest(),
-      ttl: CACHE_TIME,
-      isExist: false
     }
 
   ],
@@ -44,7 +39,12 @@ export default {
       isExist: state.project.projectId===Number(projectId)&&state.project.projectMembers.length
     },
     {
-      action: actions.doGetProjectAllListRequest(),
+      action: actions.doGetEventChartDataRequest({ errorId, projectId, ...errorSearchParams}),
+      ttl: CACHE_TIME,
+      isExist: false,
+    },
+    {
+      action: actions.doGetErrorInfoRequest(Number(errorId)),
       ttl: CACHE_TIME,
       isExist: false
     }

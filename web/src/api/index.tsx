@@ -4,6 +4,7 @@ import {ErrorChangeParams, ProjectMemberOperate} from "@/types"
 // 全局
 
 export function fetchProjectAllList() {
+  console.log('project');
   return from(fetch.get('/project/all'));
 }
 
@@ -88,6 +89,6 @@ export function fetchEventInfo(params) {
   return from(fetch.get(`/error/log-info`, params))
 }
 
-// export function fetchEventChart(params) {
-  
-// }
+export function fetchEventChart(params) {
+  return from(fetch.get(`stat/log`, params))
+}

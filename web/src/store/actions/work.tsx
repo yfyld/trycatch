@@ -1,7 +1,7 @@
 import * as constants from "@/constants";
 import { createAction } from "typesafe-actions";
-import {ErrorChartData,ErrorSearchParams,ErrorChangeParams,EventListDataItem,PageData,EventInfo,ErrorInfo, ErrorListDataItem} from "@/types"
-
+import {ErrorChartData,ErrorSearchParams,ErrorChangeParams,EventListDataItem,PageData,EventInfo,ErrorInfo, ErrorListDataItem, EventChartSearchData, EventChartData} from "@/types"
+console.log(constants);
 
 export const doGetErrorAllData = createAction(constants.GET_ERROR_ALL_DATA,resolve=>(params:ErrorSearchParams)=>resolve(params));
 
@@ -33,3 +33,8 @@ export const doGetEventInfoFailure = createAction(constants.GET_EVENT_INFO_FAILU
 export const doGetErrorInfoRequest = createAction(constants.GET_ERROR_INFO_REQUEST,resolve=>(errorId:number)=>resolve(errorId));
 export const doGetErrorInfoSuccess = createAction(constants.GET_ERROR_INFO_SUCCESS,resolve=>(data: ErrorInfo)=>resolve(data));
 export const doGetErrorInfoFailure = createAction(constants.GET_ERROR_INFO_FAILURE);
+
+
+export const doGetEventChartDataRequest = createAction(constants.GET_EVENT_CHART_DATA_REQUEST, resolve => (params: EventChartSearchData) => resolve(params));
+export const doGetEventChartDataSuccess = createAction(constants.GET_EVENT_CHART_DATA_SUCCESS, resolve => (data: EventChartData) => resolve(data))
+export const doGetEventChartDataFailure = createAction(constants.GET_EVENT_CHART_DATA_FAILURE)

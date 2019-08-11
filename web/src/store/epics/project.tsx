@@ -9,7 +9,6 @@ import { Action ,ActionAny, ProjectListItem, PageData, ResponseOk, ProjectInfo, 
 import * as Api from '@/api'
 import { push } from 'connected-react-router'
 import { AxiosResponse } from 'axios';
-// import store from '@/store/configureStore';
 
 const getProjectList: Epic<Action, Action, StoreState> = action$ =>
   action$.pipe(
@@ -76,11 +75,10 @@ const addProject: Epic<ActionAny, ActionAny, StoreState> = (action$,state$)=>
       mergeMap(params=>Api.fetchProjectAdd(params).pipe(
         tap(()=>{message.success('提交成功')}),
         mergeMap(({data: { result }}: AxiosResponse<ResponseOk<Project>>)=>{
-          console.log(push(`/project/${result.id}`))
+          
 			return [
         actions.doAddProjectSuccess(),
         push(`/project/${result.id}`)
-				// store.dispatch(push(`/project/${result.id}`))
 			  ]
 		})
       )),

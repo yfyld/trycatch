@@ -35,7 +35,15 @@ const ProjectAdd = ({ visible, doSubmit, doCancel ,form}: Props) => {
             <Input />
           )}
         </Form.Item>
-        
+        <Form.Item
+          label="项目描述"
+          labelCol={{ span: 5 }}
+          wrapperCol={{ span: 12 }}
+        >
+          {getFieldDecorator('description')(
+            <Input.TextArea />
+          )}
+        </Form.Item>
       </Form>
     </Modal>
   )

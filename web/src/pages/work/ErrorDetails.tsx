@@ -1,6 +1,6 @@
 import * as React from 'react'
 import FilterBar from './components/FilterBar'
-import { Button, Tooltip, Menu, Dropdown, List,Tabs,Spin } from 'antd'
+import { Button, List,Tabs,Spin } from 'antd'
 import style from './ErrorDetails.less'
 import * as actions from '@/store/actions'
 import { connect } from 'react-redux'
@@ -8,66 +8,32 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { StoreState } from '@/store/reducers'
 import { Dispatch } from 'redux'
-import { Action, ErrorChangeParams,EventListDataItem,PageData,EventInfo,ErrorInfo, Member } from '@/types'
+import { Action, ErrorChangeParams,EventListDataItem,PageData,EventInfo,ErrorInfo as IErrorInfo, Member, EventChartData } from '@/types'
 // import * as moment from "moment";
-import { ERROR_STATUS } from '@/constants'
 import ErrorBehavior from './components/ErrorBehavior';
-import ErrorBasicInfo from './components/ErrorBasicInfo';
+import EventBasicInfo from './components/EventBasicInfo';
+import EventChartBar from './components/EventChartBar';
+import EventRation from './components/EventRation';
+import ErrorInfo from './components/ErrorInfo';
+import EventListItem from './components/EventListItem';
+
 const {TabPane} =Tabs;
-interface Props {
+interface Props extends EventChartData{
   eventListLoading: boolean
   doErrorChange: (params: ErrorChangeParams) => Action
   doGetEventListDataRequest:()=>Action
   doGetEventInfoRequest:(eventId:number)=>Action
   doErrorDetails: any,
   eventInfo:EventInfo
-  errorInfo:ErrorInfo
+  errorInfo:IErrorInfo
   eventListData:PageData<EventListDataItem>,
   eventListMoreShow:boolean
   eventInfoLoading:boolean,
   projectMembers: Member[]
 }
 
-const ErrorDetails = ({eventInfoLoading,doGetEventInfoRequest,eventListMoreShow, errorInfo,eventInfo,eventListLoading,doErrorChange, doErrorDetails ,eventListData,doGetEventListDataRequest,projectMembers}: Props) => {
-  const userMenu = (
-    <Menu 
-    // onClick={({key})=>doErrorChange({guarderId: key, errorIds: keys, actionType: 'GUARDER'})}
-    >
-    {projectMembers.map(item=>(
-      <Menu.Item key={item.id}>
-        {item.nickName || item.username}
-      </Menu.Item>
-    ))}
-  </Menu>
-    
-  )
-
-  const statusMenu = (
-    <Menu 
-    // onClick={({ key }) => doErrorChange({ updateData:{status: key}, errorList: [errorInfo.id] })}
-    >
-      {ERROR_STATUS.map(status => (
-        <Menu.Item key={status.value}>{status.text}</Menu.Item>
-      ))}
-    </Menu>
-  )
-
-  const selectionHandler = (
-    <span className='handler'>
-      &emsp;
-      <Dropdown trigger={['click']} overlay={userMenu}>
-        <Tooltip placement="right" title="指派">
-          <Button shape="circle" icon="user" />
-        </Tooltip>
-      </Dropdown>
-      <Dropdown trigger={['click']} overlay={statusMenu}>
-        <Tooltip placement="right" title="状态">
-          <Button shape="circle" icon="question" />
-        </Tooltip>
-      </Dropdown>
-    </span>
-  )
-
+const ErrorDetails = ({eventInfoLoading,doGetEventInfoRequest,eventListMoreShow, errorInfo,eventInfo,eventListLoading,doErrorChange, doErrorDetails ,eventListData,doGetEventListDataRequest,projectMembers, trendStat, deviceStat, osStat, browserStat}: Props) => {
+ 
 
   const loadMore = !eventListLoading&&eventListMoreShow ? (
     <div style={{
@@ -77,48 +43,60 @@ const ErrorDetails = ({eventInfoLoading,doGetEventInfoRequest,eventListMoreShow,
       <Button onClick={doGetEventListDataRequest}>加载更多</Button>
     </div>
   ) : null;
+  console.log(eventInfo);
   return (
     <div className={style.wrapper}>
       <div className={style.filter}>
         <FilterBar dashboard={false} doGetErrorAllData={doErrorDetails} />
       </div>
-      <div className={style.handler}>{selectionHandler}</div>
       <div className={style.content}>
-        <div className={style.list}>
-          <List
-            className="demo-loadmore-list"
-            loading={eventListLoading}
-            itemLayout="horizontal"
-            loadMore={loadMore}
-            dataSource={eventListData.list}
-            renderItem={item => (
-              <List.Item className={item.id === eventInfo.id ? style.selected: ''} onClick={()=>doGetEventInfoRequest(item.id)}>
-                  <List.Item.Meta
-                    title={item.type}
-                    description={item.url}
-                  />
-              </List.Item>
-            )}
-          />
+        <div>
+          <ErrorInfo />
         </div>
-        <div className={style.main}>
+        <div className={style.stat}>
+          <div className={style.chart}>
+            <EventChartBar data={trendStat.data}/>
+          </div>
+          <div className={style.ration}>
+            <EventRation {...deviceStat} title='设备'/>
+            <EventRation {...osStat} title='操作系统'/>
+            <EventRation {...browserStat} title='浏览器'/>
+          </div>
+        </div>
+        <div className={style.event}>
+          <div className={style.list}>
+            <List
+              className="demo-loadmore-list"
+              loading={eventListLoading}
+              itemLayout="horizontal"
+              loadMore={loadMore}
+              dataSource={eventListData.list}
+              renderItem={item => (
+                <List.Item className={item.id === eventInfo.id ? style.selected: ''} onClick={()=>doGetEventInfoRequest(item.id)}>
+                    <EventListItem {...item}/>
+                </List.Item>
+              )}
+            />
+          </div>
+          <div className={style.main}>
           <Spin spinning={eventInfoLoading}>
             <Tabs defaultActiveKey="1">
               <TabPane tab="基本信息" key="1">
                 <div>
-                  {eventInfo.source ? <ErrorBasicInfo /> : null}
+                  <EventBasicInfo />
                 </div>
               </TabPane>
               <TabPane tab="用户行为" key="2">
-              
-                {
-                  eventInfo.source ? <ErrorBehavior /> : null
-                }
+                <div>
+                  <ErrorBehavior />
+                </div>
               </TabPane>
             </Tabs>
           </Spin>
         </div>
+        </div>
       </div>
+      
     </div>
   )
 }
@@ -144,7 +122,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 const mapStateToprops = (state: StoreState) => {
   const { project, work } = state;
   const { projectMembers } = project;
-  const { eventListLoading, eventListData, eventInfo, errorInfo, eventListMoreShow, eventInfoLoading } = work;
+  const { eventListLoading, eventListData, eventInfo, errorInfo, eventListMoreShow, eventInfoLoading, eventChartData } = work;
   return {
     eventListLoading,
     eventListData,
@@ -152,7 +130,9 @@ const mapStateToprops = (state: StoreState) => {
     errorInfo,
     eventListMoreShow,
     eventInfoLoading,
-    projectMembers
+    projectMembers,
+    ...eventChartData,
+    
   }
 }
 

@@ -3,6 +3,7 @@ import { ActionType } from 'typesafe-actions'
 import {StoreState} from '@/store/reducers'
 
 
+
 export interface ResponseOk<T> {
   message: string,
   result: T
@@ -111,8 +112,8 @@ export interface ErrorSearchParams extends PageQuery {
   orderKey?: string
   page?:number
   pageSize?:number
-  endTime?:number,
-  startTime?:number
+  endDate?:number,
+  startDate?:number
 }
 
 export interface ErrorListDataItem {
@@ -143,13 +144,18 @@ export interface ErrorChangeParams {
   level?: number,
   status?: number,
   errorIds?: number[],
-  actionType?: string
+  actionType?: string,
+  requestInfo?: boolean
 }
 
 
 export interface ErrorInfo {
   id?: number
-  status?: string
+  status?: string,
+  eventNum?: number,
+  userNum?: number,
+  version?: string,
+  url?: string
 }
 
 export interface EventInfo {
@@ -157,13 +163,76 @@ export interface EventInfo {
   status?: string
   url?:string
   type?:string
-  source?:string
+  source?:string,
+  name?: string,
+  ip?: string,
+  behavior?: BehaviorListItem[],
+  stack?: Stack[]
+}
+
+export interface BehaviorListItem {
+  type?: string,
+  time?: number,
+  page?: string,
+  id?: string,
+  class?: string,
+  html?: string,
+  method?: string,
+  url?: string,
+  oldURL?: string,
+  newURL?: string,
+}
+
+export interface Stack {
+  url?: string,
+  func?: string,
+  line?: number,
+  column?: number
 }
 
 export interface EventListDataItem {
   url?: string;
   type?: string;
   id?: number
-  status?: string
+  status?: string,
+  os?: string,
+  osVersion?: string,
+  browser?: string,
+  browserVersion?: string,
+  device?: string,
+  location?: Location,
+  createTime?: number
 }
 
+export interface Location {
+  region?: string
+}
+export interface EventChartSearchData {
+  projectId: number,
+  errorId: number,
+  startDate: number,
+  endDate: number
+}
+
+export interface ChartData<T> {
+  data: T[],
+  totalCount: number
+}
+
+
+export interface EventChartData {
+  trendStat: ChartData<ChartDateData>,
+  osStat: ChartData<ChartCategoryDate>,
+  browserStat: ChartData<ChartCategoryDate>,
+  deviceStat: ChartData<ChartCategoryDate>
+}
+
+export interface ChartDateData {
+  date: number,
+  count: number
+}
+
+export interface ChartCategoryDate {
+  name: string,
+  count: number
+}
