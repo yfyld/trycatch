@@ -5,8 +5,6 @@
   "main": "dist/tracker.min.js",
   "scripts": {
     "dev": "rollup -c -w",
-    "dev-analyse": "rollup -c ./rollup.analyse.config.js -w",
-    "analyse": "rollup -c ./rollup.analyse.config.js --environment NODE_ENV:production",
     "build": "rollup -c --environment NODE_ENV:production"
   },
   "dependencies": {

@@ -26,7 +26,7 @@ class ErrorTrackerInGlobal {
   install() {
     const self = this
     this.oldErrorHandler = window.onerror
-    window.onerror = function(
+    window.onerror = function (
       message: string,
       url?: string,
       lineNo?: number,
@@ -36,10 +36,6 @@ class ErrorTrackerInGlobal {
       console.log(e)
       self.traceGlobalError(message, url, lineNo, columnNo, e)
     }
-    window.addEventListener('error', function(e: any) {
-      if (e.path.length > 0 && ['img', 'script', 'link'].indexOf(e.path[0])) {
-      }
-    })
   }
   traceGlobalError(
     message: string,

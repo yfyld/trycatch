@@ -12,7 +12,7 @@ const allData: IError[] = []
 let timer: any = null
 function _generatePackageData(data: IError | IError[]) {
   const packageData: PackageData = {
-    data: data,
+    data,
     behavior: behavior.behaviorList,
     libInfo: trycatchInfo
   }
