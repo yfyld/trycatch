@@ -68,4 +68,9 @@ export class ErrorController {
   ): Promise<void> {
     return this.errorService.updateError(errorId, body);
   }
+
+  @Get('/test/test')
+  test(): Promise<any> {
+    return this.errorService.getSourceCode();
+  }
 }

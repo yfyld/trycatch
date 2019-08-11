@@ -17,7 +17,6 @@ export default function(data: IError, maxCount = { once: 3, oneDay: 10 }) {
     const reqUrl = data.request.url.replace(/\?.*$/, '')
     id =
       data.type +
-      locationUrl +
       data.request.method +
       data.response.status +
       getRealPath(reqUrl)
