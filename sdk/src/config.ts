@@ -44,7 +44,7 @@ let config: Config = {
   asyncSend: false,
   hijackConsole: true,
   behavior: 20,
-  url: 'http://www.yfyld.cn/error.gif',
+  url: 'http://127.0.0.1:3300/search/error.gif',
   delayTime: 500, //延迟发送的时间
   ignoreFunc: () => {},
   ignoreHttpCodeList: [400, 401],

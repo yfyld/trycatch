@@ -33,4 +33,29 @@ export class Project {
 
   @ManyToOne(type => User)
   guarder: User;
+
+  // @OneToMany(type => Sourcemap)
+  // sourcemap: Sourcemap;
+}
+
+@Entity()
+export class Sourcemap {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ApiModelProperty()
+  @IsDefined()
+  @IsString()
+  @Column()
+  url: string;
+  @Column()
+  version: string;
+
+  @Column()
+  mapName: string;
+  @Column()
+  fileName: string;
+
+  @ManyToOne(type => Project)
+  project: Project;
 }

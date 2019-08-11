@@ -35,6 +35,7 @@ async function bootstrap() {
   app.use(helmet());
   app.use(compression());
   app.use(bodyParser.json({ limit: '5mb' }));
+  app.use(bodyParser.text({ limit: '5mb' }));
   app.use(bodyParser.urlencoded({ extended: true }));
   //app.use(rateLimit({ max: 1000, windowMs: 15 * 60 * 1000 }));
 
@@ -54,8 +55,7 @@ async function bootstrap() {
     new LoggingInterceptor(),
   );
 
-  app.use('/public', serveStatic(path.join(__dirname, 'publics'), {
-   }));
+  app.use('/public', serveStatic(path.join(__dirname, 'publics'), {}));
 
   // swagger
   const options = new DocumentBuilder()
@@ -66,7 +66,10 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
-  fs.writeFileSync(path.join(__dirname, 'publics/doc/swagger.json'), JSON.stringify(document));
+  fs.writeFileSync(
+    path.join(__dirname, 'publics/doc/swagger.json'),
+    JSON.stringify(document),
+  );
   SwaggerModule.setup('doc-api', app, document);
 
   await app.listen(APP.port);

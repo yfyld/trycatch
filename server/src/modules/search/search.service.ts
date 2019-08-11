@@ -8,6 +8,7 @@ import { UaService } from '@/providers/helper/helper.ua.service';
 export class SearchService {
   constructor(
     private readonly elasticsearchService: ElasticsearchService,
+
     private readonly ipService: IpService,
     private readonly uaService: UaService,
   ) {}
@@ -22,6 +23,10 @@ export class SearchService {
     return await this.elasticsearchService.getClient().search<T>(params);
   }
 
+  async get<T>(params) {
+    return await this.elasticsearchService.getClient().get(params);
+  }
+
   async create<T>(params) {
     return await this.elasticsearchService.getClient().bulk({
       index: 'string',
@@ -30,11 +35,11 @@ export class SearchService {
     });
   }
 
-  public async createLogIndex(body: any,ip:string,ua:string) {
+  public async createLogIndex(body: any, ip: string, ua: string) {
     const location = await this.ipService.query(ip);
     body.location = location;
-    const uaDetail =  this.uaService.parse(ua);
-    const bulk = this.bulk('logs', 'log', {...uaDetail,...body});
+    const uaDetail = this.uaService.parse(ua);
+    const bulk = this.bulk('logs', 'log', { ...uaDetail, ...body });
     return await this.elasticsearchService.getClient().bulk({
       body: bulk,
       index: 'logs',
