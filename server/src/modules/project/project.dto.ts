@@ -24,7 +24,7 @@ export class DeleteMembersDto {
   @ApiModelProperty()
   @IsNotEmpty({ message: '项目id不能为空' })
   projectId: number;
-  memberId: number;
+  memberIds: number[];
 }
 
 export class UpdateMembersDto {

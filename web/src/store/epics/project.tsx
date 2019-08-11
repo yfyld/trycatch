@@ -100,16 +100,19 @@ const addProject: Epic<ActionAny, ActionAny, StoreState> = (action$,state$)=>
   const addProjectMember:Epic<Action, Action, StoreState> = (action$, state$) => action$.pipe(
     filter(isActionOf(actions.doAddProjectMemberRequest)),
     mergeMap(action => bindNodeCallback(action.payload.validateFields)().pipe(
-      mergeMap(params => Api.fetchProjectMemberAdd(state$.value.project.projectId, params).pipe(
-        tap(() => { message.success('添加成功')}),
-        mergeMap(response => [
-          actions.doAddProjectMemberSuccess(),
-          actions.doAddProjectMemberToggle(false),
-          // actions.doGetProjectMembersRequest(state$.value.project.projectId)
-          actions.doGetProjectDetailsRequest(state$.value.project.projectId)
-
-        ])
-      )),
+      mergeMap(params => {
+        console.log(params);
+        return Api.fetchProjectMemberAdd(state$.value.project.projectId, params).pipe(
+          tap(() => { message.success('添加成功')}),
+          mergeMap(response => [
+            actions.doAddProjectMemberSuccess(),
+            actions.doAddProjectMemberToggle(false),
+            // actions.doGetProjectMembersRequest(state$.value.project.projectId)
+            actions.doGetProjectDetailsRequest(state$.value.project.projectId)
+  
+          ])
+        )
+      }),
       catchError(error => {
         message.error('添加项目失败');
         return of(actions.doAddProjectMemberFailure())

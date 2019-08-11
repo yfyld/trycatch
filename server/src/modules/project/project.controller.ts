@@ -97,10 +97,10 @@ export class ProjectController {
   }
 
   @ApiOperation({ title: '删除成员', description: '' })
-  @Post('/delete-member')
+  @Post('/delete-members')
   @HttpProcessor.handle({ message: '删除成员' })
   @UseGuards(JwtAuthGuard)
   deleteMember(@Body() body: DeleteMembersDto): Promise<void> {
-    return this.projectService.deleteMember(body.projectId, body.memberId);
+    return this.projectService.deleteMember(body.projectId, body.memberIds);
   }
 }
