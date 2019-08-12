@@ -1,6 +1,6 @@
 import * as React from 'react';
 import AppHeader from "./AppHeader"
-import style from "./layout.less"
+import style from "./Layout.less"
 
 const CoreLayout=(props:{children:any})=>{
   return (

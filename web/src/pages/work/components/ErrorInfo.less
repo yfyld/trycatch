@@ -1,6 +1,12 @@
 .summary {
     float: left;
     width: 400px;
+    padding: 20px;
+    padding-bottom: 9999px;
+    margin-bottom: -9979px;
+    border-left: 1px solid @border;
+    box-sizing: border-box;
+    
 }
 .item {
     float: left;
@@ -10,8 +16,23 @@
 }
 .wrapper {
     overflow: hidden;
+    border-top: 1px solid @border;
 }
 .info {
     float: left;
     width: calc(~"100% - 400px");
+    padding: 20px;
+    padding-bottom: 9999px;
+    margin-bottom: -9979px;
+    box-sizing: border-box;
+    
+}
+
+.name, .num {
+    height: 24px;
+    line-height: 24px;
+}
+.url {
+    line-height: 24px;
+    padding-bottom: 15px;
 }

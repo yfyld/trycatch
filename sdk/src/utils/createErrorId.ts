@@ -9,6 +9,7 @@ function getRealPath(url: string) {
 }
 
 export default function(data: IError, maxCount = { once: 3, oneDay: 10 }) {
+
   let id: string
   let hashId: number
   const locationUrl = getRealPath(data.url)

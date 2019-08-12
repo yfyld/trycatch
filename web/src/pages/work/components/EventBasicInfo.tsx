@@ -3,13 +3,17 @@ import { connect } from 'react-redux';
 import { StoreState } from '@/types';
 import style from './EventBasicInfo.less';
 
-function ErrorInfo({type, name, message, url, stack, version, errorId, ua, ...props}) {
+function ErrorInfo({type, name, message, url, stack, version, errorId, ua, time, ...props}) {
     return (
         <div className={style.wrapper}>
             <div className={style.info}>
                 <div className={style.part}>
                     <div className={style.title}>错误信息</div>
                     <ul>
+                        <li className={style.item}>
+                            <span className={style.name}>时间</span>
+                            <span>{time}</span>
+                        </li>
                         <li className={style.item}>
                             <span className={style.name}>类型</span>
                             <span>{type}</span>
@@ -28,35 +32,72 @@ function ErrorInfo({type, name, message, url, stack, version, errorId, ua, ...pr
                         </li>
                     </ul>
                 </div>
-                <div className={style.part}>
-                    <div className={style.title}>堆栈信息</div>
-                    {
-                        stack && stack.map((item, index) => (
-                            <ul key={index}>
-                                <li className={style.item}>
-                                    <span className={style.name}>args</span>
-                                    <span>{JSON.stringify(item.args)}</span>
-                                </li>
-                                <li className={style.item}>
-                                    <span className={style.name}>行号</span>
-                                    <span>{item.line}</span>
-                                </li>
-                                <li className={style.item}>
-                                    <span className={style.name}>列号</span>
-                                    <span>{item.column}</span>
-                                </li>
-                                <li className={style.item}>
-                                    <span className={style.name}>方法</span>
-                                    <span>{item.func}</span>
-                                </li>
-                                <li className={style.item}>
-                                    <span className={style.name}>文件</span>
-                                    <span>{item.url}</span>
-                                </li>
-                            </ul>
-                        ))
-                    }
-                </div>
+                {
+                    type === 'HTTP_ERROR' && (
+                        <div className={style.part}>
+                            <div className={style.title}>请求信息</div>
+                            <div>
+                                <ul>
+                                    <li className={style.item}>
+                                        <span className={style.name}>method</span>
+                                        <span></span>
+                                    </li>
+                                    <li className={style.item}>
+                                        <span className={style.name}>url</span>
+                                        <span></span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <ul>
+                                    <li className={style.item}>
+                                        <span className={style.name}>status</span>
+                                        <span></span>
+                                    </li>
+                                    <li className={style.item}>
+                                        <span className={style.name}>url</span>
+                                        <span></span>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                        </div>
+                    )
+                }
+                {
+                    stack && stack.length && (
+                        <div className={style.part}>
+                            <div className={style.title}>堆栈信息</div>
+                            {
+                                stack.map((item, index) => (
+                                    <ul key={index}>
+                                        <li className={style.item}>
+                                            <span className={style.name}>args</span>
+                                            <span>{JSON.stringify(item.args)}</span>
+                                        </li>
+                                        <li className={style.item}>
+                                            <span className={style.name}>行号</span>
+                                            <span>{item.line}</span>
+                                        </li>
+                                        <li className={style.item}>
+                                            <span className={style.name}>列号</span>
+                                            <span>{item.column}</span>
+                                        </li>
+                                        <li className={style.item}>
+                                            <span className={style.name}>方法</span>
+                                            <span>{item.func}</span>
+                                        </li>
+                                        <li className={style.item}>
+                                            <span className={style.name}>文件</span>
+                                            <span>{item.url}</span>
+                                        </li>
+                                    </ul>
+                                ))
+                            }
+                        </div>
+                    )
+                }
+                
             </div>
             
            <div className={style.common}>

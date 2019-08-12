@@ -12,6 +12,10 @@ class ErrorTrackerInVue {
     }
     return ErrorTrackerInVue.instance
   }
+  constructor() {
+    this.computedErrorStackTrace = this.computedErrorStackTrace.bind(this);
+    this.install = this.install.bind(this);
+  }
 
   formatComponentName(vm: any): string {
     if (vm.$root === vm) {
@@ -63,7 +67,7 @@ class ErrorTrackerInVue {
 
     setFlag('watchVue', true)
     this.isInstall = true
-
+    
     const hasConsole = typeof console !== 'undefined'
     Vue.config.warnHandler = (msg: any, vm: any, trace: any) => {
       if (hasConsole) {
@@ -75,6 +79,7 @@ class ErrorTrackerInVue {
     }
 
     Vue.config.errorHandler = (err: any, vm: any, info: any) => {
+      console.log('vue error');
       if (hasConsole) {
         getFlag('consoleInjected')
           ? console.error(err, 'infoFromTryCatch')

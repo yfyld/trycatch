@@ -1,7 +1,7 @@
 import * as constants from "@/constants";
 import { createAction } from "typesafe-actions";
 import {ErrorChartData,ErrorSearchParams,ErrorChangeParams,EventListDataItem,PageData,EventInfo,ErrorInfo, ErrorListDataItem, EventChartSearchData, EventChartData} from "@/types"
-console.log(constants);
+
 
 export const doGetErrorAllData = createAction(constants.GET_ERROR_ALL_DATA,resolve=>(params:ErrorSearchParams)=>resolve(params));
 

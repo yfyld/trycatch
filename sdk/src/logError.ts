@@ -5,9 +5,10 @@ import { sendData } from './send'
 export function log(data: ErrorLog) {
   const error = {
     type: data.type,
-    info: data.info,
+    message: data.message,
     level: data.level,
-    url: getLocationHref()
+    url: getLocationHref(),
+    time: Date.now()
   }
   sendData(error)
 }

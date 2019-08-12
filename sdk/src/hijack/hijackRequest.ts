@@ -15,7 +15,6 @@ export function hijackXMLHttpRequest() {
   if (getFlag('xhrInjected')) {
     return
   }
-
   // onloadstart onprogress onabort onerror ontimeout onloadend
   const oldOpen = XMLHttpRequest.prototype.open
   const oldSend = XMLHttpRequest.prototype.send
@@ -25,8 +24,9 @@ export function hijackXMLHttpRequest() {
     this.url = arguments[1]
     this.sTime = Date.now()
     this.addEventListener('error', function() {
+      // 例接口不存在
       this.elapsedTime = Date.now() - this.sTime
-      xhrEventTrigger.call(this, 'httpError')
+      xhrEventTrigger.call(this, 'httpErrored')
     })
     oldOpen.apply(this, arguments)
   }
@@ -41,12 +41,20 @@ export function hijackXMLHttpRequest() {
         this['reqData'] = data
       }
       this.elapsedTime = Date.now() - this.sTime
-      xhrEventTrigger.call(this, 'httpLoadEnd')
+      xhrEventTrigger.call(this, 'httpLoadEnded')
     })
 
+    // this.addEventListener('readystatechange', function() {
+    //   if (this.readyState === 4) {
+    //     if (!(this.status >= 200 && this.status < 300 || this.status === 304 || this.status === 302)) {
+    //       xhrEventTrigger.call(this, 'httpErrored');
+    //     }
+    //   }
+    // })
     oldSend.apply(this, arguments)
   }
 
+  
   XMLHttpRequest.prototype.oldOpen = oldOpen
   XMLHttpRequest.prototype.oldSend = oldSend
 
@@ -63,6 +71,8 @@ export function hijackFetch() {
     return oldFetch
       .apply(this, arguments)
       .then(function(response: Response) {
+        console.log(config);
+        console.log(response);
         const eTime = Date.now()
         const data: HttpDetailData = {
           elapsedTime: eTime - sTime,
@@ -71,24 +81,27 @@ export function hijackFetch() {
           url: response.url,
           status: response.status,
           statusText: response.statusText,
-          time: eTime
+          time: eTime,
+          reqData: config && config.body
         }
         const cloneRes = response.clone()
         if (response.status >= 400) {
           data.responseText = cloneRes.text()
         }
+        console.log('then');
         if (data.responseText) {
           data.responseText instanceof Promise &&
             data.responseText.then(function(text: string) {
               data.responseText = text
-              fetchEventTrigger.apply(this, ['httpLoadEnd', data])
+              fetchEventTrigger.apply(this, ['httpLoadEnded', data])
             })
         } else {
-          fetchEventTrigger.apply(this, ['httpLoadEnd', data])
+          fetchEventTrigger.apply(this, ['httpLoadEnded', data])
         }
         return response
       })
       .catch(function(e: any) {
+        console.log('catch');
         const eTime = Date.now()
         const data: HttpDetailData = {
           elapsedTime: eTime - sTime,
@@ -99,7 +112,7 @@ export function hijackFetch() {
           statusText: e.name + e.message,
           time: eTime
         }
-        fetchEventTrigger.apply(config, ['httpError', data])
+        fetchEventTrigger.apply(config, ['httpErrored', data])
         return Promise.reject(e)
       })
   }

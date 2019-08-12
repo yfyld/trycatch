@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import Suspense from './Suspense';
 import CoreRouter from './CoreRouter'
-import DashboardRouter from './dashboardRouter';
+import DashboardRouter from './DashboardRouter';
 
 
 const Home = React.lazy(() => import('@/pages/home/Home'))
@@ -18,6 +18,7 @@ export default class Routes extends React.Component {
           <Route exact path="/home" component={Suspense(Home)} />
           <Route path="/project" component={CoreRouter} />
           <Route path="/dashboard" component={DashboardRouter}/>
+          <Route path="/" exact render={() => <Redirect to="/home"/>}/>
         </Switch>
     )
   }

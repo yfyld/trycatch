@@ -1,5 +1,5 @@
 import * as React from 'react'
-import style from './AppHeader.less'
+import style from './RightHeader.less'
 import { Link } from 'react-router-dom'
 import { connect } from "react-redux"
 import { Icon, Dropdown, Menu } from 'antd'

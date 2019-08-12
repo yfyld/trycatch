@@ -33,7 +33,7 @@ export interface HttpRequest {
 
 export interface HttpResponse {
   status: number
-  statusText: number
+  statusText: string
   description: string
 }
 
@@ -44,7 +44,10 @@ export interface ErrorHttp {
   elapsedTime?: number
   level?: number
   response?: HttpResponse
-  request?: HttpRequest
+  request?: HttpRequest,
+  status?: number,
+  statuText?: string,
+  method?: string
 }
 
 export interface ErrorLog {
@@ -83,7 +86,8 @@ export interface HttpDetailData {
   status: number
   statusText: string
   time: number
-  responseText?: Promise<string> | string
+  responseText?: Promise<string> | string,
+  reqData?: string | object
 }
 
 export interface PackageData {

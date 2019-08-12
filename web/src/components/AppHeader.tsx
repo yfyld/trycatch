@@ -1,8 +1,8 @@
 import * as React from 'react'
-import style from './header.less'
+import style from './Header.less'
 import { Link } from 'react-router-dom'
 import logo from "@/assets/imgs/logo-b.png"
-import RightHeader from './rightHeader';
+import RightHeader from './RightHeader';
 
 
 
