@@ -21,9 +21,12 @@ interface Props {
 function EventInfo({ data, clientInfo, location, libInfo, source }: Props) {
     React.useEffect(() => {
         if (source.code) {
-            document.querySelectorAll('pre code').forEach((block) => {
-                hljs.highlightBlock(block);
-              });
+            const dom = document.querySelector(".code");
+            hljs.highlightBlock(dom);
+            const html = dom.innerHTML;
+            dom.innerHTML = `<ol start="${source.line-3}"><li>${html.replace(/\n/g,"\n</li><li>")}\n</li></ol></<ol>`;
+            
+        
         }
     }, [source.code])
     return (
@@ -179,8 +182,8 @@ function EventInfo({ data, clientInfo, location, libInfo, source }: Props) {
                                 <li className={style.item}>
                                     <span className={style.name}>源码</span>
                                     <span>
-                                        <pre className='javascript'>
-                                            <code>{source.code}</code>
+                                        <pre className='hljs'>
+                                            <code className='code'>{source.code}</code>
                                         </pre>
                                     </span>
                                 </li>
