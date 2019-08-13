@@ -14,28 +14,29 @@ export default function(data: IError, maxCount = { once: 3, oneDay: 10 }) {
   const locationUrl = getRealPath(data.url)
 
   if (data.type === ERROR_TYPE.HTTP_ERROR) {
-    const reqUrl = data.request.url.replace(/\?.*$/, '')
     id =
       data.type +
       data.request.method +
       data.response.status +
-      getRealPath(reqUrl)
-  } else if (
-    data.type === ERROR_TYPE.JAVASCRIPT_ERROR ||
-    data.type === ERROR_TYPE.VUE_ERROR
-  ) {
-    if (data.stack && data.stack.length) {
-      id =
-        data.type +
-        data.stack[0].line +
-        data.stack[0].column +
-        getRealPath(data.stack[0].url) +
-        data.name +
-        data.message
-    } else {
-      id = data.type + data.name + data.message + locationUrl
-    }
-  } else {
+      getRealPath(data.request.url)
+  }
+  // else if (
+  //   data.type === ERROR_TYPE.JAVASCRIPT_ERROR ||
+  //   data.type === ERROR_TYPE.VUE_ERROR
+  // ) {
+  //   if (data.stack && data.stack.length) {
+  //     id =
+  //       data.type +
+  //       data.stack[0].line +
+  //       data.stack[0].column +
+  //       getRealPath(data.stack[0].url) +
+  //       data.name +
+  //       data.message
+  //   } else {
+  //   id = data.type + data.name + data.message + locationUrl
+  //    }
+  // }
+  else {
     id = data.type + data.message + locationUrl
   }
   hashId = hashCode(id)

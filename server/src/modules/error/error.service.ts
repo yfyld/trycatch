@@ -1,5 +1,5 @@
-import { Sourcemap } from './../project/project.model';
-import { ErrorTypeListItemDto, ErrorTypeDto } from './error.dto';
+import { Sourcemap, Project } from './../project/project.model';
+import { ErrorTypeListItemDto, ErrorTypeDto, SourceCodeDto } from './error.dto';
 import { HttpBadRequestError } from '../../errors/bad-request.error';
 import { ErrorType } from './error.model';
 import { Injectable, HttpService } from '@nestjs/common';
@@ -17,6 +17,8 @@ export class ErrorService {
     private readonly errorTypeModel: Repository<ErrorType>,
     @InjectRepository(Sourcemap)
     private readonly sourcemapModel: Repository<Sourcemap>,
+    @InjectRepository(Project)
+    private readonly projectModel: Repository<Project>,
     private readonly httpService: HttpService,
     private readonly redisService: RedisService,
   ) {}
@@ -57,13 +59,17 @@ export class ErrorService {
     return;
   }
 
-  private async parseSourcemap(sourcemapSrc, line, column): Promise<string> {
+  private async parseSourcemap(
+    sourcemapSrc,
+    line,
+    column,
+  ): Promise<SourceCodeDto> {
     // 读取map文件，实际就是一个json文件
     var rawSourceMap = await this.httpService.axiosRef.request({
       url: sourcemapSrc,
     });
     if (!rawSourceMap || !rawSourceMap.data) {
-      return '';
+      return null;
     }
     // 通过sourceMap库转换为sourceMapConsumer对象
     var consumer = await new SourceMap.SourceMapConsumer(rawSourceMap.data);
@@ -82,42 +88,66 @@ export class ErrorService {
     const rawLines = smContent.split(/\r?\n/g);
     // 输出源码行，因为数组索引从0开始，故行数需要-1
 
-    return `
-    ${rawLines[sm.line - 3]} \n
-    ${rawLines[sm.line - 2]} \n
-    ${rawLines[sm.line - 1]} \n
-    > ${rawLines[sm.line]} \n
-    ${rawLines[sm.line + 1]}
-    `;
+    return {
+      code: `
+        ${rawLines[sm.line - 3]}
+        ${rawLines[sm.line - 2]}
+        ${rawLines[sm.line - 1]}
+        > ${rawLines[sm.line]}
+        ${rawLines[sm.line + 1]}
+        `,
+      line: sm.line,
+      column: sm.column,
+      sourceUrl: sm.source,
+      name: sm.name,
+    };
   }
 
-  public async getSourceCode(): Promise<string> {
-    // const errorType = await this.errorTypeModel.findOne({
-    //   where: { id: errorTypeId, version },
-    // });
-
-    // const sourcemap = await this.sourcemapModel.findOne({
-    //   where: { fileName, version, projectId },
-    // });
-    // if (sourcemap) {
-    // }
+  public async getSourceCode(
+    stack: any,
+    projectId: number,
+    version: string,
+  ): Promise<SourceCodeDto> {
     const client = this.redisService.getClient();
 
-    const clearKey = 'aaaaa'; //`${projectId}-${errorTypeId}-${version}-${sourcemapSrc}`;
-
+    const fileName = stack.url.match(/[^/]+$/)[0];
+    const line = stack.line;
+    const column = stack.column;
+    const targetSrc = stack.url;
+    const clearKey = `${projectId}-${stack.fileName}-${line}-${column}-${version}`;
     let sourceCode = await client.get(clearKey);
+    let sourcemapSrc;
 
     if (sourceCode) {
-      return sourceCode;
+      return JSON.parse(sourceCode);
     }
 
-    sourceCode = await this.parseSourcemap(
-      'http://zyyh.91jkys.com/assets/js/vendor.baca39463fd704390477.js.map',
-      1,
-      200,
-    );
+    let sourcemap = await this.sourcemapModel.findOne({
+      where: { fileName, projectId, hash: true },
+    });
+    if (!sourcemap) {
+      sourcemap = await this.sourcemapModel.findOne({
+        where: { fileName, projectId, version },
+      });
+    }
 
-    client.set(clearKey, sourceCode);
-    return;
+    if (!sourcemap) {
+      const project = await this.projectModel.findOne({
+        where: { id: projectId },
+      });
+      if (project.sourcemapOnline) {
+        sourcemapSrc = targetSrc + '.map';
+      }
+    }
+
+    if (!sourcemapSrc) {
+      return null;
+    }
+    let result = await this.parseSourcemap(sourcemapSrc, line, column);
+    if (!result) {
+      return null;
+    }
+    client.set(clearKey, JSON.stringify(result));
+    return result;
   }
 }

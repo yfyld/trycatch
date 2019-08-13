@@ -5,11 +5,11 @@ import { ErrorType } from './error.model';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../user/user.model';
-import { Sourcemap } from '../project/project.model';
+import { Sourcemap, Project } from '../project/project.model';
 import { RedisModule } from 'nestjs-redis';
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ErrorType, User, Sourcemap]),
+    TypeOrmModule.forFeature([ErrorType, User, Sourcemap, Project]),
     HttpModule,
     RedisModule.register({
       host: '127.0.0.1',

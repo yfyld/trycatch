@@ -1,5 +1,6 @@
+import { AddLogDto } from './search.dto';
 import { ErrorService } from './../error/error.service';
-import { ErrorTypeDto, ErrorLogDto } from './../error/error.dto';
+import { ErrorTypeDto } from './../error/error.dto';
 import {
   BullQueueEvents,
   OnQueueActive,
@@ -12,7 +13,7 @@ import { Logger, Injectable } from '@nestjs/common';
 import { SearchService } from './search.service';
 
 export interface JobData {
-  body: ErrorLogDto;
+  body: AddLogDto;
   ip: string;
   ua: string;
 }
