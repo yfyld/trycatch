@@ -26,7 +26,7 @@ export class SearchQueue {
     private readonly errorService: ErrorService,
   ) {}
 
-  @QueueProcess({ name: 'getlog' })
+  @QueueProcess({ name: 'getLog' })
   processGetLog(job: Job<JobData>) {
     return this.searchService.createLogIndex(
       job.data.body,

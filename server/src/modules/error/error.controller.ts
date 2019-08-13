@@ -41,7 +41,7 @@ export class ErrorController {
   @HttpProcessor.handle('获取错误信息')
   @Get('/:errorId')
   @UseGuards(JwtAuthGuard)
-  getErrorTypeInfo(@Param('errorId') errorId: number): Promise<ErrorType> {
+  getErrorTypeInfo(@Param('errorId') errorId: string): Promise<ErrorType> {
     return this.errorService.getErrorTypeById(errorId);
   }
 

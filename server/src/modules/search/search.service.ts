@@ -58,7 +58,7 @@ export class SearchService {
         from: query.skip,
         size: query.take,
         query: {
-          match: { errorId: query.query.errorId },
+          match: { 'data.errorId': query.query.errorId },
         },
       },
     });
@@ -67,17 +67,17 @@ export class SearchService {
     });
     const sameStack = {};
     for (let item of list) {
-      if (item.stack && item.stack[0]) {
+      if (!item.data.stack || !item.data.stack[0]) {
         continue;
       }
-      const key = `${item.stack.url}-${item.stack.line}-${item.stack.column}-${item.version}`;
+      const key = `${item.data.stack.url}-${item.data.stack.line}-${item.data.stack.column}-${item.info.version}`;
       if (!!sameStack[key]) {
         return sameStack[key];
       }
-      const source = this.errorService.getSourceCode(
-        item.stack[0],
-        item.projectId,
-        item.version,
+      const source = await this.errorService.getSourceCode(
+        item.data.stack[0],
+        item.info.projectId,
+        item.info.version,
       );
       sameStack[key] = source;
       item.source = source;
