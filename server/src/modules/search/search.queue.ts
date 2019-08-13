@@ -9,7 +9,7 @@ import {
   QueueProcess,
 } from 'nest-bull';
 import { Job } from 'bull';
-import { Logger, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { SearchService } from './search.service';
 
 export interface JobData {
@@ -25,10 +25,18 @@ export class SearchQueue {
     private readonly searchService: SearchService,
     private readonly errorService: ErrorService,
   ) {}
-  private readonly logger = new Logger(this.constructor.name);
 
-  @QueueProcess({ name: 'profile' })
-  processProfile(job: Job<JobData>) {
+  @QueueProcess({ name: 'getlog' })
+  processGetLog(job: Job<JobData>) {
+    return this.searchService.createLogIndex(
+      job.data.body,
+      job.data.ip,
+      job.data.ua,
+    );
+  }
+
+  @QueueProcess({ name: 'getUserNum' })
+  processGetUserNum(job: Job<JobData>) {
     return this.searchService.createLogIndex(
       job.data.body,
       job.data.ip,
@@ -49,8 +57,9 @@ export class SearchQueue {
     console.log(job.data.body);
     const data = job.data.body;
     const errorType: ErrorTypeDto = {
-      ...data,
-      id: data.projectId + '-' + data.errorId,
+      ...data.data,
+      projectId: data.info.projectId,
+      id: data.info.projectId + '-' + data.data.errorId,
     };
     this.errorService.createError(errorType);
   }

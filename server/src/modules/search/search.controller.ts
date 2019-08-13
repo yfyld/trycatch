@@ -27,7 +27,7 @@ export class SearchController {
   @Post('/error.gif')
   async createErrorLogByBody(@Req() req: any): Promise<any> {
     const { body, ip, headers } = req;
-    this.queue.add('profile', {
+    this.queue.add('getLog', {
       body: JSON.parse(body),
       ip: ip.replace(/[^.\d]/g, ''),
       ua: headers['user-agent'],
@@ -41,7 +41,7 @@ export class SearchController {
   @Get('/error.gif')
   createErrorLogByQuery(@Req() req: any): Promise<void> {
     const { query, ip, headers } = req;
-    this.queue.add('profile', {
+    this.queue.add('getLog', {
       body: JSON.parse(query),
       ip: ip.replace(/[^.\d]/g, ''),
       ua: headers['user-agent'],

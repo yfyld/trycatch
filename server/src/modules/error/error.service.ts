@@ -24,12 +24,18 @@ export class ErrorService {
   ) {}
 
   public async createError(body: ErrorTypeDto): Promise<void> {
-    const errorType = this.errorTypeModel.create(body);
+    let errorType = await this.getErrorTypeById(body.id);
+    if (errorType) {
+      errorType.eventNum++;
+      return;
+    } else {
+      errorType = this.errorTypeModel.create(body);
+    }
     await this.errorTypeModel.save(errorType);
     return;
   }
 
-  public async getErrorTypeById(errorTypeId: number): Promise<ErrorType> {
+  public async getErrorTypeById(errorTypeId: string): Promise<ErrorType> {
     const errorType = await this.errorTypeModel.findOne({
       where: { id: errorTypeId },
     });
@@ -93,9 +99,10 @@ export class ErrorService {
         ${rawLines[sm.line - 3]}
         ${rawLines[sm.line - 2]}
         ${rawLines[sm.line - 1]}
-        > ${rawLines[sm.line]}
+      > ${rawLines[sm.line]}
         ${rawLines[sm.line + 1]}
-        `,
+        ${rawLines[sm.line + 2]}
+        ${rawLines[sm.line + 3]}`,
       line: sm.line,
       column: sm.column,
       sourceUrl: sm.source,
