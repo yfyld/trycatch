@@ -43,10 +43,10 @@ export default {
       ttl: CACHE_TIME,
       isExist: false,
     },
-    // {
-    //   action: actions.doGetErrorInfoRequest(Number(errorId)),
-    //   ttl: CACHE_TIME,
-    //   isExist: false
-    // }
+    {
+      action: actions.doGetErrorInfoRequest(Number(errorId)),
+      ttl: CACHE_TIME,
+      isExist: false
+    }
   ]
 }
