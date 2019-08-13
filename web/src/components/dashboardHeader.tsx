@@ -1,10 +1,10 @@
 import * as React from 'react'
-import style from './header.less'
+import style from './Header.less'
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom'
 import { connect } from "react-redux"
 import { Select } from 'antd';
 import { StoreState, Project } from "@/types"
-import RightHeader from './rightHeader';
+import RightHeader from './RightHeader';
 
 const Option = Select.Option;
 
@@ -23,7 +23,7 @@ const DashboardHeader = ({ projectId, projectList, history }: Props) => {
                   projectList.map((item: Project) => <Option key={item.id+''} value={item.id}>{item.name}</Option>)
               }
           </Select>
-          <Link to={`/dashboard/${projectId}`}>错误列表</Link>
+          <Link className={style.error} to={`/dashboard/${projectId}`}>错误列表</Link>
       </div>
       <RightHeader />
     </div>

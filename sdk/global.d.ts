@@ -16,5 +16,6 @@ interface XMLHttpRequest {
     username?: string | null,
     password?: string | null
   ): void
-  oldSend(body?: Document | BodyInit | null): void
+  oldSend(body?: Document | BodyInit | null): void,
+  oldError(this: XMLHttpRequest, ev: ProgressEvent): any
 }

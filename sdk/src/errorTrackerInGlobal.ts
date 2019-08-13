@@ -33,7 +33,6 @@ class ErrorTrackerInGlobal {
       columnNo?: number,
       e?: any
     ) {
-      console.log(e)
       self.traceGlobalError(message, url, lineNo, columnNo, e)
     }
   }
@@ -46,7 +45,6 @@ class ErrorTrackerInGlobal {
   ) {
     const error = this.computedErrorMsg(message, url, lineNo, columnNo, e)
     // send
-    console.log(error)
     sendData(error)
   }
   computedErrorMsg(
@@ -60,7 +58,10 @@ class ErrorTrackerInGlobal {
     if (e && isError(e)) {
       error = computedStackTrace(e)
     }
-    error.type = ERROR_TYPE.JAVASCRIPT_ERROR
+    
+    error.type = ERROR_TYPE.JAVASCRIPT_ERROR;
+    error.line = lineNo;
+    error.column = columnNo;
     return error
   }
   computedStackTraceWithoutError(

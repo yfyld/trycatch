@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Loading from './routerLoading';
+import Loading from './Loading';
 
 const Suspense = (Component:  React.LazyExoticComponent<any>) => (props: any) => (
     <React.Suspense fallback={<Loading />}>

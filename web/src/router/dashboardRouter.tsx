@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { lazy, Suspense } from 'react'
 import { Switch, Redirect } from 'react-router-dom'
-import AuthRoute from './authRoute';
-import DashboardLayout from '@/components/dashboardLayout';
-import Loading from './routerLoading';
+import AuthRoute from './AuthRoute';
+import DashboardLayout from '@/components/DashboardLayout';
+import Loading from './Loading';
 
 
 const Dashboard = lazy(() => import('@/pages/work/Dashboard'))

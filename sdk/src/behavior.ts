@@ -76,7 +76,7 @@ export default class Behavior {
       e.type === 'historyPopstate'
     ) {
       this.behaviorList.push(this.getPageBehavior(e.detail))
-    } else if (e.type === 'httpLoadEnd' || e.type === 'httpError') {
+    } else if (e.type === 'httpLoadEnded' || e.type === 'httpErrored') {
       if (
         oneOf(e.detail.url, this.config.excludeUrlList) ||
         oneOf(e.detail.responseURL, this.config.excludeUrlList)
@@ -103,7 +103,7 @@ export default class Behavior {
       window.addEventListener('historyPushState', this.addBehavior)
       window.addEventListener('historyPopstate', this.addBehavior)
       window.addEventListener('historyReplaceState', this.addBehavior)
-      window.addEventListener('httpLoadEnd', this.addBehavior)
+      window.addEventListener('httpLoadEnded', this.addBehavior)
       setFlag('watchBehavior', true)
     }
   }

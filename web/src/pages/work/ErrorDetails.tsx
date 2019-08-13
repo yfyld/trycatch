@@ -22,7 +22,8 @@ interface Props extends EventChartData{
   eventListLoading: boolean
   doErrorChange: (params: ErrorChangeParams) => Action
   doGetEventListDataRequest:()=>Action
-  doGetEventInfoRequest:(eventId:number)=>Action
+  doGetEventInfoRequest:(eventId:number)=>Action,
+  doSetEventId: (id: number) => Action,
   doErrorDetails: any,
   eventInfo:EventInfo
   errorInfo:IErrorInfo
@@ -32,7 +33,7 @@ interface Props extends EventChartData{
   projectMembers: Member[]
 }
 
-const ErrorDetails = ({eventInfoLoading,doGetEventInfoRequest,eventListMoreShow, errorInfo,eventInfo,eventListLoading,doErrorChange, doErrorDetails ,eventListData,doGetEventListDataRequest,projectMembers, trendStat, deviceStat, osStat, browserStat}: Props) => {
+const ErrorDetails = ({eventInfoLoading,doSetEventId,eventListMoreShow, errorInfo,eventInfo,eventListLoading,doErrorChange, doErrorDetails ,eventListData,doGetEventListDataRequest,projectMembers, trendStat, deviceStat, osStat, browserStat}: Props) => {
  
 
   const loadMore = !eventListLoading&&eventListMoreShow ? (
@@ -72,7 +73,7 @@ const ErrorDetails = ({eventInfoLoading,doGetEventInfoRequest,eventListMoreShow,
               loadMore={loadMore}
               dataSource={eventListData.list}
               renderItem={item => (
-                <List.Item className={item.id === eventInfo.id ? style.selected: ''} onClick={()=>doGetEventInfoRequest(item.id)}>
+                <List.Item className={item.id === eventInfo.id ? style.selected: ''} onClick={()=>doSetEventId(item.id)}>
                     <EventListItem {...item}/>
                 </List.Item>
               )}
@@ -113,7 +114,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
       doGetEventListDataRequest:()=>{
           return actions.doGetEventListDataRequest({})
       },
-      doGetEventInfoRequest:params=>actions.doGetEventInfoRequest(params)
+      doGetEventInfoRequest:params=>actions.doGetEventInfoRequest(params),
+      doSetEventId: (id: number) => actions.doSetEventId(id)
     },
     dispatch
   )

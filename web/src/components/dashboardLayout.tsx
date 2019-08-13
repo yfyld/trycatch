@@ -1,12 +1,19 @@
 import * as React from 'react';
-import style from "./layout.less"
-import DashboardHeader from './dashboardHeader';
+import { connect } from 'react-redux';
+import style from "./Layout.less"
+import DashboardHeader from './DashboardHeader';
 import * as actions from '@/store/actions';
+import { Action } from '@/types';
+import { bindActionCreators, Dispatch } from 'redux';
 
-const DashboardLayout=(props:{children:any})=>{
+interface Props {
+  children: any,
+  doGetProjectAllList: () => void
+}
+
+const DashboardLayout=(props:Props)=>{
     React.useEffect(() => {
-        console.log(1);
-        actions.doGetProjectAllListRequest();
+        props.doGetProjectAllList();
     }, [])
   return (
     <div className={style.wrapper}>
@@ -20,6 +27,18 @@ const DashboardLayout=(props:{children:any})=>{
   )
 }
 
+const mapStateToProps = () => ({})
 
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+  ...bindActionCreators(
+    {
+      doGetProjectAllList () {
+        return actions.doGetProjectAllListRequest()
+      },
+     
+    },
+    dispatch
+  )
+})
 
-export default  DashboardLayout
+export default  connect(mapStateToProps, mapDispatchToProps)(DashboardLayout)

@@ -12,7 +12,7 @@ db/data/
 *.lock
 !.autod.conf.js
 
-sdk/.rpts_cache
+sdk/.rpt2_cache
 
 app/**/*.js
 test/**/*.js

@@ -25,7 +25,7 @@ const install = function(conf?: SetConfig) {
   errorTrackerInResource.install()
   errorTrackerInHttp.install(config)
   errorTrackerInPromise.install()
-  errorTrackerInHttp.install()
+  // errorTrackerInHttp.install()
 
   if ((window as any).Vue) {
     errorTrackerInVue.install((window as any).Vue)

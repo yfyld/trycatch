@@ -67,7 +67,7 @@ function ErrorInfo({errorInfo, projectMembers, errorId, ...props}: Props) {
     return(
         <div className={style.wrapper}>
             <div className={style.info}>
-                <div>{errorInfo.url}</div>
+                <div className={style.url}>{errorInfo.url}</div>
                 <div className={style.handler}>{selectionHandler}</div>
             </div>
             <div className={style.summary}>

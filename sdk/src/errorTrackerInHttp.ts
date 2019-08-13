@@ -26,7 +26,7 @@ class ErrorTrackerInHttp {
             ? 'XMLHttpRequest请求失败(可能原因:浏览器跨域限制、限时)'
             : data.responseText
       },
-      resuest: {
+      request: {
         method: data.method,
         url: data.url,
         data: data.reqData
@@ -47,9 +47,10 @@ class ErrorTrackerInHttp {
   }
 
   decideHttp(e: any) {
+    const data = e.detail;
     if (
-      (e.status >= 400 || e.status === 0) &&
-      this.ignoreHttpCodeList.indexOf(e.status) < 0
+      (data.status >= 400 || data.status === 0) &&
+      this.ignoreHttpCodeList.indexOf(data.status) < 0
     ) {
       this.traceHttpError(e)
     }
@@ -57,15 +58,15 @@ class ErrorTrackerInHttp {
   install({ ignoreHttpCodeList = [] }: { ignoreHttpCodeList?: number[] } = {}) {
     this.ignoreHttpCodeList = ignoreHttpCodeList
     if (window.addEventListener && !getFlag('watchRequest')) {
-      window.addEventListener('httpError', this.traceHttpError, false)
-      window.addEventListener('httpLoadEnd', this.decideHttp, false)
+      window.addEventListener('httpErrored', this.traceHttpError, false)
+      window.addEventListener('httpLoadEnded', this.decideHttp, false)
       setFlag('watchRequest', true)
     }
   }
   uninstall() {
     if (window.addEventListener) {
-      window.removeEventListener('httpError', this.traceHttpError)
-      window.removeEventListener('httpLoadEnd', this.traceHttpError)
+      window.removeEventListener('httpErrored', this.traceHttpError)
+      window.removeEventListener('httpLoadEnded', this.traceHttpError)
       setFlag('watchRequest', false)
     }
   }

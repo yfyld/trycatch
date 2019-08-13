@@ -29,15 +29,18 @@ import {
     
     }
     traceGlobalResource(e: any) {
+      if (e.target.localName) {
         const error = {
-            type: ERROR_TYPE.RESOURCE_ERROR,
-            tagName: e.target.localName,
-            url: getLocationHref(),
-            src: e.target.href || e.target.src,
-            level: ERROR_LEVEL.LOW,
-            time: Date.now()
-          }
+          type: ERROR_TYPE.RESOURCE_ERROR,
+          tagName: e.target.localName,
+          url: getLocationHref(),
+          src: e.target.href || e.target.src,
+          level: ERROR_LEVEL.LOW,
+          time: Date.now()
+        }
       sendData(error)
+      }
+        
     }
     
   }
