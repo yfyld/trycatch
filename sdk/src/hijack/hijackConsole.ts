@@ -1,4 +1,4 @@
-import { getFlag, setFlag } from '../utils/util'
+import { getFlag, setFlag, getLocationHref } from '../utils/util'
 import { log } from '../logError'
 import { ERROR_TYPE, ERROR_LEVEL } from '../constant'
 
@@ -20,7 +20,9 @@ export default function() {
       log({
         message: args.join(';'),
         type: ERROR_TYPE.LOG_ERROR,
-        level: ERROR_LEVEL.HIGH
+        level: ERROR_LEVEL.HIGH,
+        time: Date.now(),
+        url: getLocationHref()
       })
   }
 
@@ -36,7 +38,9 @@ export default function() {
       log({
         message: args.join(';'),
         type: ERROR_TYPE.LOG_ERROR,
-        level: ERROR_LEVEL.NORMAL
+        level: ERROR_LEVEL.NORMAL,
+        time: Date.now(),
+        url: getLocationHref()
       })
   }
 

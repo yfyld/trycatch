@@ -71,8 +71,7 @@ export function hijackFetch() {
     return oldFetch
       .apply(this, arguments)
       .then(function(response: Response) {
-        console.log(config);
-        console.log(response);
+       
         const eTime = Date.now()
         const data: HttpDetailData = {
           elapsedTime: eTime - sTime,
@@ -88,7 +87,6 @@ export function hijackFetch() {
         if (response.status >= 400) {
           data.responseText = cloneRes.text()
         }
-        console.log('then');
         if (data.responseText) {
           data.responseText instanceof Promise &&
             data.responseText.then(function(text: string) {
@@ -101,7 +99,7 @@ export function hijackFetch() {
         return response
       })
       .catch(function(e: any) {
-        console.log('catch');
+        console.log(e);
         const eTime = Date.now()
         const data: HttpDetailData = {
           elapsedTime: eTime - sTime,

@@ -21,22 +21,24 @@ export default function(data: IError, maxCount = { once: 3, oneDay: 10 }) {
       data.response.status +
       getRealPath(data.request.url)
   }
-  // else if (
-  //   data.type === ERROR_TYPE.JAVASCRIPT_ERROR ||
-  //   data.type === ERROR_TYPE.VUE_ERROR
-  // ) {
-  //   if (data.stack && data.stack.length) {
-  //     id =
-  //       data.type +
-  //       data.stack[0].line +
-  //       data.stack[0].column +
-  //       getRealPath(data.stack[0].url) +
-  //       data.name +
-  //       data.message
-  //   } else {
-  //   id = data.type + data.name + data.message + locationUrl
-  //    }
-  // }
+  else if (
+    data.type === ERROR_TYPE.JAVASCRIPT_ERROR ||
+    data.type === ERROR_TYPE.VUE_ERROR
+  ) {
+    if (data.stack && data.stack.length) {
+      id =
+        data.type +
+        data.stack[0].line +
+        data.stack[0].column +
+        getRealPath(data.stack[0].url) +
+        data.name +
+        data.message
+    } else {
+    id = data.type + data.name + data.message + locationUrl
+     }
+  } else if (data.type === ERROR_TYPE.RESOURCE_ERROR) {
+    id = data.type + data.src + data.tagName + locationUrl;
+  }
   else {
     id = data.type + data.message + locationUrl
   }
