@@ -44,7 +44,6 @@ const ErrorDetails = ({eventInfoLoading,doSetEventId,eventListMoreShow, errorInf
       <Button onClick={doGetEventListDataRequest}>加载更多</Button>
     </div>
   ) : null;
-  console.log(eventInfo);
   return (
     <div className={style.wrapper}>
       <div className={style.filter}>

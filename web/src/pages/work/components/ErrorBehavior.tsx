@@ -2,14 +2,19 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Timeline } from 'antd';
 import * as moment from 'moment';
-import { StoreState } from '@/types';
+import { StoreState, BehaviorListItem } from '@/types';
 import style from './ErrorBehavior.less';
+import { eventInfoSelector } from '@/store/selectors';
 
-function ErrorBehavior({behaviorList, ...props}) {
+interface Props {
+    behavior: BehaviorListItem[]
+}
+
+function ErrorBehavior({behavior}: Props) {
     return (
         <Timeline className={style.wrapper}>
             {
-                behaviorList.map((item, index) => (
+                behavior.map((item, index) => (
                     <Timeline.Item key={index}>
                         <ul className={style.behavior}>
                             <li className={style.type}>{item.type}</li>
@@ -30,9 +35,9 @@ function ErrorBehavior({behaviorList, ...props}) {
 }
 
 const mapStateToProps = (state: StoreState) => {
-    const behaviorList = state.work.eventInfo.behavior;
+    const eventInfo = eventInfoSelector(state);
     return {
-        behaviorList
+        behavior: eventInfo.behavior || []
     }
 }
 

@@ -203,11 +203,12 @@ export interface EventListDataItem {
   // location?: Location,
   // createTime?: number
   location: Location,
-  ua: Ua,
+  clientInfo: ClientInfo,
   behavior: BehaviorListItem[],
   libInfo: LibInfo,
   info: Info,
   data: ErrorPostData,
+  source: Source,
   id: number
 }
 
@@ -221,11 +222,19 @@ export interface ErrorPostData {
   time: number
 }
 
+
+export interface Source {
+  line: number,
+  column: number,
+  code: string,
+  sourceUrl: string,
+  name: string
+}
 export interface Location {
   region: string,
   isp: string,
 }
-export interface Ua {
+export interface ClientInfo {
   ua: string,
   os: string,
   osVersion: string,
