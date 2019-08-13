@@ -17,12 +17,13 @@ export interface Stack {
 }
 
 export interface ErrorJavaScript {
-  type: string
+
   message?: string
   name?: string
   stack?: Stack[]
-  url?: string
-  level?: number
+  url: string,
+  line?: number,
+  column?: number
 }
 
 export interface HttpRequest {
@@ -38,11 +39,9 @@ export interface HttpResponse {
 }
 
 export interface ErrorHttp {
-  type: string
-  url?: string
+  url: string
   time?: number
   elapsedTime?: number
-  level?: number
   response?: HttpResponse
   request?: HttpRequest,
   status?: number,
@@ -51,19 +50,16 @@ export interface ErrorHttp {
 }
 
 export interface ErrorLog {
-  type: string
-  info?: string
-  level?: number
-  url?: string
+
+  url: string
   name?: string
   message?: string
 }
 
 export interface ErrorVue {
-  type: string
+
   message?: string
-  level?: number
-  url?: string
+  url: string
   componentName?: string
   propsData?: any
   name?: string
@@ -71,12 +67,21 @@ export interface ErrorVue {
   time?: number
 }
 
-export interface IError extends ErrorJavaScript, ErrorHttp, ErrorLog, ErrorVue {
+export interface ErrorResource {
+
+  tagName: string,
+  url: string,
+  src: string
+}
+
+export interface IError extends ErrorJavaScript, ErrorHttp, ErrorLog, ErrorVue, ErrorResource {
   errorId?: number
   createTime?: number
   updateTime?: number
   userAgent?: any
-  eventNum?: number
+  eventNum?: number,
+  level: number,
+  type: string
 }
 export interface HttpDetailData {
   elapsedTime: number

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { StoreState, ErrorPostData, LibInfo, ClientInfo, Location, Source } from '@/types';
+import { StoreState, IError, LibInfo, ClientInfo, Location, Source } from '@/types';
 import style from './EventBasicInfo.less';
 import { eventInfoSelector } from '@/store/selectors'
 import hljs from 'highlight.js/lib/highlight';
@@ -9,7 +9,7 @@ import 'highlight.js/styles/github.css';
 hljs.registerLanguage('javascript', javascript);
 
 interface Props {
-    data: ErrorPostData,
+    data: IError,
     clientInfo: ClientInfo,
     location: Location,
     libInfo: LibInfo,
@@ -82,6 +82,56 @@ function EventInfo({ data, clientInfo, location, libInfo, source }: Props) {
                                 </ul>
                             </div>
                             
+                        </div>
+                    )
+                }
+                {
+                    data.type === 'JAVASCRIPT_ERROR' && (
+                        <div className={style.part}>
+                            <div className={style.title}>错误信息</div>
+                            <ul>
+                                <li className={style.item}>
+                                    <span className={style.name}>名称</span>
+                                    <span>{data.name}</span>
+                                </li>
+                                <li className={style.item}>
+                                    <span className={style.name}>信息</span>
+                                    <span>{data.message}</span>
+                                </li>
+                                <li className={style.item}>
+                                    <span className={style.name}>行号</span>
+                                    <span>{data.line}</span>
+                                </li>
+                                <li className={style.item}>
+                                    <span className={style.name}>列号</span>
+                                    <span>{data.column}</span>
+                                </li>
+                            </ul>
+                        </div>
+                    )
+                }
+                {
+                    data.type === 'RESOURCE_ERROR' && (
+                        <div className={style.part}>
+                            <div className={style.title}>资源信息</div>
+                            <ul>
+                                <li className={style.item}>
+                                    <span className={style.name}>outerHTML</span>
+                                    <span></span>
+                                </li>
+                                <li className={style.item}>
+                                    <span className={style.name}>信息</span>
+                                    <span>{data.message}</span>
+                                </li>
+                                <li className={style.item}>
+                                    <span className={style.name}>行号</span>
+                                    <span>{data.line}</span>
+                                </li>
+                                <li className={style.item}>
+                                    <span className={style.name}>列号</span>
+                                    <span>{data.column}</span>
+                                </li>
+                            </ul>
                         </div>
                     )
                 }

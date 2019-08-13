@@ -183,11 +183,78 @@ export interface BehaviorListItem {
   newURL?: string,
 }
 
+
 export interface Stack {
-  url?: string,
-  func?: string,
-  line?: number,
+  line?: number
   column?: number
+  args?: any[]
+  func?: string
+  url?: string
+}
+
+export interface ErrorJavaScript {
+  type: string
+  message?: string
+  name?: string
+  stack?: Stack[]
+  url?: string
+  level?: number,
+  line?: number,
+  column: number
+}
+
+export interface HttpRequest {
+  url: string
+  method: string
+  data: string
+}
+
+export interface HttpResponse {
+  status: number
+  statusText: string
+  description: string
+}
+
+export interface ErrorHttp {
+  type: string
+  url?: string
+  time?: number
+  elapsedTime?: number
+  level?: number
+  response?: HttpResponse
+  request?: HttpRequest,
+  status?: number,
+  statuText?: string,
+  method?: string
+}
+
+export interface ErrorLog {
+  type: string
+  info?: string
+  level?: number
+  url?: string
+  name?: string
+  message?: string
+}
+
+export interface ErrorVue {
+  type: string
+  message?: string
+  level?: number
+  url?: string
+  componentName?: string
+  propsData?: any
+  name?: string
+  stack?: Stack[]
+  time?: number
+}
+
+export interface IError extends ErrorJavaScript, ErrorHttp, ErrorLog, ErrorVue {
+  errorId?: number
+  createTime?: number
+  updateTime?: number
+  userAgent?: any
+  eventNum?: number
 }
 
 export interface EventListDataItem {
@@ -207,7 +274,7 @@ export interface EventListDataItem {
   behavior: BehaviorListItem[],
   libInfo: LibInfo,
   info: Info,
-  data: ErrorPostData,
+  data: IError,
   source: Source,
   id: number
 }
