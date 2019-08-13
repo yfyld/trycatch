@@ -84,7 +84,8 @@ const getEventListData: Epic<Action, Action, StoreState> = (action$, state$) =>
           ) {
             // 默认获取第一条日志详情
             return [
-              actions.doGetEventInfoRequest(list[0].id),
+              // actions.doGetEventInfoRequest(list[0].id),
+              actions.doSetEventId(list[0].id),
               actions.doGetEventListDataSuccess({list, totalCount})
             ]
           } else {

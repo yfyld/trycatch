@@ -34,10 +34,12 @@ export interface WorkState {
 		errorId: number
 	},
 	eventChartData: EventChartData,
+	eventId: number
 }
 
 const initialState = {
 	errorId: null,
+	eventId: null,
 	errorSearchParams: {
 
 		page: 1,
@@ -149,6 +151,10 @@ export const workReducer = (
 		case getType(actions.doGetEventChartDataSuccess):
 			return update(state, {
 				eventChartData: { $set: action.payload }
+			})
+		case getType(actions.doSetEventId):
+			return update(state, {
+				eventId: { $set: action.payload }
 			})
 		default:
 			return state

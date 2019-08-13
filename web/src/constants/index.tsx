@@ -152,6 +152,9 @@ export type GET_EVENT_CHART_DATA_REQUEST = typeof GET_EVENT_CHART_DATA_REQUEST
 export type GET_EVENT_CHART_DATA_SUCCESS = typeof GET_EVENT_CHART_DATA_SUCCESS
 export type GET_EVENT_CHART_DATA_FAILURE = typeof GET_EVENT_CHART_DATA_FAILURE
 
+export const SET_EVENT_ID = 'SET_EVENT_ID';
+export type SET_EVENT_ID = typeof SET_EVENT_ID;
+
 export const ERROR_STATUS = [
   {
     text: '未解决',

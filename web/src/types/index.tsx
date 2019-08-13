@@ -191,21 +191,57 @@ export interface Stack {
 }
 
 export interface EventListDataItem {
-  url?: string;
-  type?: string;
-  id?: number
-  status?: string,
-  os?: string,
-  osVersion?: string,
-  browser?: string,
-  browserVersion?: string,
-  device?: string,
-  location?: Location,
-  createTime?: number
+  // url?: string;
+  // type?: string;
+  // id?: number
+  // status?: string,
+  // os?: string,
+  // osVersion?: string,
+  // browser?: string,
+  // browserVersion?: string,
+  // device?: string,
+  // location?: Location,
+  // createTime?: number
+  location: Location,
+  ua: Ua,
+  behavior: BehaviorListItem[],
+  libInfo: LibInfo,
+  info: Info,
+  data: ErrorPostData,
+  id: number
+}
+
+export interface ErrorPostData {
+  url: string,
+  type: string,
+  name: string,
+  errorId: string,
+  stack: Stack[],
+  message: string,
+  time: number
 }
 
 export interface Location {
-  region?: string
+  region: string,
+  isp: string,
+}
+export interface Ua {
+  ua: string,
+  os: string,
+  osVersion: string,
+  browser: string,
+  browserVersion: string,
+  device: string
+}
+
+export interface LibInfo {
+  libVersion: string,
+  libType: string
+}
+
+export interface Info {
+  projectId: number,
+  version: string
 }
 export interface EventChartSearchData {
   projectId: number,

@@ -2,12 +2,12 @@ import * as React from 'react'
 import { Tabs } from 'antd'
 import { WrappedFormUtils } from 'antd/lib/form/Form';
 import { connect } from "react-redux"
-
 import * as actions from '@/store/actions'
 import { bindActionCreators, Dispatch } from 'redux'
 import { Action, StoreState } from '@/types'
 import ProjectMember from './components/ProjectMember';
 import ProjectInfo from './components/ProjectInfo';
+import Sourcemap from './components/Sourcemap';
 import style from './ProjectDetails.less';
 
 const TabPane = Tabs.TabPane
@@ -39,6 +39,9 @@ function ProjectDetails({ doProjectMembers, projectId, tabs }: Props) {
 				</TabPane>
 				<TabPane tab="成员管理" key="3">
 					<ProjectMember className={style.content} />
+				</TabPane>
+				<TabPane tab="sourmap上传" key="4">
+					<Sourcemap className={style.content}/>
 				</TabPane>
 			</Tabs>
 		</div>

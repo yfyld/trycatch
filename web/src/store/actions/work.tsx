@@ -38,3 +38,6 @@ export const doGetErrorInfoFailure = createAction(constants.GET_ERROR_INFO_FAILU
 export const doGetEventChartDataRequest = createAction(constants.GET_EVENT_CHART_DATA_REQUEST, resolve => (params: EventChartSearchData) => resolve(params));
 export const doGetEventChartDataSuccess = createAction(constants.GET_EVENT_CHART_DATA_SUCCESS, resolve => (data: EventChartData) => resolve(data))
 export const doGetEventChartDataFailure = createAction(constants.GET_EVENT_CHART_DATA_FAILURE)
+
+
+export const doSetEventId = createAction(constants.SET_EVENT_ID, resolve => (eventId: number) => resolve(eventId));
