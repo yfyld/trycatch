@@ -11,13 +11,15 @@ const behavior = Behavior.getInstance()
 const allData: IError[] = []
 let timer: any = null
 function _generatePackageData(data: IError | IError[]) {
-  const { projectId, version, guarderId } = getConfig();
+  const { projectId, version, guarderId } = getConfig()
   const packageData: PackageData = {
     data,
     behavior: behavior.behaviorList,
     libInfo: trycatchInfo,
     info: {
-      projectId, version, guarderId
+      projectId,
+      version,
+      guarderId
     }
   }
   return packageData

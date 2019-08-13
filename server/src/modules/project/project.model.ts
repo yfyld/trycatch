@@ -34,6 +34,9 @@ export class Project {
   @ManyToOne(type => User)
   guarder: User;
 
+  @Column()
+  sourcemapOnline: boolean;
+
   // @OneToMany(type => Sourcemap)
   // sourcemap: Sourcemap;
 }
@@ -52,7 +55,7 @@ export class Sourcemap {
   version: string;
 
   @Column()
-  mapName: string;
+  hash: boolean;
   @Column()
   fileName: string;
 

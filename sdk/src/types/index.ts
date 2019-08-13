@@ -93,13 +93,13 @@ export interface HttpDetailData {
 export interface PackageData {
   data: IError | IError[]
   behavior: Behavior[]
-  libInfo: TrycatchInfo,
+  libInfo: TrycatchInfo
   info: SendInfo
 }
 
 export interface SendInfo {
-  projectId: number,
-  version: string,
+  projectId: number
+  version: string
   guarderId: number
 }
 

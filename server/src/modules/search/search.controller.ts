@@ -68,21 +68,6 @@ export class SearchController {
   public async getErrorLogList(
     @QueryList() query: QueryListResult<any>,
   ): Promise<PageData<any>> {
-    const result = await this.searchService.search({
-      index: 'logs',
-      body: {
-        from: query.skip,
-        size: query.take,
-        query: {
-          match: { errorId: query.query.errorId },
-        },
-      },
-    });
-    return {
-      totalCount: (result as any).hits.total.value,
-      list: result.hits.hits.map(({ _source }) => {
-        return _source;
-      }),
-    };
+    return this.searchService.getLogList(query);
   }
 }
