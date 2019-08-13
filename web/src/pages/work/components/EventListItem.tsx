@@ -9,9 +9,9 @@ function EventListItem(props: Props) {
         <div>
             
             <div className={style.hardware}>
-                <span>{props.ua.os}</span>
-                <span>{props.ua.device}</span>
-                <span>{props.ua.browser}</span>
+                <span>{props.clientInfo.os}</span>
+                <span>{props.clientInfo.device}</span>
+                <span>{props.clientInfo.browser}</span>
             </div>
             <div>
                 <div className={style.date}>{props.data.time}</div>

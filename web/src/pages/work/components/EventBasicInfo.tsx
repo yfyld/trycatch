@@ -1,12 +1,30 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { StoreState, EventListDataItem } from '@/types';
+import { StoreState, ErrorPostData, LibInfo, ClientInfo, Location, Source } from '@/types';
 import style from './EventBasicInfo.less';
 import { eventInfoSelector } from '@/store/selectors'
+import hljs from 'highlight.js/lib/highlight';
+import javascript from 'highlight.js/lib/languages/javascript';
+import 'highlight.js/styles/github.css';
+hljs.registerLanguage('javascript', javascript);
+
+interface Props {
+    data: ErrorPostData,
+    clientInfo: ClientInfo,
+    location: Location,
+    libInfo: LibInfo,
+    source: Source
+}
 
 
-
-function EventInfo({ data, ua, location, libInfo }: EventListDataItem) {
+function EventInfo({ data, clientInfo, location, libInfo, source }: Props) {
+    React.useEffect(() => {
+        if (source.code) {
+            document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightBlock(block);
+              });
+        }
+    }, [source.code])
     return (
         <div className={style.wrapper}>
             <div className={style.info}>
@@ -68,6 +86,35 @@ function EventInfo({ data, ua, location, libInfo }: EventListDataItem) {
                     )
                 }
                 {
+                    source && (
+                        <div className={style.part}>
+                            <div className={style.title}>SourceMap信息</div>
+                            <ul>
+                                <li className={style.item}>
+                                    <span className={style.name}>行号</span>
+                                    <span>{source.line}</span>
+                                </li>
+                                <li className={style.item}>
+                                    <span className={style.name}>列号</span>
+                                    <span>{source.column}</span>
+                                </li>
+                                <li className={style.item}>
+                                    <span className={style.name}>文件</span>
+                                    <span>{source.sourceUrl}</span>
+                                </li>
+                                <li className={style.item}>
+                                    <span className={style.name}>源码</span>
+                                    <span>
+                                        <pre className='javascript'>
+                                            <code>{source.code}</code>
+                                        </pre>
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    )
+                }
+                {
                     data.stack && data.stack.length && (
                         <div className={style.part}>
                             <div className={style.title}>堆栈信息</div>
@@ -109,19 +156,19 @@ function EventInfo({ data, ua, location, libInfo }: EventListDataItem) {
                     <ul>
                         <li className={style.item}>
                             <span className={style.name}>浏览器</span>
-                            <span>{ua.browser}</span>
+                            <span>{clientInfo.browser}</span>
                         </li>
                         <li className={style.item}>
                             <span className={style.name}>JS引擎</span>
-                            <span>{ua.browserVersion}</span>
+                            <span>{clientInfo.browserVersion}</span>
                         </li>
                         <li className={style.item}>
                             <span className={style.name}>操作系统</span>
-                            <span>{ua.os}</span>
+                            <span>{clientInfo.os}</span>
                         </li>
                         <li className={style.item}>
                             <span className={style.name}>设备</span>
-                            <span>{ua.device}</span>
+                            <span>{clientInfo.device}</span>
                         </li>
                     </ul>
                 </div>
@@ -156,7 +203,7 @@ function EventInfo({ data, ua, location, libInfo }: EventListDataItem) {
                         </li>
                         <li className={style.item}>
                             <span className={style.name}>userAgent</span>
-                            <span>{ua.ua}</span>
+                            <span>{clientInfo.ua}</span>
                         </li>
                     </ul>
                 </div>
@@ -168,11 +215,10 @@ function EventInfo({ data, ua, location, libInfo }: EventListDataItem) {
 }
 
 const mapStateToProps = (state: StoreState) => {
-    const eventInfo = eventInfoSelector(state) || {};
-    console.log(eventInfo);
-    const { data, libInfo, ua, location, info } = eventInfo;
+    const eventInfo = eventInfoSelector(state);
+    const { data, libInfo, clientInfo, location, info, source } = eventInfo;
     return {
-        data, libInfo, ua, location, info
+        data, libInfo, clientInfo, location, info, source
     }
 }
 
