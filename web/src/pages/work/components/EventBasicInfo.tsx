@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import * as moment from 'moment';
 import { StoreState, IError, LibInfo, ClientInfo, Location, Source } from '@/types';
 import style from './EventBasicInfo.less';
 import { eventInfoSelector } from '@/store/selectors'
@@ -29,28 +30,28 @@ function EventInfo({ data, clientInfo, location, libInfo, source }: Props) {
         <div className={style.wrapper}>
             <div className={style.info}>
                 <div className={style.part}>
-                    <div className={style.title}>错误信息</div>
+                    <div className={style.title}>概要信息</div>
                     <ul>
                         <li className={style.item}>
                             <span className={style.name}>时间</span>
-                            <span>{data.time}</span>
+                            <span>{data.time && moment(data.time).format('YYYY-MM-DD HH:mm:ss')}</span>
                         </li>
                         <li className={style.item}>
                             <span className={style.name}>类型</span>
                             <span>{data.type}</span>
                         </li>
                         <li className={style.item}>
-                            <span className={style.name}>名称</span>
-                            <span>{data.name}</span>
-                        </li>
-                        <li className={style.item}>
-                            <span className={style.name}>信息</span>
-                            <span>{data.message}</span>
-                        </li>
-                        <li className={style.item}>
-                            <span className={style.name}>文件</span>
+                            <span className={style.name}>URL</span>
                             <span>{data.url}</span>
                         </li>
+                        {
+                            (data.type === 'LOG_ERROR' || data.type === 'PROMISE_ERROR') && (
+                                <li className={style.item}>
+                                    <span className={style.name}>信息</span>
+                                    <span>{data.message}</span>
+                                </li>
+                            )
+                        }
                     </ul>
                 </div>
                 {
@@ -58,26 +59,48 @@ function EventInfo({ data, clientInfo, location, libInfo, source }: Props) {
                         <div className={style.part}>
                             <div className={style.title}>请求信息</div>
                             <div>
+                                <div className={style.request}>Request</div>
                                 <ul>
                                     <li className={style.item}>
                                         <span className={style.name}>method</span>
-                                        <span></span>
+                                        <span>{data.request && data.request.method}</span>
                                     </li>
                                     <li className={style.item}>
                                         <span className={style.name}>url</span>
-                                        <span></span>
+                                        <span>{data.request && data.request.url}</span>
                                     </li>
+                                    {
+                                        data.request && data.request.data && (
+                                            <li className={style.item}>
+                                                <span className={style.name}>body</span>
+                                                <span>{data.request && data.request.data}</span>
+                                            </li>
+                                        )
+                                    }
+                                    {
+                                        data.request && data.request.params && (
+                                            <li className={style.item}>
+                                                <span className={style.name}>params</span>
+                                                <span>{data.request && data.request.params}</span>
+                                            </li>
+                                        )
+                                    }
                                 </ul>
                             </div>
                             <div>
+                                <div className={style.response}>Response</div>
                                 <ul>
                                     <li className={style.item}>
                                         <span className={style.name}>status</span>
-                                        <span></span>
+                                        <span>{data.response && data.response.status}</span>
                                     </li>
                                     <li className={style.item}>
-                                        <span className={style.name}>url</span>
-                                        <span></span>
+                                        <span className={style.name}>response</span>
+                                        <span>{data.response && data.response.statusText}</span>
+                                    </li>
+                                    <li className={style.item}>
+                                        <span className={style.name}>description</span>
+                                        <span>{data.response && data.response.description}</span>
                                     </li>
                                 </ul>
                             </div>
@@ -117,24 +140,25 @@ function EventInfo({ data, clientInfo, location, libInfo, source }: Props) {
                             <ul>
                                 <li className={style.item}>
                                     <span className={style.name}>outerHTML</span>
-                                    <span></span>
+                                    <span>{data.outerHTML}</span>
                                 </li>
                                 <li className={style.item}>
-                                    <span className={style.name}>信息</span>
-                                    <span>{data.message}</span>
+                                    <span className={style.name}>tagName</span>
+                                    <span>{data.tagName}</span>
                                 </li>
                                 <li className={style.item}>
-                                    <span className={style.name}>行号</span>
-                                    <span>{data.line}</span>
+                                    <span className={style.name}>src</span>
+                                    <span>{data.src}</span>
                                 </li>
                                 <li className={style.item}>
-                                    <span className={style.name}>列号</span>
-                                    <span>{data.column}</span>
+                                    <span className={style.name}>timeStamp</span>
+                                    <span>{data.timeStamp}</span>
                                 </li>
                             </ul>
                         </div>
                     )
                 }
+                
                 {
                     source && (
                         <div className={style.part}>

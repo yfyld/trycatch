@@ -32,11 +32,14 @@ import {
       if (e.target.localName) {
         const error = {
           type: ERROR_TYPE.RESOURCE_ERROR,
+          outerHTML: e.target.outerHTML,
           tagName: e.target.localName,
           url: getLocationHref(),
           src: e.target.href || e.target.src,
           level: ERROR_LEVEL.LOW,
-          time: Date.now()
+          time: Date.now(),
+          timeStamp: e.timeStamp,
+          name: e.type
         }
       sendData(error)
       }

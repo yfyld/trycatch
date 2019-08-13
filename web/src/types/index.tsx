@@ -193,20 +193,22 @@ export interface Stack {
 }
 
 export interface ErrorJavaScript {
-  type: string
+  type: string,
+  level: number,
+  url: string,
+  time: number,
   message?: string
   name?: string
-  stack?: Stack[]
-  url?: string
-  level?: number,
+  stack?: Stack[] 
   line?: number,
-  column: number
+  column?: number
 }
 
 export interface HttpRequest {
   url: string
   method: string
-  data: string
+  data: string,
+  params: string
 }
 
 export interface HttpResponse {
@@ -216,47 +218,53 @@ export interface HttpResponse {
 }
 
 export interface ErrorHttp {
-  type: string
-  url?: string
-  time?: number
+  type: string,
+  level: number,
+  url: string
+  time: number
   elapsedTime?: number
-  level?: number
   response?: HttpResponse
   request?: HttpRequest,
-  status?: number,
-  statuText?: string,
-  method?: string
 }
 
 export interface ErrorLog {
-  type: string
-  info?: string
-  level?: number
-  url?: string
+  type: string,
+  level: number,
+  url: string,
+  time: number,
   name?: string
   message?: string
 }
 
 export interface ErrorVue {
-  type: string
+  type: string,
+  level: number,
+  url: string,
+  time: number,
+  componentName?: string,
+  propsData?: any,
+  name?: string,
+  stack?: Stack[],
   message?: string
-  level?: number
-  url?: string
-  componentName?: string
-  propsData?: any
+}
+
+export interface ErrorResource {
+  type: string,
+  level: number,
+  url: string,
+  time: number,
+  tagName?: string,
+  src?: string,
+  outerHTML?: string,
+  timeStamp?: number,
   name?: string
-  stack?: Stack[]
-  time?: number
 }
 
-export interface IError extends ErrorJavaScript, ErrorHttp, ErrorLog, ErrorVue {
+
+// export type IError = ErrorJavaScript | ErrorHttp | ErrorLog | ErrorVue | ErrorResource
+export interface IError extends ErrorJavaScript, ErrorHttp, ErrorLog, ErrorVue, ErrorResource {
   errorId?: number
-  createTime?: number
-  updateTime?: number
-  userAgent?: any
-  eventNum?: number
 }
-
 export interface EventListDataItem {
   // url?: string;
   // type?: string;
