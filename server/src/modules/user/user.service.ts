@@ -85,7 +85,7 @@ export class UserService {
         username: payload.data.username,
       },
     });
-    const isVerified = payload.data.password === user.password; // lodash.isEqual(payload.data, {username:user.username});
+    const isVerified = user && payload.data.password === user.password; // lodash.isEqual(payload.data, {username:user.username});
     return isVerified ? payload.data : null;
   }
 

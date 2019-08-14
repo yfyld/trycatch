@@ -1,3 +1,4 @@
+import { RoleModel } from './../user/user.model';
 import { HttpBadRequestError } from './../../errors/bad-request.error';
 import { ProjectModel, MemberModel } from './project.model';
 import { Injectable } from '@nestjs/common';
@@ -10,6 +11,8 @@ import {
   QueryProjectsDto,
   UpdateProjectDto,
   AddProjectResDto,
+  AddMembersDto,
+  DeleteMembersDto,
 } from './project.dto';
 import { UserModel } from '@/modules/user/user.model';
 import { QueryListResult, PageData } from '@/interfaces/request.interface';
@@ -24,6 +27,8 @@ export class ProjectService {
     private readonly projectModel: Repository<ProjectModel>,
     @InjectRepository(UserModel)
     private readonly userModel: Repository<UserModel>,
+    @InjectRepository(RoleModel)
+    private readonly roleModel: Repository<RoleModel>,
     @InjectRepository(MemberModel)
     private readonly memberModel: Repository<MemberModel>,
   ) {}
@@ -97,40 +102,38 @@ export class ProjectService {
     return;
   }
 
-  public async addMembers(
-    projectId: number,
-    memberIds: number[],
-  ): Promise<void> {
-    const project = await this.projectModel.findOne({
-      relations: ['members'],
-      where: { id: projectId },
-    });
+  public async addMembers(body: AddMembersDto): Promise<void> {
+    const { memberIds, projectId, roleCode } = body;
+    const role = await this.roleModel.findOne({ code: roleCode });
+    if (!role) {
+      throw new HttpBadRequestError('角色不存在');
+    }
+    const project = await this.projectModel.findOne(projectId);
     if (!project) {
       throw new HttpBadRequestError('项目不存在');
     }
     const members = await this.userModel.find({
       id: In(memberIds),
     });
-    // project.members = project.members
-    //   ? project.members.concat(members)
-    //   : members;
-    this.projectModel.save(project);
+    await this.memberModel
+      .createQueryBuilder()
+      .insert()
+      .values(members.map(user => ({ role, project, user })))
+      .execute();
     return;
   }
 
-  public async deleteMember(
-    projectId: number,
-    memberIds: number[],
-  ): Promise<void> {
-    const project = await this.projectModel.findOne({
-      relations: ['members'],
-      where: { id: projectId },
-    });
+  public async deleteMember(body: DeleteMembersDto): Promise<void> {
+    const { projectId, memberIds } = body;
 
-    // project.members = project.members.filter(
-    //   item => memberIds.findIndex(id => id === item.id) === -1,
-    // );
-    this.projectModel.save(project);
+    await this.memberModel
+      .createQueryBuilder('member')
+      .delete()
+      .where('projectId = :projectId AND userId IN (:...memberIds) ', {
+        projectId,
+        memberIds,
+      })
+      .execute();
     return;
   }
 }

@@ -106,7 +106,7 @@ export class ProjectController {
   @HttpProcessor.handle({ message: '添加成员' })
   @UseGuards(JwtAuthGuard)
   addMembers(@Body() body: AddMembersDto): Promise<void> {
-    return this.projectService.addMembers(body.projectId, body.memberIds);
+    return this.projectService.addMembers(body);
   }
 
   @ApiOperation({ title: '删除成员', description: '' })
@@ -114,6 +114,6 @@ export class ProjectController {
   @HttpProcessor.handle({ message: '删除成员' })
   @UseGuards(JwtAuthGuard)
   deleteMember(@Body() body: DeleteMembersDto): Promise<void> {
-    return this.projectService.deleteMember(body.projectId, body.memberIds);
+    return this.projectService.deleteMember(body);
   }
 }

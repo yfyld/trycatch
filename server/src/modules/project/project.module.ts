@@ -1,3 +1,4 @@
+import { RoleModel } from './../user/user.model';
 import { Module } from '@nestjs/common';
 import { ProjectController } from './project.controller';
 import { ProjectService } from './project.service';
@@ -11,6 +12,7 @@ import { UserModel } from '../user/user.model';
     TypeOrmModule.forFeature([
       ProjectModel,
       UserModel,
+      RoleModel,
       SourcemapModel,
       MemberModel,
     ]),

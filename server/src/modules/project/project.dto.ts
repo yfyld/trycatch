@@ -40,13 +40,17 @@ export class AddMembersDto {
   @ApiModelProperty()
   @IsNotEmpty({ message: '项目id不能为空' })
   projectId: number;
+  @IsNotEmpty({ message: 'memberIds不能为空' })
   memberIds: number[];
+  @IsNotEmpty({ message: 'roleCode不能为空' })
+  roleCode: string;
 }
 
 export class DeleteMembersDto {
   @ApiModelProperty()
   @IsNotEmpty({ message: '项目id不能为空' })
   projectId: number;
+  @IsNotEmpty({ message: 'memberIds不能为空' })
   memberIds: number[];
 }
 
