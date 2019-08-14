@@ -1,3 +1,4 @@
+import { ErrorSchedule } from './error.schedule';
 import { Module, HttpModule } from '@nestjs/common';
 import { ErrorController } from './error.controller';
 import { ErrorService } from './error.service';
@@ -7,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../user/user.model';
 import { Sourcemap, Project } from '../project/project.model';
 import { RedisModule } from 'nestjs-redis';
+import { ScheduleModule } from 'nest-schedule';
 @Module({
   imports: [
     TypeOrmModule.forFeature([ErrorType, User, Sourcemap, Project]),
@@ -16,8 +18,9 @@ import { RedisModule } from 'nestjs-redis';
       port: 6666,
       db: 3,
     }),
+    ScheduleModule.register(),
   ],
-  providers: [ErrorService],
+  providers: [ErrorService, ErrorSchedule],
   controllers: [ErrorController],
   exports: [ErrorService],
 })

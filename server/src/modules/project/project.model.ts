@@ -1,3 +1,4 @@
+import { Role } from './../user/user.model';
 import { IsString, IsDefined, IsNotEmpty } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import {
@@ -17,28 +18,50 @@ export class Project {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ApiModelProperty()
-  @IsDefined()
-  @IsString()
   @Column()
   name: string;
 
-  @ManyToMany(type => User)
-  @JoinTable()
-  members: User[];
+  @Column()
+  description: string;
 
-  @ManyToOne(type => User)
-  @JoinColumn()
-  admin: User;
+  @Column()
+  version: string;
 
-  @ManyToOne(type => User)
-  guarder: User;
+  @Column()
+  language: string;
+
+  @Column()
+  frame: string;
+
+  @Column()
+  alarmType: string;
+
+  @Column()
+  alarmHookUrl: string;
+
+  @Column()
+  sourcemapEnable: boolean;
 
   @Column()
   sourcemapOnline: boolean;
 
-  // @OneToMany(type => Sourcemap)
-  // sourcemap: Sourcemap;
+  @ManyToOne(type => User)
+  creator: User;
+
+  @ManyToOne(type => User)
+  guarder: User;
+}
+
+@Entity()
+export class Member {
+  @PrimaryGeneratedColumn()
+  id: number;
+  @ManyToOne(type => Project)
+  project: Project;
+  @ManyToOne(type => User)
+  user: User;
+  @ManyToOne(type => Role)
+  role: Role;
 }
 
 @Entity()

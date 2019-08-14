@@ -1,3 +1,4 @@
+import { QueryList } from './../../decotators/query-list.decorators';
 import { Auth } from '@/decotators/user.decorators';
 import {
   Controller,
@@ -6,9 +7,8 @@ import {
   Body,
   UseGuards,
   HttpStatus,
-  Query,
-  Req,
-  UsePipes,
+  Put,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { User, Role } from './user.model';
 import { UserService } from './user.service';
@@ -23,7 +23,15 @@ import {
 } from '@nestjs/swagger';
 import { Permissions } from '@/decotators/permissions.decotators';
 import { PermissionsGuard } from '@/guards/permission.guard';
-import { SignUpDto, LoginDto, UserListDto } from './user.dto';
+import {
+  SignupDto,
+  SigninDto,
+  TokenDto,
+  UserListReqDto,
+  UpdateUserDto,
+} from './user.dto';
+import { QueryListResult, PageData } from '@/interfaces/request.interface';
+import { UseInterceptors } from '_@nestjs_common@6.3.1@@nestjs/common';
 @ApiUseTags('账号权限')
 @Controller('user')
 export class UserController {
@@ -54,15 +62,24 @@ export class UserController {
   @ApiOperation({ title: '登陆', description: '' })
   @Post('/signin')
   @HttpProcessor.handle({ message: '登陆', error: HttpStatus.BAD_REQUEST })
-  signin(@Body() body: LoginDto): Promise<TokenResult> {
+  signin(@Body() body: SigninDto): Promise<TokenDto> {
     return this.userService.signin(body);
   }
 
   @ApiOperation({ title: '注册', description: '' })
   @HttpProcessor.handle('注册')
   @Post('/signup')
-  signup(@Body() user: SignUpDto): Promise<User> {
-    return this.userService.addUser(user);
+  async signup(@Body() user: SignupDto): Promise<TokenDto> {
+    const newUser = await this.userService.addUser(user);
+    return this.userService.createToken(newUser);
+  }
+
+  @ApiOperation({ title: '修改用户信息', description: '' })
+  @HttpProcessor.handle('修改用户信息')
+  @UseGuards(JwtAuthGuard)
+  @Put('/')
+  updateUser(@Body() body: UpdateUserDto, @Auth() user: User): Promise<void> {
+    return this.userService.updateUser(body, user.id);
   }
 
   // @HttpProcessor.handle('注销')
@@ -70,7 +87,7 @@ export class UserController {
   // signout(): void {
   //   return null;
   // }
-
+  @UseInterceptors(ClassSerializerInterceptor)
   @ApiOperation({ title: '获取用户信息', description: '' })
   @ApiBearerAuth()
   @ApiResponse({ status: 200, type: User })
@@ -83,11 +100,13 @@ export class UserController {
 
   @ApiOperation({ title: '获取用户列表', description: '' })
   @ApiBearerAuth()
-  @ApiResponse({ status: 200, type: UserListDto })
+  @ApiResponse({ status: 200, type: User })
   @HttpProcessor.handle('获取用户列表')
   @UseGuards(JwtAuthGuard)
   @Get('/')
-  getUsers(): Promise<UserListDto> {
-    return this.userService.getUsers();
+  getUsers(
+    @QueryList() query: QueryListResult<UserListReqDto>,
+  ): Promise<PageData<User>> {
+    return this.userService.getUsers(query);
   }
 }

@@ -4,10 +4,10 @@ import { JwtService } from '@nestjs/jwt';
 import { Base64 } from 'js-base64';
 import { createHash } from 'crypto';
 import { AUTH } from '@/app.config';
-import { TokenResult } from './user.interface';
-import { Repository } from 'typeorm';
+import { Repository, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SignUpDto, UserListDto } from './user.dto';
+import { SignupDto, TokenDto, UserListReqDto, UpdateUserDto } from './user.dto';
+import { PageData, QueryListResult } from '@/interfaces/request.interface';
 
 @Injectable()
 export class UserService {
@@ -49,7 +49,7 @@ export class UserService {
     return permissionList;
   }
 
-  private async createToken(user: User): Promise<TokenResult> {
+  public async createToken(user: User): Promise<TokenDto> {
     const permissions = await this.getPermissionsById(user.id);
     const data = {
       username: user.username,
@@ -60,7 +60,7 @@ export class UserService {
     const accessToken = this.jwtService.sign({ data });
     return Promise.resolve({ accessToken, expiresIn: AUTH.expiresIn });
   }
-  public async refreshToken(token): Promise<TokenResult> {
+  public async refreshToken(token): Promise<TokenDto> {
     try {
       const data = JSON.parse(this.encodeBase64(token.split('.')[1]));
       const user = await this.userModel.findOne(data.id);
@@ -78,7 +78,7 @@ export class UserService {
     return isVerified ? payload.data : null;
   }
 
-  public async signin({ username, password }): Promise<TokenResult> {
+  public async signin({ username, password }): Promise<TokenDto> {
     const user = await this.userModel.findOne({ username });
     const extantAuthPwd = user && user.password;
     const extantPassword =
@@ -94,9 +94,23 @@ export class UserService {
     return this.userModel.findOne({ username });
   }
 
-  public async getUsers(): Promise<UserListDto> {
-    const users = await this.userModel.find({ select: ['username', 'id'] });
-    return { list: users };
+  public async getUsers(
+    query: QueryListResult<UserListReqDto>,
+  ): Promise<PageData<User>> {
+    const [users, totalCount] = await this.userModel.findAndCount({
+      where: [
+        {
+          username: Like(`%${query.query.name}%`),
+          //nickname: Like(`%${query.query.name}%`),
+        },
+      ],
+      skip: query.skip,
+      take: query.take,
+    });
+    return {
+      totalCount,
+      list: users,
+    };
   }
 
   public getRoles(): Promise<Role[]> {
@@ -117,7 +131,7 @@ export class UserService {
   //   return true;
   // }
 
-  public async addUser(user: SignUpDto): Promise<User> {
+  public async addUser(user: SignupDto): Promise<User> {
     user.password = this.encodeMd5(this.encodeBase64(user.password));
     const { id } = await this.userModel.save(user);
     return this.userModel.findOne(id);
@@ -126,6 +140,13 @@ export class UserService {
   public async deleteUser(userId: number): Promise<void> {
     const user = await this.userModel.findOne(userId);
     this.userModel.remove(user);
+    return;
+  }
+
+  public async updateUser(body: UpdateUserDto, userId: number): Promise<void> {
+    let user = await this.userModel.findOne(userId);
+    user = { ...user, ...body };
+    this.userModel.save(user);
     return;
   }
 }

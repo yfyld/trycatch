@@ -9,6 +9,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 // import { ProjectModule } from '../project/project.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { APP_PIPE } from '@nestjs/core';
+import { ValidationPipe } from '@/pipes/validation.pipe';
 
 @Module({
   imports: [
@@ -19,11 +21,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       signOptions: { expiresIn: AUTH.expiresIn },
     }),
   ],
-  providers: [UserService, JwtStrategy],
-  controllers: [
-    UserController,
+  providers: [
+    UserService,
+    JwtStrategy,
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
+    },
   ],
+  controllers: [UserController],
   exports: [UserService],
 })
-export class UserModule {
-}
+export class UserModule {}

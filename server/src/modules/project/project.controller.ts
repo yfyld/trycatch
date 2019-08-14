@@ -1,3 +1,4 @@
+import { ParseIntPipe } from './../../pipes/parse-int.pipe';
 import { QueryListResult } from '@/interfaces/request.interface';
 import { QueryList } from './../../decotators/query-list.decorators';
 import { PageQuery, PageData } from './../../interfaces/request.interface';
@@ -13,6 +14,8 @@ import {
   Delete,
   Param,
   Put,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { Project } from './project.model';
 import { ProjectService } from './project.service';
@@ -33,6 +36,8 @@ import {
   DeleteMembersDto,
   UpdateMembersDto,
   QueryProjectsDto,
+  UpdateProjectDto,
+  AddProjectResDto,
 } from './project.dto';
 import { Auth } from '@/decotators/user.decorators';
 import { User } from '@/modules/user/user.model';
@@ -49,32 +54,38 @@ export class ProjectController {
   addProject(
     @Body() body: AddProjectDto,
     @Auth() user: User,
-  ): Promise<ProjectDto> {
+  ): Promise<AddProjectResDto> {
     return this.projectService.addProject(body, user);
   }
 
   @ApiOperation({ title: '编辑项目', description: '' })
   @HttpProcessor.handle('编辑项目')
-  @Put('/')
-  updateProject(@Body() body: UpdateMembersDto): Promise<void> {
-    return this.projectService.updateProject(body);
+  @Put('/:projectId')
+  updateProject(
+    @Body() body: UpdateProjectDto,
+    @Param('projectId') projectId: number,
+  ): Promise<void> {
+    return this.projectService.updateProject(body, projectId);
   }
 
   @ApiOperation({ title: '删除项目', description: '' })
   @HttpProcessor.handle('删除项目')
   @Delete('/:projectId')
-  signout(@Param('projectId') projectId: number): Promise<void> {
+  signout(
+    @Param('projectId', new ParseIntPipe()) projectId: number,
+  ): Promise<void> {
     return this.projectService.deleteProject(projectId);
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @ApiOperation({ title: '获取项目信息', description: '' })
   @ApiBearerAuth()
   @ApiResponse({ status: 200, type: Project })
   @HttpProcessor.handle('获取项目信息')
   @Get('/:projectId')
   @UseGuards(JwtAuthGuard)
-  getProjectInfo(@Param('projectId') projectId: number): Promise<Project> {
-    return this.projectService.getProjectById(projectId);
+  getProjectInfo(@Param('projectId') projectId: number): Promise<ProjectDto> {
+    return this.projectService.getProjectInfo(projectId);
   }
 
   @ApiOperation({ title: '获取项目列表', description: '' })

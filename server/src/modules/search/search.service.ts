@@ -65,6 +65,7 @@ export class SearchService {
     const list: any[] = result.hits.hits.map(({ _source }) => {
       return _source;
     });
+    let source;
     const sameStack = {};
     for (let item of list) {
       if (!item.data.stack || !item.data.stack[0]) {
@@ -72,14 +73,15 @@ export class SearchService {
       }
       const key = `${item.data.stack.url}-${item.data.stack.line}-${item.data.stack.column}-${item.info.version}`;
       if (!!sameStack[key]) {
-        return sameStack[key];
+        source = sameStack[key];
+      } else {
+        source = await this.errorService.getSourceCode(
+          item.data.stack[0],
+          item.info.projectId,
+          item.info.version,
+        );
+        sameStack[key] = source;
       }
-      const source = await this.errorService.getSourceCode(
-        item.data.stack[0],
-        item.info.projectId,
-        item.info.version,
-      );
-      sameStack[key] = source;
       item.source = source;
     }
 

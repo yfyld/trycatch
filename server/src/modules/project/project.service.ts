@@ -1,16 +1,22 @@
 import { HttpBadRequestError } from './../../errors/bad-request.error';
 import { Project } from './project.model';
 import { Injectable } from '@nestjs/common';
-import { Repository, In } from 'typeorm';
+import { Repository, In, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   AddProjectDto,
   ProjectDto,
   UpdateMembersDto,
   QueryProjectsDto,
+  UpdateProjectDto,
+  AddProjectResDto,
 } from './project.dto';
 import { User } from '@/modules/user/user.model';
 import { QueryListResult, PageData } from '@/interfaces/request.interface';
+import {
+  UseInterceptors,
+  ClassSerializerInterceptor,
+} from '_@nestjs_common@6.3.1@@nestjs/common';
 @Injectable()
 export class ProjectService {
   constructor(
@@ -21,10 +27,17 @@ export class ProjectService {
   ) {}
 
   public getProjectById(projectId: number): Promise<Project> {
-    return this.projectModel.findOne({
-      where: { id: projectId },
-      relations: ['admin', 'members'],
-    });
+    return this.projectModel
+      .createQueryBuilder('project')
+      .innerJoinAndSelect('project.creator', 'user')
+      .where('project.id = :id', { projectId })
+      .getOne();
+  }
+
+  public async getProjectInfo(projectId: number): Promise<ProjectDto> {
+    const project = await this.getProjectById(projectId);
+    const result: ProjectDto = { ...project, members: [], sourcemap: [] };
+    return result;
   }
 
   public async getProjects(
@@ -34,7 +47,7 @@ export class ProjectService {
       skip: query.skip,
       take: query.take,
       where: {
-        ...query.query,
+        name: Like(`%${query.query.projectName}%`),
       },
     });
     return {
@@ -46,7 +59,7 @@ export class ProjectService {
   public async addProject(
     projectInfo: AddProjectDto,
     user: User,
-  ): Promise<ProjectDto> {
+  ): Promise<AddProjectResDto> {
     if (projectInfo.adminId) {
       projectInfo.admin = await this.userModel.findOne(projectInfo.adminId);
     } else {
@@ -63,8 +76,11 @@ export class ProjectService {
     return { id };
   }
 
-  public async updateProject(projectInfo: UpdateMembersDto): Promise<void> {
-    let project = await this.projectModel.findOne(projectInfo.id);
+  public async updateProject(
+    projectInfo: UpdateProjectDto,
+    projectId: number,
+  ): Promise<void> {
+    let project = await this.projectModel.findOne(projectId);
     project = { ...project, ...projectInfo };
     await this.projectModel.save(project);
     return;
@@ -90,9 +106,9 @@ export class ProjectService {
     const members = await this.userModel.find({
       id: In(memberIds),
     });
-    project.members = project.members
-      ? project.members.concat(members)
-      : members;
+    // project.members = project.members
+    //   ? project.members.concat(members)
+    //   : members;
     this.projectModel.save(project);
     return;
   }
@@ -106,7 +122,9 @@ export class ProjectService {
       where: { id: projectId },
     });
 
-    project.members = project.members.filter(item => (memberIds.findIndex(id => id === item.id) === -1));
+    // project.members = project.members.filter(
+    //   item => memberIds.findIndex(id => id === item.id) === -1,
+    // );
     this.projectModel.save(project);
     return;
   }

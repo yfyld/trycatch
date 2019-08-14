@@ -12,6 +12,7 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 import { Project } from '../project/project.model';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class Permission {
@@ -62,17 +63,21 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ApiModelProperty()
-  @IsDefined()
-  @IsString()
   @Column()
   username: string;
 
-  @IsDefined()
-  @IsString()
   @Column()
-  @ApiModelProperty()
-  password?: string;
+  nickname: string;
+
+  @Column()
+  email: string;
+
+  @Column()
+  mobile: string;
+
+  @Exclude()
+  @Column()
+  password: string;
 
   @ManyToMany(type => Role)
   @JoinTable()
