@@ -15,7 +15,7 @@ import {
   Put,
   All,
 } from '@nestjs/common';
-import { ErrorType } from './error.model';
+import { ErrorModel } from './error.model';
 import { ErrorService } from './error.service';
 import { HttpProcessor } from '@/decotators/http.decotator';
 import { JwtAuthGuard } from '@/guards/auth.guard';
@@ -27,9 +27,9 @@ import {
 } from '@nestjs/swagger';
 import { Permissions } from '@/decotators/permissions.decotators';
 import { PermissionsGuard } from '@/guards/permission.guard';
-import { ErrorTypeListItemDto } from './error.dto';
+import { ErrorListItemDto } from './error.dto';
 import { Auth } from '@/decotators/user.decorators';
-import { User } from '@/modules/user/user.model';
+import { UserModel } from '@/modules/user/user.model';
 @ApiUseTags('错误相关')
 @Controller('error')
 export class ErrorController {
@@ -37,12 +37,12 @@ export class ErrorController {
 
   @ApiOperation({ title: '获取错误信息', description: '' })
   @ApiBearerAuth()
-  @ApiResponse({ status: 200, type: ErrorType })
+  @ApiResponse({ status: 200, type: ErrorModel })
   @HttpProcessor.handle('获取错误信息')
   @Get('/:errorId')
   @UseGuards(JwtAuthGuard)
-  getErrorTypeInfo(@Param('errorId') errorId: string): Promise<ErrorType> {
-    return this.errorService.getErrorTypeById(errorId);
+  getErrorInfo(@Param('errorId') errorId: string): Promise<ErrorModel> {
+    return this.errorService.getErrorById(errorId);
   }
 
   @ApiOperation({ title: '获取错误列表', description: '' })
@@ -51,9 +51,9 @@ export class ErrorController {
   @UseGuards(JwtAuthGuard)
   @Get('/')
   getErrors(
-    @QueryList() query: QueryListResult<ErrorTypeListItemDto>,
-  ): Promise<PageData<ErrorType>> {
-    return this.errorService.getErrorTypes(query);
+    @QueryList() query: QueryListResult<ErrorListItemDto>,
+  ): Promise<PageData<ErrorModel>> {
+    return this.errorService.getErrors(query);
   }
 
   @ApiOperation({ title: '修改错误', description: '' })

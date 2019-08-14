@@ -1,4 +1,4 @@
-import { Role } from './../user/user.model';
+import { RoleModel } from './../user/user.model';
 import { IsString, IsDefined, IsNotEmpty } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import {
@@ -11,10 +11,10 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { User } from '../user/user.model';
+import { UserModel } from '../user/user.model';
 
 @Entity()
-export class Project {
+export class ProjectModel {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -45,27 +45,27 @@ export class Project {
   @Column()
   sourcemapOnline: boolean;
 
-  @ManyToOne(type => User)
-  creator: User;
+  @ManyToOne(type => UserModel)
+  creator: UserModel;
 
-  @ManyToOne(type => User)
-  guarder: User;
+  @ManyToOne(type => UserModel)
+  guarder: UserModel;
 }
 
 @Entity()
-export class Member {
+export class MemberModel {
   @PrimaryGeneratedColumn()
   id: number;
-  @ManyToOne(type => Project)
-  project: Project;
-  @ManyToOne(type => User)
-  user: User;
-  @ManyToOne(type => Role)
-  role: Role;
+  @ManyToOne(type => ProjectModel)
+  project: ProjectModel;
+  @ManyToOne(type => UserModel)
+  user: UserModel;
+  @ManyToOne(type => RoleModel)
+  role: RoleModel;
 }
 
 @Entity()
-export class Sourcemap {
+export class SourcemapModel {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -82,6 +82,6 @@ export class Sourcemap {
   @Column()
   fileName: string;
 
-  @ManyToOne(type => Project)
-  project: Project;
+  @ManyToOne(type => ProjectModel)
+  project: ProjectModel;
 }

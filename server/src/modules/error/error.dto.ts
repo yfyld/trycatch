@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsDefined, IsInt } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
-export class ErrorTypeDto {
+export class ErrorDto {
   @ApiModelProperty()
   @IsDefined()
   @IsNotEmpty({ message: '项目名称不能为空' })
@@ -24,7 +24,7 @@ export class ErrorTypeDto {
   projectId: number;
 }
 
-export class ErrorTypeListItemDto {
+export class ErrorListItemDto {
   @ApiModelProperty()
   @IsDefined()
   @IsNotEmpty({ message: '项目名称不能为空' })

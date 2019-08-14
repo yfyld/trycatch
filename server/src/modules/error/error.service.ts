@@ -1,30 +1,30 @@
-import { Sourcemap, Project } from './../project/project.model';
-import { ErrorTypeListItemDto, ErrorTypeDto, SourceCodeDto } from './error.dto';
+import { SourcemapModel, ProjectModel } from './../project/project.model';
+import { ErrorListItemDto, ErrorDto, SourceCodeDto } from './error.dto';
 import { HttpBadRequestError } from '../../errors/bad-request.error';
-import { ErrorType } from './error.model';
+import { ErrorModel } from './error.model';
 import { Injectable, HttpService } from '@nestjs/common';
 import { Repository, In } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { User } from '@/modules/user/user.model';
+import { UserModel } from '@/modules/user/user.model';
 import { QueryListResult, PageData } from '@/interfaces/request.interface';
 import * as SourceMap from 'source-map';
 import { RedisService } from 'nestjs-redis';
 @Injectable()
 export class ErrorService {
   constructor(
-    @InjectRepository(ErrorType)
-    private readonly errorTypeModel: Repository<ErrorType>,
-    @InjectRepository(Sourcemap)
-    private readonly sourcemapModel: Repository<Sourcemap>,
-    @InjectRepository(Project)
-    private readonly projectModel: Repository<Project>,
+    @InjectRepository(ErrorModel)
+    private readonly errorTypeModel: Repository<ErrorModel>,
+    @InjectRepository(SourcemapModel)
+    private readonly sourcemapModel: Repository<SourcemapModel>,
+    @InjectRepository(ProjectModel)
+    private readonly projectModel: Repository<ProjectModel>,
     private readonly httpService: HttpService,
     private readonly redisService: RedisService,
   ) {}
 
-  public async createError(body: ErrorTypeDto): Promise<void> {
-    let errorType = await this.getErrorTypeById(body.id);
+  public async createError(body: ErrorDto): Promise<void> {
+    let errorType = await this.getErrorById(body.id);
     if (errorType) {
       errorType.eventNum++;
       return;
@@ -35,16 +35,16 @@ export class ErrorService {
     return;
   }
 
-  public async getErrorTypeById(errorTypeId: string): Promise<ErrorType> {
+  public async getErrorById(errorTypeId: string): Promise<ErrorModel> {
     const errorType = await this.errorTypeModel.findOne({
       where: { id: errorTypeId },
     });
     return errorType;
   }
 
-  public async getErrorTypes(
-    query: QueryListResult<ErrorTypeListItemDto>,
-  ): Promise<PageData<ErrorType>> {
+  public async getErrors(
+    query: QueryListResult<ErrorListItemDto>,
+  ): Promise<PageData<ErrorModel>> {
     const [errorTypes, totalCount] = await this.errorTypeModel.findAndCount({
       skip: query.skip,
       take: query.take,

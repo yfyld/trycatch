@@ -1,6 +1,6 @@
 import { AddLogDto } from './search.dto';
 import { ErrorService } from './../error/error.service';
-import { ErrorTypeDto } from './../error/error.dto';
+import { ErrorDto } from './../error/error.dto';
 import {
   BullQueueEvents,
   OnQueueActive,
@@ -56,12 +56,12 @@ export class SearchQueue {
     console.log(job.returnvalue.items[0]);
     console.log(job.data.body);
     const data = job.data.body;
-    const errorType: ErrorTypeDto = {
+    const error: ErrorDto = {
       ...data.data,
       projectId: data.info.projectId,
       id: data.info.projectId + '-' + data.data.errorId,
     };
-    this.errorService.createError(errorType);
+    this.errorService.createError(error);
   }
 
   // @OnQueueEvent(BullQueueEvents.FAILED)

@@ -11,19 +11,19 @@ import {
   JoinColumn,
   PrimaryColumn,
 } from 'typeorm';
-import { User } from '../user/user.model';
-import { Project } from '../project/project.model';
+import { UserModel } from '../user/user.model';
+import { ProjectModel } from '../project/project.model';
 
 @Entity()
-export class ErrorType {
+export class ErrorModel {
   @PrimaryColumn()
   id: string;
-  @ManyToMany(type => User)
+  @ManyToMany(type => UserModel)
   @JoinTable()
-  users: User[];
+  users: UserModel[];
 
-  @ManyToOne(type => User)
-  guarder: User;
+  @ManyToOne(type => UserModel)
+  guarder: UserModel;
 
   @Column()
   name: string;

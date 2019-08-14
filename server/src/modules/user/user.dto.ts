@@ -1,6 +1,6 @@
 import { IsString, IsDefined, IsNotEmpty, Length } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
-import { User } from './user.model';
+import { UserModel } from './user.model';
 
 export class SigninDto {
   @ApiModelProperty()

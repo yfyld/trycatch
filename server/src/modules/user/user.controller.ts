@@ -10,7 +10,7 @@ import {
   Put,
   ClassSerializerInterceptor,
 } from '@nestjs/common';
-import { User, Role } from './user.model';
+import { UserModel, RoleModel } from './user.model';
 import { UserService } from './user.service';
 import { HttpProcessor } from '@/decotators/http.decotator';
 import { JwtAuthGuard } from '@/guards/auth.guard';
@@ -39,10 +39,10 @@ export class UserController {
 
   @ApiOperation({ title: '获取权限列表', description: '' })
   @ApiBearerAuth()
-  @ApiResponse({ status: 200, type: Role, isArray: true })
+  @ApiResponse({ status: 200, type: RoleModel, isArray: true })
   @HttpProcessor.handle('获取权限列表')
   @Get('/role')
-  getRoles(): Promise<Role[]> {
+  getRoles(): Promise<RoleModel[]> {
     return this.userService.getRoles();
   }
 
@@ -78,7 +78,10 @@ export class UserController {
   @HttpProcessor.handle('修改用户信息')
   @UseGuards(JwtAuthGuard)
   @Put('/')
-  updateUser(@Body() body: UpdateUserDto, @Auth() user: User): Promise<void> {
+  updateUser(
+    @Body() body: UpdateUserDto,
+    @Auth() user: UserModel,
+  ): Promise<void> {
     return this.userService.updateUser(body, user.id);
   }
 
@@ -90,23 +93,23 @@ export class UserController {
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiOperation({ title: '获取用户信息', description: '' })
   @ApiBearerAuth()
-  @ApiResponse({ status: 200, type: User })
+  @ApiResponse({ status: 200, type: UserModel })
   @HttpProcessor.handle('获取用户信息')
   @Get('/info')
   @UseGuards(JwtAuthGuard)
-  getUserInfo(@Auth() user: User): Promise<User> {
+  getUserInfo(@Auth() user: UserModel): Promise<UserModel> {
     return this.userService.getUserByUsername(user.username);
   }
 
   @ApiOperation({ title: '获取用户列表', description: '' })
   @ApiBearerAuth()
-  @ApiResponse({ status: 200, type: User })
+  @ApiResponse({ status: 200, type: UserModel })
   @HttpProcessor.handle('获取用户列表')
   @UseGuards(JwtAuthGuard)
   @Get('/')
   getUsers(
     @QueryList() query: QueryListResult<UserListReqDto>,
-  ): Promise<PageData<User>> {
+  ): Promise<PageData<UserModel>> {
     return this.userService.getUsers(query);
   }
 }

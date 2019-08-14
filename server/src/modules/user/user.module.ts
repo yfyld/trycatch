@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
-import { User, Role, Permission } from './user.model';
+import { UserModel, RoleModel, PermissionModel } from './user.model';
 
 import { JwtStrategy } from './jwt.strategy';
 import { AUTH } from '@/app.config';
@@ -14,7 +14,7 @@ import { ValidationPipe } from '@/pipes/validation.pipe';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Role, Permission]),
+    TypeOrmModule.forFeature([UserModel, RoleModel, PermissionModel]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secretOrPrivateKey: AUTH.jwtTokenSecret,

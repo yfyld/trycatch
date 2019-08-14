@@ -1,5 +1,5 @@
 import { HttpBadRequestError } from './../../errors/bad-request.error';
-import { Project } from './project.model';
+import { ProjectModel, MemberModel } from './project.model';
 import { Injectable } from '@nestjs/common';
 import { Repository, In, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,7 +11,7 @@ import {
   UpdateProjectDto,
   AddProjectResDto,
 } from './project.dto';
-import { User } from '@/modules/user/user.model';
+import { UserModel } from '@/modules/user/user.model';
 import { QueryListResult, PageData } from '@/interfaces/request.interface';
 import {
   UseInterceptors,
@@ -20,29 +20,34 @@ import {
 @Injectable()
 export class ProjectService {
   constructor(
-    @InjectRepository(Project)
-    private readonly projectModel: Repository<Project>,
-    @InjectRepository(User)
-    private readonly userModel: Repository<User>,
+    @InjectRepository(ProjectModel)
+    private readonly projectModel: Repository<ProjectModel>,
+    @InjectRepository(UserModel)
+    private readonly userModel: Repository<UserModel>,
+    @InjectRepository(MemberModel)
+    private readonly memberModel: Repository<MemberModel>,
   ) {}
 
-  public getProjectById(projectId: number): Promise<Project> {
-    return this.projectModel
-      .createQueryBuilder('project')
-      .innerJoinAndSelect('project.creator', 'user')
-      .where('project.id = :id', { projectId })
-      .getOne();
+  public getProjectById(projectId: number): Promise<ProjectModel> {
+    return this.projectModel.findOne({
+      where: { id: projectId },
+      relations: ['creator', 'guarder'],
+    });
   }
 
   public async getProjectInfo(projectId: number): Promise<ProjectDto> {
     const project = await this.getProjectById(projectId);
-    const result: ProjectDto = { ...project, members: [], sourcemap: [] };
+    const members = await this.memberModel.find({
+      where: { id: projectId },
+      relations: ['user', 'role'],
+    });
+    const result: ProjectDto = { ...project, members, sourcemap: [] };
     return result;
   }
 
   public async getProjects(
     query: QueryListResult<QueryProjectsDto>,
-  ): Promise<PageData<Project>> {
+  ): Promise<PageData<ProjectModel>> {
     const [projects, totalCount] = await this.projectModel.findAndCount({
       skip: query.skip,
       take: query.take,
@@ -58,7 +63,7 @@ export class ProjectService {
 
   public async addProject(
     projectInfo: AddProjectDto,
-    user: User,
+    user: UserModel,
   ): Promise<AddProjectResDto> {
     if (projectInfo.adminId) {
       projectInfo.admin = await this.userModel.findOne(projectInfo.adminId);

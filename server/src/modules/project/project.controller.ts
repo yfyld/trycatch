@@ -17,7 +17,7 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
 } from '@nestjs/common';
-import { Project } from './project.model';
+import { ProjectModel } from './project.model';
 import { ProjectService } from './project.service';
 import { HttpProcessor } from '@/decotators/http.decotator';
 import { JwtAuthGuard } from '@/guards/auth.guard';
@@ -40,7 +40,7 @@ import {
   AddProjectResDto,
 } from './project.dto';
 import { Auth } from '@/decotators/user.decorators';
-import { User } from '@/modules/user/user.model';
+import { UserModel } from '@/modules/user/user.model';
 @ApiUseTags('项目相关')
 @Controller('project')
 export class ProjectController {
@@ -53,7 +53,7 @@ export class ProjectController {
   @UseGuards(JwtAuthGuard)
   addProject(
     @Body() body: AddProjectDto,
-    @Auth() user: User,
+    @Auth() user: UserModel,
   ): Promise<AddProjectResDto> {
     return this.projectService.addProject(body, user);
   }
@@ -63,7 +63,7 @@ export class ProjectController {
   @Put('/:projectId')
   updateProject(
     @Body() body: UpdateProjectDto,
-    @Param('projectId') projectId: number,
+    @Param('projectId', new ParseIntPipe()) projectId: number,
   ): Promise<void> {
     return this.projectService.updateProject(body, projectId);
   }
@@ -80,11 +80,13 @@ export class ProjectController {
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiOperation({ title: '获取项目信息', description: '' })
   @ApiBearerAuth()
-  @ApiResponse({ status: 200, type: Project })
+  @ApiResponse({ status: 200, type: ProjectModel })
   @HttpProcessor.handle('获取项目信息')
   @Get('/:projectId')
   @UseGuards(JwtAuthGuard)
-  getProjectInfo(@Param('projectId') projectId: number): Promise<ProjectDto> {
+  getProjectInfo(
+    @Param('projectId', new ParseIntPipe()) projectId: number,
+  ): Promise<ProjectDto> {
     return this.projectService.getProjectInfo(projectId);
   }
 
@@ -95,7 +97,7 @@ export class ProjectController {
   @Get('/')
   getProjects(
     @QueryList() query: QueryListResult<QueryProjectsDto>,
-  ): Promise<PageData<Project>> {
+  ): Promise<PageData<ProjectModel>> {
     return this.projectService.getProjects(query);
   }
 

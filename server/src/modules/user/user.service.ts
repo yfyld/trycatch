@@ -1,4 +1,9 @@
-import { User, Role, Permission, ProjectRole } from './user.model';
+import {
+  UserModel,
+  RoleModel,
+  PermissionModel,
+  ProjectRoleModel,
+} from './user.model';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Base64 } from 'js-base64';
@@ -12,10 +17,10 @@ import { PageData, QueryListResult } from '@/interfaces/request.interface';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User)
-    private readonly userModel: Repository<User>,
-    @InjectRepository(Role)
-    private readonly roleModel: Repository<Role>,
+    @InjectRepository(UserModel)
+    private readonly userModel: Repository<UserModel>,
+    @InjectRepository(RoleModel)
+    private readonly roleModel: Repository<RoleModel>,
     // @InjectRepository(ProjectRole)
     // private readonly projectRoleModel: Repository<ProjectRole>,
     private readonly jwtService: JwtService,
@@ -33,7 +38,7 @@ export class UserService {
       .digest('hex');
   }
 
-  private async getPermissionsById(id: number): Promise<Permission[]> {
+  private async getPermissionsById(id: number): Promise<PermissionModel[]> {
     const user = await this.userModel
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.roles', 'role')
@@ -42,14 +47,17 @@ export class UserService {
       .where('user.id = :id', { id })
       .getOne();
 
-    const permissionList: Permission[] = user.roles.reduce((total, item) => {
-      return total.concat(item.permissions);
-    }, []);
+    const permissionList: PermissionModel[] = user.roles.reduce(
+      (total, item) => {
+        return total.concat(item.permissions);
+      },
+      [],
+    );
 
     return permissionList;
   }
 
-  public async createToken(user: User): Promise<TokenDto> {
+  public async createToken(user: UserModel): Promise<TokenDto> {
     const permissions = await this.getPermissionsById(user.id);
     const data = {
       username: user.username,
@@ -72,14 +80,21 @@ export class UserService {
 
   public async validateAuthData(payload: any): Promise<any> {
     const user = await this.userModel.findOne({
-      username: payload.data.username,
+      select: ['password'],
+      where: {
+        username: payload.data.username,
+      },
     });
     const isVerified = payload.data.password === user.password; // lodash.isEqual(payload.data, {username:user.username});
     return isVerified ? payload.data : null;
   }
 
   public async signin({ username, password }): Promise<TokenDto> {
-    const user = await this.userModel.findOne({ username });
+    const user = await this.userModel
+      .createQueryBuilder('user')
+      .where('user.username = :username', { username })
+      .addSelect('user.password')
+      .getOne();
     const extantAuthPwd = user && user.password;
     const extantPassword =
       extantAuthPwd || this.encodeMd5(AUTH.defaultPassword);
@@ -90,13 +105,13 @@ export class UserService {
     return this.createToken(user);
   }
 
-  public getUserByUsername(username: string): Promise<User> {
+  public getUserByUsername(username: string): Promise<UserModel> {
     return this.userModel.findOne({ username });
   }
 
   public async getUsers(
     query: QueryListResult<UserListReqDto>,
-  ): Promise<PageData<User>> {
+  ): Promise<PageData<UserModel>> {
     const [users, totalCount] = await this.userModel.findAndCount({
       where: [
         {
@@ -113,7 +128,7 @@ export class UserService {
     };
   }
 
-  public getRoles(): Promise<Role[]> {
+  public getRoles(): Promise<RoleModel[]> {
     return this.roleModel.find();
   }
 
@@ -131,7 +146,7 @@ export class UserService {
   //   return true;
   // }
 
-  public async addUser(user: SignupDto): Promise<User> {
+  public async addUser(user: SignupDto): Promise<UserModel> {
     user.password = this.encodeMd5(this.encodeBase64(user.password));
     const { id } = await this.userModel.save(user);
     return this.userModel.findOne(id);

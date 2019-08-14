@@ -6,7 +6,7 @@ import {
   IsBoolean,
 } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
-import { User } from '../user/user.model';
+import { UserModel } from '../user/user.model';
 
 export class AddProjectDto {
   @ApiModelProperty()
@@ -28,8 +28,8 @@ export class AddProjectDto {
 
   guarderId?: number;
   adminId?: number;
-  guarder?: User;
-  admin?: User;
+  guarder?: UserModel;
+  admin?: UserModel;
 }
 
 export class AddProjectResDto {
@@ -68,8 +68,8 @@ export class ProjectDto {
   id: number;
   name: string;
   description: string;
-  guarder: User;
-  creator: User;
+  guarder: UserModel;
+  creator: UserModel;
   version: string;
   language: string;
   frame: string;

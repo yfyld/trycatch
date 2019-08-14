@@ -11,11 +11,11 @@ import {
   JoinColumn,
   PrimaryColumn,
 } from 'typeorm';
-import { Project } from '../project/project.model';
+import { ProjectModel } from '../project/project.model';
 import { Exclude } from 'class-transformer';
 
 @Entity()
-export class Permission {
+export class PermissionModel {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -33,7 +33,7 @@ export class Permission {
 }
 
 @Entity()
-export class Role {
+export class RoleModel {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -53,13 +53,13 @@ export class Role {
   @ApiModelProperty()
   global: number;
 
-  @ManyToMany(type => Permission)
+  @ManyToMany(type => PermissionModel)
   @JoinTable()
-  permissions: Permission[];
+  permissions: PermissionModel[];
 }
 
 @Entity()
-export class User {
+export class UserModel {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -76,20 +76,20 @@ export class User {
   mobile: string;
 
   @Exclude()
-  @Column()
+  @Column({ select: false })
   password: string;
 
-  @ManyToMany(type => Role)
+  @ManyToMany(type => RoleModel)
   @JoinTable()
-  roles: Role[];
+  roles: RoleModel[];
 
-  @ManyToMany(type => Permission)
+  @ManyToMany(type => PermissionModel)
   @JoinTable()
-  permissions: Permission[];
+  permissions: PermissionModel[];
 }
 
 @Entity()
-export class Team {
+export class TeamModel {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -99,23 +99,23 @@ export class Team {
   @Column()
   name: string;
 
-  @ManyToMany(type => User)
+  @ManyToMany(type => UserModel)
   @JoinTable()
-  users: User[];
+  users: UserModel[];
 }
 
 @Entity()
-export class ProjectRole {
+export class ProjectRoleModel {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(type => User)
+  @OneToOne(type => UserModel)
   @JoinColumn()
-  user: User;
-  @OneToOne(type => Role)
+  user: UserModel;
+  @OneToOne(type => RoleModel)
   @JoinColumn()
-  role: Role;
-  @OneToOne(type => Project)
+  role: RoleModel;
+  @OneToOne(type => ProjectModel)
   @JoinColumn()
-  project: Project;
+  project: ProjectModel;
 }
