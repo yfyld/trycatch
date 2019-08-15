@@ -39,9 +39,9 @@ export class ErrorController {
   @ApiBearerAuth()
   @ApiResponse({ status: 200, type: ErrorModel })
   @HttpProcessor.handle('获取错误信息')
-  @Get('/:errorId')
+  @Get('/info')
   @UseGuards(JwtAuthGuard)
-  getErrorInfo(@Param('errorId') errorId: string): Promise<ErrorModel> {
+  getErrorInfo(@Query('errorId') errorId: string): Promise<ErrorModel> {
     return this.errorService.getErrorById(errorId);
   }
 

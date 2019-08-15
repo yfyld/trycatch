@@ -3,7 +3,7 @@ import { ErrorListItemDto, ErrorDto, SourceCodeDto } from './error.dto';
 import { HttpBadRequestError } from '../../errors/bad-request.error';
 import { ErrorModel } from './error.model';
 import { Injectable, HttpService } from '@nestjs/common';
-import { Repository, In } from 'typeorm';
+import { Repository, In, LessThan, MoreThan } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { UserModel } from '@/modules/user/user.model';
@@ -45,13 +45,27 @@ export class ErrorService {
   public async getErrors(
     query: QueryListResult<ErrorListItemDto>,
   ): Promise<PageData<ErrorModel>> {
-    const [errorTypes, totalCount] = await this.errorTypeModel.findAndCount({
+    const { endDate, startDate, guarderId } = query.query;
+    const searchBody = {
       skip: query.skip,
       take: query.take,
       where: {
         ...query.query,
+        cratedAt: LessThan(new Date(endDate)),
+        updateAt: MoreThan(new Date(startDate)),
       },
-    });
+      order: {},
+      relations: ['guarder'],
+    };
+    if (query.sort.key) {
+      searchBody.order[query.sort.key] = query.sort.value;
+    }
+    if (query.query.guarderId) {
+      searchBody.where['guarder'] = { id: guarderId };
+    }
+    const [errorTypes, totalCount] = await this.errorTypeModel.findAndCount(
+      searchBody,
+    );
     return {
       totalCount,
       list: errorTypes,
