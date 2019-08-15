@@ -156,12 +156,19 @@ export class ProjectService {
   }
 
   public async addSourcemap(body: AddSourcemapsDto): Promise<void> {
-    const { projectId, files } = body;
+    const { projectId, files, hash, version } = body;
 
     await this.sourcemapModel
       .createQueryBuilder('source')
       .insert()
-      .values(files.map(file => ({ project: { id: projectId }, ...file })))
+      .values(
+        files.map(file => ({
+          project: { id: projectId },
+          hash,
+          version,
+          ...file,
+        })),
+      )
       .execute();
     return;
   }

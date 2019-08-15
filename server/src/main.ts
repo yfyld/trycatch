@@ -48,6 +48,8 @@ async function bootstrap() {
   // 验证
   app.useGlobalPipes(
     new ValidationPipe({
+      skipMissingProperties: true,
+      forbidNonWhitelisted: true,
       whitelist: true,
     }),
   );

@@ -1,5 +1,5 @@
 import { SourcemapModel, ProjectModel } from './../project/project.model';
-import { ErrorListItemDto, ErrorDto, SourceCodeDto } from './error.dto';
+import { QueryErrorListDto, ErrorDto, SourceCodeDto } from './error.dto';
 import { HttpBadRequestError } from '../../errors/bad-request.error';
 import { ErrorModel } from './error.model';
 import { Injectable, HttpService } from '@nestjs/common';
@@ -43,7 +43,7 @@ export class ErrorService {
   }
 
   public async getErrors(
-    query: QueryListResult<ErrorListItemDto>,
+    query: QueryListResult<QueryErrorListDto>,
   ): Promise<PageData<ErrorModel>> {
     const { endDate, startDate, guarderId } = query.query;
     const searchBody = {
