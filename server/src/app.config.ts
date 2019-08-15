@@ -32,6 +32,10 @@ export const REDIS = {
   defaultCacheTTL: 60 * 60 * 24,
 };
 
+export const BULLCONFIG = {};
+
+export const CCONFIG = {};
+
 export const ORMCONFIG: MysqlConnectionOptions = {
   type: 'mysql',
   host: '127.0.0.1',

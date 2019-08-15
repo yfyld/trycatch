@@ -1,3 +1,4 @@
+import { HttpBadRequestError } from './../errors/bad-request.error';
 import { BadRequestException } from '@nestjs/common';
 import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common';
 
@@ -6,7 +7,7 @@ export class ParseIntPipe implements PipeTransform<string> {
   async transform(value: string, metadata: ArgumentMetadata) {
     const val = parseInt(value, 10);
     if (isNaN(val)) {
-      throw new BadRequestException('Validation failed');
+      throw new HttpBadRequestError('Validation failed');
     }
     return val;
   }

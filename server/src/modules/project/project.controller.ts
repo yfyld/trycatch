@@ -38,6 +38,8 @@ import {
   QueryProjectsDto,
   UpdateProjectDto,
   AddProjectResDto,
+  AddSourcemapsDto,
+  ActionSourcemapsDto,
 } from './project.dto';
 import { Auth } from '@/decotators/user.decorators';
 import { UserModel } from '@/modules/user/user.model';
@@ -82,10 +84,10 @@ export class ProjectController {
   @ApiBearerAuth()
   @ApiResponse({ status: 200, type: ProjectModel })
   @HttpProcessor.handle('获取项目信息')
-  @Get('/:projectId')
+  @Get('/info')
   @UseGuards(JwtAuthGuard)
   getProjectInfo(
-    @Param('projectId', new ParseIntPipe()) projectId: number,
+    @Query('projectId', new ParseIntPipe()) projectId: number,
   ): Promise<ProjectDto> {
     return this.projectService.getProjectInfo(projectId);
   }
@@ -99,6 +101,15 @@ export class ProjectController {
     @QueryList() query: QueryListResult<QueryProjectsDto>,
   ): Promise<PageData<ProjectModel>> {
     return this.projectService.getProjects(query);
+  }
+
+  @ApiOperation({ title: '获取所有相关项目', description: '' })
+  @ApiBearerAuth()
+  @HttpProcessor.handle('获取所有相关项目')
+  @UseGuards(JwtAuthGuard)
+  @Get('/all')
+  getMyProjects(@Auth() user: UserModel): Promise<PageData<ProjectModel>> {
+    return this.projectService.getMyProjects(user);
   }
 
   @ApiOperation({ title: '添加成员', description: '' })
@@ -115,5 +126,25 @@ export class ProjectController {
   @UseGuards(JwtAuthGuard)
   deleteMember(@Body() body: DeleteMembersDto): Promise<void> {
     return this.projectService.deleteMember(body);
+  }
+
+  @ApiOperation({ title: '添加sourcemap', description: '' })
+  @Post('/sourcemap')
+  @HttpProcessor.handle({ message: '添加sourcemap' })
+  @UseGuards(JwtAuthGuard)
+  addSourcemap(@Body() body: AddSourcemapsDto): Promise<void> {
+    return this.projectService.addSourcemap(body);
+  }
+
+  @ApiOperation({ title: '批量操作sourcemap', description: '' })
+  @Put('/sourcemap/action')
+  @HttpProcessor.handle({ message: '批量操作sourcemap' })
+  @UseGuards(JwtAuthGuard)
+  actionSourcemap(@Body() body: ActionSourcemapsDto): Promise<void> {
+    if (body.actionType === 'DELETE') {
+      return this.projectService.deleteSourcemap(body);
+    } else {
+      return this.projectService.updateSourcemap(body);
+    }
   }
 }

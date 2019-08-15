@@ -1,6 +1,6 @@
 import { RoleModel } from './../user/user.model';
 import { HttpBadRequestError } from './../../errors/bad-request.error';
-import { ProjectModel, MemberModel } from './project.model';
+import { ProjectModel, MemberModel, SourcemapModel } from './project.model';
 import { Injectable } from '@nestjs/common';
 import { Repository, In, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,6 +13,8 @@ import {
   AddProjectResDto,
   AddMembersDto,
   DeleteMembersDto,
+  AddSourcemapsDto,
+  ActionSourcemapsDto,
 } from './project.dto';
 import { UserModel } from '@/modules/user/user.model';
 import { QueryListResult, PageData } from '@/interfaces/request.interface';
@@ -31,6 +33,8 @@ export class ProjectService {
     private readonly roleModel: Repository<RoleModel>,
     @InjectRepository(MemberModel)
     private readonly memberModel: Repository<MemberModel>,
+    @InjectRepository(SourcemapModel)
+    private readonly sourcemapModel: Repository<SourcemapModel>,
   ) {}
 
   public getProjectById(projectId: number): Promise<ProjectModel> {
@@ -63,6 +67,20 @@ export class ProjectService {
     return {
       totalCount,
       list: projects,
+    };
+  }
+
+  public async getMyProjects(user: UserModel): Promise<any> {
+    const projects = await this.memberModel.find({
+      where: { user },
+      relations: ['project', 'role'],
+    });
+    return {
+      list: projects.map(item => ({
+        name: item.project.name,
+        id: item.project.id,
+        role: item.role.code,
+      })),
     };
   }
 
@@ -132,6 +150,46 @@ export class ProjectService {
       .where('projectId = :projectId AND userId IN (:...memberIds) ', {
         projectId,
         memberIds,
+      })
+      .execute();
+    return;
+  }
+
+  public async addSourcemap(body: AddSourcemapsDto): Promise<void> {
+    const { projectId, files } = body;
+
+    await this.sourcemapModel
+      .createQueryBuilder('source')
+      .insert()
+      .values(files.map(file => ({ project: { id: projectId }, ...file })))
+      .execute();
+    return;
+  }
+
+  public async updateSourcemap(body: ActionSourcemapsDto): Promise<void> {
+    const { projectId, sourcemapIds, hash, version } = body;
+
+    await this.sourcemapModel
+      .createQueryBuilder('member')
+      .update()
+      .set({ hash, version })
+      .where('projectId = :projectId AND id IN (:...sourcemapIds) ', {
+        projectId,
+        sourcemapIds,
+      })
+      .execute();
+    return;
+  }
+
+  public async deleteSourcemap(body: ActionSourcemapsDto): Promise<void> {
+    const { projectId, sourcemapIds } = body;
+
+    await this.sourcemapModel
+      .createQueryBuilder('member')
+      .delete()
+      .where('projectId = :projectId AND id IN (:...sourcemapIds) ', {
+        projectId,
+        sourcemapIds,
       })
       .execute();
     return;

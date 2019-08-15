@@ -115,7 +115,7 @@ export class UpdateProjectDto {
   sourcemapOnline: boolean;
 
   @ApiModelProperty()
-  @IsString({ message: 'alarmType必须为布尔值' })
+  @IsString({ message: 'alarmType必须为字符串' })
   alarmType: string;
 
   @ApiModelProperty()
@@ -127,15 +127,39 @@ export class UpdateProjectDto {
   guarderId: number;
 }
 
-// export class ProjectDto {
-//     @ApiModelProperty()
-//     @IsDefined()
-//     @IsInt({message: '项目ID必须是整数'})
-//     id: number;
+export class AddSourcemapsDto {
+  @IsDefined()
+  @IsNotEmpty({ message: '项目id不能为空' })
+  projectId: number;
 
-//     @ApiModelProperty()
-//     @IsDefined()
-//     @IsNotEmpty({ message: '项目名称不能为空' })
-//     name: string;
+  @ApiModelProperty()
+  @IsDefined()
+  files: {
+    url: string;
+    verison: string;
+    hash: boolean;
+    fileName: string;
+  }[];
+}
 
-// }
+export class ActionSourcemapsDto {
+  @IsDefined()
+  @IsNotEmpty({ message: '项目id不能为空' })
+  projectId: number;
+
+  @ApiModelProperty()
+  @IsDefined()
+  sourcemapIds: number[];
+
+  @ApiModelProperty()
+  @IsString({ message: 'actionType必须为字符串' })
+  actionType: string;
+
+  @ApiModelProperty()
+  @IsBoolean({ message: 'hash必须为布尔值' })
+  hash: boolean;
+
+  @ApiModelProperty()
+  @IsString({ message: 'version必须为字符串' })
+  version: string;
+}
