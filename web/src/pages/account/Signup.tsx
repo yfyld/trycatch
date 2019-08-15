@@ -22,7 +22,7 @@ const Signup=({form,doSubmit}:Props)=>{
       <h2 className={style.title}>注册</h2>
       <Form onSubmit={(e)=>doSubmit(e,form)} className="login-form">
         <Form.Item>
-          {getFieldDecorator('nickName', {
+          {getFieldDecorator('nickname', {
             rules: [
               { required: true, message: '请输入昵称' }
             ]

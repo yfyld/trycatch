@@ -35,7 +35,7 @@ const AppHeader = ({ userInfo, doLogoutRequest }: Props) => {
           <Dropdown overlay={menu}>
             <span className={style.user}>
               <Icon type='user' className={style['user-icon']}/>
-              {userInfo.nickName || userInfo.username}
+              {userInfo.nickname || userInfo.username}
             </span>
           </Dropdown>   
         </li>

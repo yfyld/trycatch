@@ -1,11 +1,13 @@
 import * as React from 'react'
-import { Modal,Form ,Input} from 'antd'
+import { Modal,Form ,Input, Select} from 'antd'
 import {StoreState} from "@/store/reducers"
 import {connect} from "react-redux"
 import { bindActionCreators,Dispatch } from 'redux'
 import * as actions from "@/store/actions"
 import { WrappedFormUtils } from 'antd/lib/form/Form';
 import {Action} from "@/types"
+
+const Option = Select.Option;
 
 interface Props {
   visible: boolean
@@ -32,16 +34,35 @@ const ProjectAdd = ({ visible, doSubmit, doCancel ,form}: Props) => {
           {getFieldDecorator('name', {
             rules: [{ required: true, message: '项目名称必填' }],
           })(
-            <Input />
+            <Input placeholder='请输入'/>
           )}
         </Form.Item>
-        <Form.Item
+        
+        <Form.Item label='项目语言' labelCol={{ span: 5 }}
+          wrapperCol={{ span: 12 }}>
+          {getFieldDecorator('language')(
+            <Select placeholder='请选择'>
+              <Option value='js'>js</Option>
+              <Option value='react'>react</Option>
+              <Option value='vue'>vue</Option>
+            </Select>
+          )}
+        </Form.Item>
+        <Form.Item label='项目版本' labelCol={{ span: 5 }}
+          wrapperCol={{ span: 12 }}>
+            {
+              getFieldDecorator('version')(
+                <Input placeholder='请输入'/>
+              )
+            }
+          </Form.Item>
+          <Form.Item
           label="项目描述"
           labelCol={{ span: 5 }}
           wrapperCol={{ span: 12 }}
         >
           {getFieldDecorator('description')(
-            <Input.TextArea />
+            <Input.TextArea placeholder='请输入'/>
           )}
         </Form.Item>
       </Form>

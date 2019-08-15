@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
 import { HttpForbiddenError } from '@/errors/forbidden.error';
 import { UserService } from '@/modules/user/user.service';
-import { User } from '@/modules/user/user.model';
+// import { User } from '@/modules/user/user.model';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {

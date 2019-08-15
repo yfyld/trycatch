@@ -31,7 +31,7 @@ import {
   UpdateUserDto,
 } from './user.dto';
 import { QueryListResult, PageData } from '@/interfaces/request.interface';
-import { UseInterceptors } from '_@nestjs_common@6.3.1@@nestjs/common';
+import { UseInterceptors } from '@nestjs/common';
 @ApiUseTags('账号权限')
 @Controller('user')
 export class UserController {

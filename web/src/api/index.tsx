@@ -42,8 +42,8 @@ export function fetchProjectMemberDelete(data: ProjectMemberOperate) {
   return from(fetch.post(`/project/delete-members`, data))
 }
 
-export function fetchProjectInfo(projectId:number,params?: object) {
-  return from(fetch.get(`/project/${projectId}`, params))
+export function fetchProjectInfo(projectId:number) {
+  return from(fetch.get(`/project/info`, { projectId }))
 }
 
 export function fetchProjectUpdate(projectId:number,params?: object) {
@@ -72,7 +72,7 @@ export function fetchErrorStatusUpdate(errorId:number,params?: object) {
 }
 
 export function fetchErrorInfo(errorId: number) {
-  return from(fetch.get(`/error/${errorId}`))
+  return from(fetch.get(`/error/info`, { errorId }))
 }
 
 

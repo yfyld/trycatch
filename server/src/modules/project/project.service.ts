@@ -21,7 +21,7 @@ import { QueryListResult, PageData } from '@/interfaces/request.interface';
 import {
   UseInterceptors,
   ClassSerializerInterceptor,
-} from '_@nestjs_common@6.3.1@@nestjs/common';
+} from '@nestjs/common';
 @Injectable()
 export class ProjectService {
   constructor(
@@ -61,7 +61,7 @@ export class ProjectService {
       skip: query.skip,
       take: query.take,
       where: {
-        name: Like(`%${query.query.projectName}%`),
+        name: Like(`%${query.query.projectName || ''}%`),
       },
     });
     return {

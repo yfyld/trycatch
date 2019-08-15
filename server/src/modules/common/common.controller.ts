@@ -5,15 +5,18 @@ import {
   Post,
   UseInterceptors,
   UploadedFile,
+  UseGuards,
 } from '@nestjs/common';
 import { diskStorage } from 'multer';
 import { HttpProcessor } from '@/decotators/http.decotator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { existsSync, mkdirSync } from 'fs';
 import { extname } from 'path';
+import { JwtAuthGuard } from '@/guards/auth.guard';
 
 @ApiUseTags('公共')
 @Controller('common')
+@UseGuards(JwtAuthGuard)
 export class CommonController {
   @ApiOperation({ title: '上传文件', description: '' })
   @HttpProcessor.handle('上传文件')

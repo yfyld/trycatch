@@ -15,7 +15,8 @@ export interface ProjectState {
 	projectAddVisible: boolean,
 	projectDetail: ProjectDetail,
 	projectMemberAddVisible: boolean,
-	projectMemberSelectedKeys: number[]
+	projectMemberSelectedKeys: number[],
+	fileList: any[]
 }
 
 const initialState = {
@@ -29,7 +30,8 @@ const initialState = {
 		tabs: ['1']
 	},
 	projectMemberAddVisible: false,
-	projectMemberSelectedKeys: []
+	projectMemberSelectedKeys: [],
+	fileList: [],
 };
 
 export const projectReducer = (state: ProjectState = initialState, action: Action): ProjectState => {

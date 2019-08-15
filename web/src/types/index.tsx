@@ -36,7 +36,7 @@ export interface ActionAny {
 export interface UserInfo {
   username?: string
   id?: string
-  nickName?: string
+  nickname?: string
   password?: string
 }
 
@@ -59,7 +59,7 @@ export interface  Member{
 export interface User {
   username?: string,
   id: number,
-  nickName: string
+  nickname: string
 }
 
 export interface Project {
@@ -72,7 +72,8 @@ export interface ProjectInfo {
   id?: number,
   members?: User[],
   guarderId?: number,
-  description?: string
+  description?: string,
+  guarder?: User
 }
 
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Upload, Button, Icon } from 'antd';
+import { Upload, Button, Icon, Table } from 'antd';
 
 interface Props {
     className: string
@@ -12,8 +12,27 @@ function Sourcemap({ className}: Props) {
         multiple: true,
         headers: {
             Authorization: 'Bearer ' + localStorage.getItem('accessToken')
+        },
+        onChange: ({file, fileList}) => {
+            if (file.status !== 'uploading') {
+                const fileName = file.name;
+                const url = file.response.result.url;
+                console.log(fileName);
+                console.log(url);
+                console.log([...fileList]);
+            }
+            
         }
     }
+    const columns = [{
+        title: '文件名',
+        dataIndex: 'fileName',
+        key: 'fileName'
+    }, {
+        title: 'url',
+        dataIndex: 'url',
+        key: 'url'
+    }]
     return (
         <div className={className}>
             <Upload {...props}>
@@ -21,6 +40,7 @@ function Sourcemap({ className}: Props) {
                     <Icon type='upload'/> 上传sourcemap文件
                 </Button>    
             </Upload>
+            <Table columns={columns} pagination={false}/>
         </div>
         
     )

@@ -48,7 +48,7 @@ export const ORMCONFIG: MysqlConnectionOptions = {
 };
 
 export const MULTER_OPTIONS = {
-  fileSize: 100000,
+  fileSize: 10000000,
   path: path.join(__dirname, 'publics/uploads'),
 };
 

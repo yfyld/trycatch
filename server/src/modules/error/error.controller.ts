@@ -32,6 +32,7 @@ import { Auth } from '@/decotators/user.decorators';
 import { UserModel } from '@/modules/user/user.model';
 @ApiUseTags('错误相关')
 @Controller('error')
+// @UseGuards(JwtAuthGuard)
 export class ErrorController {
   constructor(private readonly errorService: ErrorService) {}
 
@@ -40,7 +41,7 @@ export class ErrorController {
   @ApiResponse({ status: 200, type: ErrorModel })
   @HttpProcessor.handle('获取错误信息')
   @Get('/:errorId')
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   getErrorInfo(@Param('errorId') errorId: string): Promise<ErrorModel> {
     return this.errorService.getErrorById(errorId);
   }
@@ -48,7 +49,7 @@ export class ErrorController {
   @ApiOperation({ title: '获取错误列表', description: '' })
   @ApiBearerAuth()
   @HttpProcessor.handle('获取错误列表')
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get('/')
   getErrors(
     @QueryList() query: QueryListResult<ErrorListItemDto>,

@@ -12,6 +12,8 @@ db/data/
 *.lock
 !.autod.conf.js
 
+server/src/publics/uploads/
+
 sdk/.rpt2_cache
 
 app/**/*.js

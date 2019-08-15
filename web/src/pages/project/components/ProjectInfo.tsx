@@ -25,7 +25,7 @@ function ProjectInfo({ className, form, doSubmit, projectInfo, userList }: Props
 		if (projectInfo.id) {
 			form.setFieldsValue({
 				name: projectInfo.name,
-				guarderId: projectInfo.guarderId
+				guarderId: projectInfo.guarder && projectInfo.guarder.id
 			})
 		}
 	}, [projectInfo.id])
@@ -65,7 +65,7 @@ function ProjectInfo({ className, form, doSubmit, projectInfo, userList }: Props
 					})(
 						<Select placeholder='请选择' showSearch>
 							{
-								userList.map((item: User) => <Option key={item.id+''} value={item.id}>{item.nickName}</Option>)
+								userList.map((item: User) => <Option key={item.id+''} value={item.id}>{item.nickname || item.username}</Option>)
 							}
 						</Select>
 					)
