@@ -136,10 +136,13 @@ export class AddSourcemapsDto {
   @IsDefined()
   files: {
     url: string;
-    verison: string;
-    hash: boolean;
     fileName: string;
   }[];
+
+  @IsDefined()
+  version: string;
+  @IsDefined()
+  hash: boolean;
 }
 
 export class ActionSourcemapsDto {

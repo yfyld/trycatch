@@ -27,7 +27,7 @@ import {
 } from '@nestjs/swagger';
 import { Permissions } from '@/decotators/permissions.decotators';
 import { PermissionsGuard } from '@/guards/permission.guard';
-import { ErrorListItemDto } from './error.dto';
+import { QueryErrorListDto } from './error.dto';
 import { Auth } from '@/decotators/user.decorators';
 import { UserModel } from '@/modules/user/user.model';
 @ApiUseTags('错误相关')
@@ -40,9 +40,9 @@ export class ErrorController {
   @ApiBearerAuth()
   @ApiResponse({ status: 200, type: ErrorModel })
   @HttpProcessor.handle('获取错误信息')
-  @Get('/:errorId')
-  // @UseGuards(JwtAuthGuard)
-  getErrorInfo(@Param('errorId') errorId: string): Promise<ErrorModel> {
+  @Get('/info')
+  @UseGuards(JwtAuthGuard)
+  getErrorInfo(@Query('errorId') errorId: string): Promise<ErrorModel> {
     return this.errorService.getErrorById(errorId);
   }
 
@@ -52,7 +52,7 @@ export class ErrorController {
   // @UseGuards(JwtAuthGuard)
   @Get('/')
   getErrors(
-    @QueryList() query: QueryListResult<ErrorListItemDto>,
+    @QueryList() query: QueryListResult<QueryErrorListDto>,
   ): Promise<PageData<ErrorModel>> {
     return this.errorService.getErrors(query);
   }

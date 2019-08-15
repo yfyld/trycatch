@@ -10,6 +10,8 @@ import {
   ManyToOne,
   JoinColumn,
   PrimaryColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { UserModel } from '../user/user.model';
 import { ProjectModel } from '../project/project.model';
@@ -54,4 +56,10 @@ export class ErrorModel {
 
   @Column()
   userNum: number;
+
+  @CreateDateColumn()
+  createdAt: string;
+
+  @UpdateDateColumn()
+  updatedAt: string;
 }

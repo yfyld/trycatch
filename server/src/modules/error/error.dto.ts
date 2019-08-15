@@ -24,11 +24,25 @@ export class ErrorDto {
   projectId: number;
 }
 
-export class ErrorListItemDto {
+export class QueryErrorListDto {
   @ApiModelProperty()
   @IsDefined()
   @IsNotEmpty({ message: '项目名称不能为空' })
-  name: string;
+  projectId: string;
+
+  endDate: number;
+
+  startDate: number;
+
+  type: string;
+
+  level: string;
+
+  version: string;
+
+  status: string;
+
+  guarderId: number;
 }
 
 export class SourceCodeDto {
