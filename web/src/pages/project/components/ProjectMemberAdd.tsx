@@ -19,24 +19,10 @@ interface Props {
   doSubmit: (form: WrappedFormUtils) => {}
 }
 
-function ProjectMemberAdd({
-  visible,
-  userList,
-  memberList,
-  doCancel,
-  doSubmit,
-  form,
-  ...props
-}: Props) {
+function ProjectMemberAdd({ visible, userList, memberList, doCancel, doSubmit, form, ...props }: Props) {
   const { getFieldDecorator } = form
   return (
-    <Modal
-      title="添加项目成员"
-      visible={visible}
-      onCancel={doCancel}
-      onOk={() => doSubmit(form)}
-      maskClosable={false}
-    >
+    <Modal title="添加项目成员" visible={visible} onCancel={doCancel} onOk={() => doSubmit(form)} maskClosable={false}>
       <Form>
         <FormItem>
           {getFieldDecorator('memberIds', {
@@ -44,13 +30,7 @@ function ProjectMemberAdd({
           })(
             <Select mode="multiple" placeholder="请选择" showSearch>
               {userList
-                .filter(
-                  (item: User) =>
-                    findIndex(
-                      memberList,
-                      (member: Member) => member.id === item.id
-                    ) === -1
-                )
+                .filter((item: User) => findIndex(memberList, (member: Member) => member.id === item.id) === -1)
                 .map(item => (
                   <Option key={item.id + ''} value={item.id}>
                     {item.nickname || item.username}
@@ -76,8 +56,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) =>
   bindActionCreators(
     {
       doCancel: () => actions.doAddProjectMemberToggle(false),
-      doSubmit: (form: WrappedFormUtils) =>
-        actions.doAddProjectMemberRequest(form)
+      doSubmit: (form: WrappedFormUtils) => actions.doAddProjectMemberRequest(form)
     },
     dispatch
   )

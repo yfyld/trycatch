@@ -270,12 +270,7 @@ export interface ErrorResource {
 }
 
 // export type IError = ErrorJavaScript | ErrorHttp | ErrorLog | ErrorVue | ErrorResource
-export interface IError
-  extends ErrorJavaScript,
-    ErrorHttp,
-    ErrorLog,
-    ErrorVue,
-    ErrorResource {
+export interface IError extends ErrorJavaScript, ErrorHttp, ErrorLog, ErrorVue, ErrorResource {
   errorId?: number
 }
 export interface EventListDataItem {

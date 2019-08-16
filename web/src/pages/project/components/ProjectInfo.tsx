@@ -17,13 +17,7 @@ interface Props extends FormComponentProps {
   projectMembers: Member[]
 }
 
-function ProjectInfo({
-  className,
-  form,
-  doSubmit,
-  projectInfo,
-  projectMembers
-}: Props) {
+function ProjectInfo({ className, form, doSubmit, projectInfo, projectMembers }: Props) {
   const { getFieldDecorator } = form
   React.useEffect(() => {
     if (projectInfo.id) {
@@ -107,9 +101,7 @@ function ProjectInfo({
         {getFieldDecorator('alarmHookUrl')(<Input placeholder="请输入" />)}
       </FormItem>
       <FormItem label="项目描述" {...formItemLayout}>
-        {getFieldDecorator('description')(
-          <Input.TextArea placeholder="请输入" />
-        )}
+        {getFieldDecorator('description')(<Input.TextArea placeholder="请输入" />)}
       </FormItem>
       <FormItem {...formItemOffsetLayout}>
         <Button type="primary" htmlType="submit">
