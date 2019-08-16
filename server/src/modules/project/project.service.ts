@@ -48,7 +48,17 @@ export class ProjectService {
       where: { project: { id: projectId } },
       relations: ['user', 'role'],
     });
-    const result: ProjectDto = { ...project, members, sourcemap: [] };
+    const sourcemap = await this.sourcemapModel.find({
+      where: { project },
+    });
+    const result: ProjectDto = {
+      ...project,
+      members: members.map(item => ({
+        ...item.user,
+        roleCode: item.role.code,
+      })),
+      sourcemap,
+    };
     return result;
   }
 
@@ -99,7 +109,7 @@ export class ProjectService {
 
     const project = this.projectModel.create(projectInfo);
     const { id } = await this.projectModel.save(project);
-    this.addMembers({
+    await this.addMembers({
       projectId: id,
       memberIds: [project.guarder.id],
       roleCode: 'ADMIN',
@@ -151,6 +161,24 @@ export class ProjectService {
       .createQueryBuilder('member')
       .delete()
       .where('projectId = :projectId AND id IN (:...memberIds) ', {
+        projectId,
+        memberIds,
+      })
+      .execute();
+    return;
+  }
+
+  public async updateMember(body: UpdateMembersDto): Promise<void> {
+    const { projectId, memberIds, roleCode } = body;
+    const role = await this.roleModel.findOne({ code: roleCode });
+    if (!role) {
+      throw new HttpBadRequestError('角色不存在');
+    }
+    await this.memberModel
+      .createQueryBuilder('member')
+      .update()
+      .set({ role })
+      .where('projectId = :projectId AND userId IN (:...memberIds) ', {
         projectId,
         memberIds,
       })
