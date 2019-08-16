@@ -55,13 +55,13 @@ const instance: AxiosInstance = axios.create({
     headers: {
       Authorization: 'Bearer ' + (localStorage.getItem('accessToken') || '')
     },
-    transformRequest: [function(data, headers) {
-        if (data && typeof data === 'string') {
-            headers['Content-Type'] = 'application/json';
-            return data;
-        }
-        return (data && !(data instanceof FormData)) ? Object.keys(data).filter((item: string) => data[item] !== undefined).map((item: string) => `${item}=${encodeURIComponent(data[item])}`).join('&') : data;
-    }],
+    // transformRequest: [function(data, headers) {
+    //     if (data && typeof data === 'string') {
+    //         headers['Content-Type'] = 'application/json';
+    //         return data;
+    //     }
+    //     return (data && !(data instanceof FormData)) ? Object.keys(data).filter((item: string) => data[item] !== undefined).map((item: string) => `${item}=${encodeURIComponent(data[item])}`).join('&') : data;
+    // }],
     
 })
 

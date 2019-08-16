@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators,Dispatch } from 'redux'
 import { Table, Button } from 'antd';
 import findIndex from 'lodash/findIndex';
-import { StoreState, Member, Action, ProjectMemberOperate } from '@/types';
+import { StoreState, Member, Action, ProjectMemberOperate, User } from '@/types';
 import * as actions from "@/store/actions"
 import ProjectMemberAdd from './ProjectMemberAdd';
 import style from './ProjectMember.less';
@@ -25,13 +25,14 @@ interface Props {
 function renderColumns() {
     const columns = [{
         title: '姓名',
-        dataIndex: 'nickName',
-        key: 'nickName',
-        render :(name, record:Member) => name || record.username || record.mobile
+        dataIndex: 'user',
+        key: 'nickname',
+        render :(user: User, record:Member) => user && (user.nickname || user.username)
     }, {
         title: '用户名',
-        dataIndex: 'username',
-        key: 'username'
+        dataIndex: 'user',
+        key: 'username',
+        render: (user: User, record: Member) => user && user.username
     }, {
         title: '角色',
         dataIndex: 'role',

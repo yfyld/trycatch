@@ -48,18 +48,29 @@ export interface ProjectListItem {
 }
 
 export interface  Member{
-  username?: string
-  nickName?: string
-  id: number
-  mobile?: string
-  isAdmin?:boolean
-  isOwner?:boolean
+  // username?: string
+  // nickName?: string
+  // id: number
+  // mobile?: string
+  // isAdmin?:boolean
+  // isOwner?:boolean
+  id: number,
+  user: User,
+  role: Role
 }
 
 export interface User {
   username?: string,
   id: number,
   nickname: string
+}
+
+export interface Role {
+  id: number,
+  name: string,
+  global: number,
+  code: string,
+  status: number
 }
 
 export interface Project {
@@ -70,11 +81,17 @@ export interface Project {
 export interface ProjectInfo {
   name?: string
   id?: number,
-  members?: User[],
+  members?: Member[],
   guarderId?: number,
   description?: string,
-  guarder?: User
+  guarder?: User,
+  language?: string,
+  version?: string,
+  alarmType?: string,
+  alarmHookUrl?: string,
+  
 }
+
 
 
 export interface ProjectDetail {

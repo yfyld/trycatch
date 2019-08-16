@@ -1,6 +1,6 @@
 import * as ACTIONTYPE from "@/constants/actionType";
 import { createAction } from "typesafe-actions";
-import {ProjectListItem,ProjectInfo, PageData, User, ProjectMemberOperate } from "@/types"
+import {ProjectListItem,ProjectInfo, PageData, ProjectMemberOperate, Member } from "@/types"
 import { WrappedFormUtils } from 'antd/lib/form/Form';
 
 export const doGetProjectListRequest = createAction(ACTIONTYPE.GET_PROJECT_LIST_REQUEST);
@@ -23,7 +23,7 @@ export const doAddProjectFailure = createAction(ACTIONTYPE.ADD_PROJECT_FAILURE);
 
 
 export const doGetProjectMembersRequest = createAction(ACTIONTYPE.GET_PROJECT_MEMBERS_REQUEST,resolve=>(projectId:number)=>resolve(projectId));
-export const doGetProjectMembersSuccess = createAction(ACTIONTYPE.GET_PROJECT_MEMBERS_SUCCESS,resolve=>(data: PageData<User>)=>resolve(data));
+export const doGetProjectMembersSuccess = createAction(ACTIONTYPE.GET_PROJECT_MEMBERS_SUCCESS,resolve=>(data: PageData<Member>)=>resolve(data));
 export const doGetProjectMembersFailure = createAction(ACTIONTYPE.GET_PROJECT_MEMBERS_FAILURE);
 
 export const doAddProjectMemberToggle = createAction(ACTIONTYPE.ADD_PROJECT_MEMBER_TOGGLE, resolve => (toggle: boolean) => resolve(toggle));
@@ -40,3 +40,6 @@ export const doDeleteProjectMemberFailure = createAction(ACTIONTYPE.DELETE_PROJE
 export const doDeleteProjectRequest = createAction(ACTIONTYPE.DELETE_PROJECT_REQUEST, resolve => (projectId: number) => resolve(projectId))
 export const doDeleteProjectSuccess = createAction(ACTIONTYPE.DELETE_PROJECT_SUCCESS)
 export const doDeleteProjectFailure = createAction(ACTIONTYPE.DELETE_PROJECT_FAILURE)
+
+
+// export const doFileUploadRequest = createAction(ACTIONTYPE.)

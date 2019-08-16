@@ -42,9 +42,9 @@ const ProjectAdd = ({ visible, doSubmit, doCancel ,form}: Props) => {
           wrapperCol={{ span: 12 }}>
           {getFieldDecorator('language')(
             <Select placeholder='请选择'>
-              <Option value='js'>js</Option>
-              <Option value='react'>react</Option>
-              <Option value='vue'>vue</Option>
+              <Option value='JS'>JS</Option>
+              <Option value='React'>React</Option>
+              <Option value='Vue'>Vue</Option>
             </Select>
           )}
         </Form.Item>

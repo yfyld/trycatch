@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators,Dispatch } from 'redux'
 import { Modal, Form, Select } from 'antd';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
-
+import findIndex from 'lodash/findIndex';
 import { StoreState, User, Member, Action } from '@/types';
 import * as actions from "@/store/actions"
 
@@ -29,6 +29,7 @@ function ProjectMemberAdd({visible, userList, memberList, doCancel, doSubmit, fo
             visible={visible}
             onCancel={doCancel}
             onOk={() => doSubmit(form)}
+            maskClosable={false}
 
         >    
             <Form>
@@ -39,7 +40,7 @@ function ProjectMemberAdd({visible, userList, memberList, doCancel, doSubmit, fo
                         })(
                             <Select mode='multiple' placeholder='请选择' showSearch>
                                 {
-                                    userList.filter(item => memberList.findIndex(i => i.id === item.id) === -1).map(item => <Option key={item.id+''} value={item.id}>{item.nickname || item.username}</Option>)
+                                    userList.filter((item: User) => findIndex(memberList, (member: Member) => member.user.id === item.id) === -1).map(item => <Option key={item.id+''} value={item.id}>{item.nickname || item.username}</Option>)
                                 }
                             </Select>
                         )

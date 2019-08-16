@@ -4,7 +4,7 @@ import { WrappedFormUtils, FormComponentProps } from 'antd/lib/form/Form';
 import { connect } from "react-redux"
 import * as actions from '@/store/actions'
 import { bindActionCreators, Dispatch } from 'redux'
-import { Action, ProjectInfo, StoreState, User } from '@/types'
+import { Action, ProjectInfo, StoreState, Member } from '@/types'
 
 
 const FormItem = Form.Item;
@@ -14,18 +14,25 @@ interface Props extends FormComponentProps{
 	doSubmit: (e: React.FormEvent, form: WrappedFormUtils) => {},
 	projectInfo: ProjectInfo,
 	className?: string,
-	userList: User[]
+	// userList: User[],
+	projectMembers: Member[]
 }
 
 
 
-function ProjectInfo({ className, form, doSubmit, projectInfo, userList }: Props) {
+function ProjectInfo({ className, form, doSubmit, projectInfo, projectMembers }: Props) {
 	const { getFieldDecorator } = form;
 	React.useEffect(() => {
 		if (projectInfo.id) {
 			form.setFieldsValue({
 				name: projectInfo.name,
-				guarderId: projectInfo.guarder && projectInfo.guarder.id
+				guarderId: projectInfo.guarder && projectInfo.guarder.id,
+				language: projectInfo.language,
+				version: projectInfo.version,
+				description: projectInfo.description,
+				alarmType: projectInfo.alarmType,
+				alarmHookUrl: projectInfo.alarmHookUrl
+
 			})
 		}
 	}, [projectInfo.id])
@@ -65,16 +72,55 @@ function ProjectInfo({ className, form, doSubmit, projectInfo, userList }: Props
 					})(
 						<Select placeholder='请选择' showSearch>
 							{
-								userList.map((item: User) => <Option key={item.id+''} value={item.id}>{item.nickname || item.username}</Option>)
+								projectMembers.map((item: Member) => <Option key={item.id+''} value={item.user.id}>{item.user.nickname || item.user.username}</Option>)
 							}
 						</Select>
+					)
+				}
+			</FormItem>
+			<FormItem label='项目语言' {...formItemLayout}>
+				{
+					getFieldDecorator('language', {
+						rules: [{
+							required: true,
+							message: '项目语言必选'
+						}]
+					})(
+						<Select placeholder='请选择' showSearch>
+							<Option value='JS'>JS</Option>
+							<Option value='React'>React</Option>
+							<Option value='Vue'>Vue</Option>
+						</Select>
+					)
+				}
+			</FormItem>
+			<FormItem label='项目版本' {...formItemLayout}>
+				{
+					getFieldDecorator('version')(
+						<Input placeholder='请输入' />
+					)
+				}
+			</FormItem>
+			<FormItem label='预警方式' {...formItemLayout}>
+				{
+					getFieldDecorator('alarmType')(
+						<Select placeholder='请选择'>
+							<Option value='dingding'>钉钉</Option>
+						</Select>
+					)
+				}
+			</FormItem>
+			<FormItem label='预警地址' {...formItemLayout}>
+				{
+					getFieldDecorator('alarmHookUrl')(
+						<Input placeholder='请输入'/>
 					)
 				}
 			</FormItem>
 			<FormItem label='项目描述' {...formItemLayout}>
 				{
 					getFieldDecorator('description')(
-						<Input.TextArea />
+						<Input.TextArea placeholder='请输入'/>
 					)
 				}
 			</FormItem>
@@ -100,12 +146,13 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => bindActionCreators({
 
 
 const mapStateToProps = (state: StoreState) => {
-	const { userList } = state.app;
-	const { projectInfo } = state.project;
+	// const { userList } = state.app;
+	const { projectInfo, projectMembers } = state.project;
 	return {
 
 		projectInfo,
-		userList
+		// userList,
+		projectMembers
 
 	}
 };

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Upload, Button, Icon, Table } from 'antd';
+import { Upload, Button, Icon, Table, Input } from 'antd';
 
 interface Props {
     className: string
@@ -40,6 +40,7 @@ function Sourcemap({ className}: Props) {
                     <Icon type='upload'/> 上传sourcemap文件
                 </Button>    
             </Upload>
+            <Input placeholder='请输入'/>
             <Table columns={columns} pagination={false}/>
         </div>
         

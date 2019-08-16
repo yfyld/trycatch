@@ -1,6 +1,6 @@
 import { getType } from 'typesafe-actions';
 import * as actions from "../actions";
-import { ProjectListItem, ProjectInfo, Action, ProjectDetail, User } from "@/types"
+import { ProjectListItem, ProjectInfo, Action, ProjectDetail, Member } from "@/types"
 import update from 'immutability-helper'
 
 
@@ -10,7 +10,7 @@ export interface ProjectState {
 
 	projectList: ProjectListItem[];
 	projectInfo: ProjectInfo;
-	projectMembers: User[],
+	projectMembers: Member[],
 	projectId: number
 	projectAddVisible: boolean,
 	projectDetail: ProjectDetail,

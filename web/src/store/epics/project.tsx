@@ -5,7 +5,7 @@ import { mergeMap, map, filter, catchError ,tap} from 'rxjs/operators'
 import { bindNodeCallback ,of} from 'rxjs'
 import { StoreState } from '@/store/reducers'
 import { isActionOf } from 'typesafe-actions'
-import { Action ,ActionAny, ProjectListItem, PageData, ResponseOk, ProjectInfo, User, Project} from '@/types'
+import { Action ,ActionAny, ProjectListItem, PageData, ResponseOk, ProjectInfo, Project, Member} from '@/types'
 import * as Api from '@/api'
 import { push } from 'connected-react-router'
 import { AxiosResponse } from 'axios';
@@ -44,7 +44,7 @@ const getProjectList: Epic<Action, Action, StoreState> = action$ =>
     filter(isActionOf(actions.doGetProjectMembersRequest)),
     mergeMap(action =>
       Api.fetchProjectMembers(action.payload).pipe(
-        map(({data: { result: { list = [], totalCount = 0}}}: AxiosResponse<ResponseOk<PageData<User>>>) => actions.doGetProjectMembersSuccess({list, totalCount})),
+        map(({data: { result: { list = [], totalCount = 0}}}: AxiosResponse<ResponseOk<PageData<Member>>>) => actions.doGetProjectMembersSuccess({list, totalCount})),
         catchError(() => {
           return of(actions.doGetProjectMembersFailure())
         })

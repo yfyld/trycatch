@@ -15,15 +15,15 @@ export class AddProjectDto {
   name: string;
 
   @ApiModelProperty()
-  @IsString({ message: '账号必须为字符串' })
+  // @IsString({ message: '账号必须为字符串' })
   description: string;
 
   @ApiModelProperty()
-  @IsString({ message: '账号必须为字符串' })
+  @IsString({ message: '项目语言不能为空' })
   language: string;
 
   @ApiModelProperty()
-  @IsString({ message: '账号必须为字符串' })
+  @IsString({ message: '项目版本不能为空' })
   version: string;
 
   guarderId?: number;
@@ -91,7 +91,7 @@ export class UpdateProjectDto {
   name: string;
 
   @ApiModelProperty()
-  @IsString({ message: '描述必须为字符串' })
+  // @IsString({ message: '描述必须为字符串' })
   description: string;
 
   @ApiModelProperty()
@@ -103,15 +103,15 @@ export class UpdateProjectDto {
   version: string;
 
   @ApiModelProperty()
-  @IsString({ message: '版本必须为字符串' })
+  // @IsString({ message: '版本必须为字符串' })
   frame: string;
 
   @ApiModelProperty()
-  @IsBoolean({ message: 'sourcemapEnable必须为字符串' })
+  // @IsBoolean({ message: 'sourcemapEnable必须为字符串' })
   sourcemapEnable: boolean;
 
   @ApiModelProperty()
-  @IsBoolean({ message: 'sourcemapOnline必须为布尔值' })
+  // @IsBoolean({ message: 'sourcemapOnline必须为布尔值' })
   sourcemapOnline: boolean;
 
   @ApiModelProperty()
