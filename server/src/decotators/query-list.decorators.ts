@@ -1,8 +1,8 @@
-import { QueryListResult } from '@/interfaces/request.interface';
+import { QueryListQuery } from '@/interfaces/request.interface';
 import { createParamDecorator } from '@nestjs/common';
 
 export const QueryList = createParamDecorator(
-  (data, req): QueryListResult<any> => {
+  (data, req): QueryListQuery<any> => {
     const { page, pageSize, sortKey, sortType, ...query } = req.query;
     return {
       skip: (Number(page || 1) - 1) * Number(pageSize || 20),

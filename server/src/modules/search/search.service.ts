@@ -5,7 +5,7 @@ import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { Injectable } from '@nestjs/common';
 import * as UA from 'ua-device';
 import { UaService } from '@/providers/helper/helper.ua.service';
-import { QueryListResult } from '@/interfaces/request.interface';
+import { QueryListQuery } from '@/interfaces/request.interface';
 
 @Injectable()
 export class SearchService {
@@ -51,7 +51,7 @@ export class SearchService {
     });
   }
 
-  public async getLogList<T>(query: QueryListResult<any>) {
+  public async getLogList<T>(query: QueryListQuery<any>) {
     const result = await this.search({
       index: 'logs',
       body: {

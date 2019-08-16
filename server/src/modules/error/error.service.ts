@@ -1,5 +1,10 @@
 import { SourcemapModel, ProjectModel } from './../project/project.model';
-import { QueryErrorListDto, ErrorDto, SourceCodeDto } from './error.dto';
+import {
+  QueryErrorListDto,
+  ErrorDto,
+  SourceCodeDto,
+  UpdateErrorDto,
+} from './error.dto';
 import { HttpBadRequestError } from '../../errors/bad-request.error';
 import { ErrorModel } from './error.model';
 import { Injectable, HttpService } from '@nestjs/common';
@@ -7,7 +12,7 @@ import { Repository, In, LessThan, MoreThan } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { UserModel } from '@/modules/user/user.model';
-import { QueryListResult, PageData } from '@/interfaces/request.interface';
+import { QueryListQuery, PageData } from '@/interfaces/request.interface';
 import * as SourceMap from 'source-map';
 import { RedisService } from 'nestjs-redis';
 @Injectable()
@@ -43,7 +48,7 @@ export class ErrorService {
   }
 
   public async getErrors(
-    query: QueryListResult<QueryErrorListDto>,
+    query: QueryListQuery<QueryErrorListDto>,
   ): Promise<PageData<ErrorModel>> {
     const { endDate, startDate, guarderId } = query.query;
     const searchBody = {
@@ -72,10 +77,21 @@ export class ErrorService {
     };
   }
 
-  public async updateError(errorTypeId: number, body: any): Promise<void> {
-    const errorType = await this.errorTypeModel.findOne({
-      where: { id: errorTypeId },
-    });
+  public async updateError(body: UpdateErrorDto): Promise<void> {
+    const updateBody: any = {};
+    if (body.actionType === 'LEVEL') {
+      updateBody.level = body.level;
+    } else if (body.actionType === 'STATUS') {
+      updateBody.status = body.status;
+    } else {
+      updateBody.guarder = { id: body.guarderId };
+    }
+    await this.errorTypeModel
+      .createQueryBuilder()
+      .update()
+      .set(updateBody)
+      .where('id IN (:...errorIds)', { errorIds: body.errorIds })
+      .execute();
     return;
   }
 
@@ -110,13 +126,13 @@ export class ErrorService {
 
     return {
       code: `
-        ${rawLines[sm.line - 3]}
-        ${rawLines[sm.line - 2]}
-        ${rawLines[sm.line - 1]}
-      > ${rawLines[sm.line]}
-        ${rawLines[sm.line + 1]}
-        ${rawLines[sm.line + 2]}
-        ${rawLines[sm.line + 3]}`,
+${rawLines[sm.line - 3]}
+${rawLines[sm.line - 2]}
+${rawLines[sm.line - 1]}
+> ${rawLines[sm.line]}
+${rawLines[sm.line + 1]}
+${rawLines[sm.line + 2]}
+${rawLines[sm.line + 3]}`,
       line: sm.line,
       column: sm.column,
       sourceUrl: sm.source,

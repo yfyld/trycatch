@@ -17,11 +17,8 @@ import {
   ActionSourcemapsDto,
 } from './project.dto';
 import { UserModel } from '@/modules/user/user.model';
-import { QueryListResult, PageData } from '@/interfaces/request.interface';
-import {
-  UseInterceptors,
-  ClassSerializerInterceptor,
-} from '@nestjs/common';
+import { QueryListQuery, PageData } from '@/interfaces/request.interface';
+import { UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 @Injectable()
 export class ProjectService {
   constructor(
@@ -55,7 +52,7 @@ export class ProjectService {
   }
 
   public async getProjects(
-    query: QueryListResult<QueryProjectsDto>,
+    query: QueryListQuery<QueryProjectsDto>,
   ): Promise<PageData<ProjectModel>> {
     const [projects, totalCount] = await this.projectModel.findAndCount({
       skip: query.skip,
@@ -101,6 +98,11 @@ export class ProjectService {
 
     const project = this.projectModel.create(projectInfo);
     const { id } = await this.projectModel.save(project);
+    this.addMembers({
+      projectId: id,
+      memberIds: [project.guarder.id],
+      roleCode: 'ADMIN',
+    });
     return { id };
   }
 

@@ -12,7 +12,7 @@ import { AUTH } from '@/app.config';
 import { Repository, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SignupDto, TokenDto, UserListReqDto, UpdateUserDto } from './user.dto';
-import { PageData, QueryListResult } from '@/interfaces/request.interface';
+import { PageData, QueryListQuery } from '@/interfaces/request.interface';
 
 @Injectable()
 export class UserService {
@@ -110,7 +110,7 @@ export class UserService {
   }
 
   public async getUsers(
-    query: QueryListResult<UserListReqDto>,
+    query: QueryListQuery<UserListReqDto>,
   ): Promise<PageData<UserModel>> {
     const [users, totalCount] = await this.userModel.findAndCount({
       where: [

@@ -19,7 +19,7 @@ export interface SortQuery {
   sortKey: string;
 }
 
-export interface QueryListResult<T> {
+export interface QueryListQuery<T> {
   skip: number;
   take: number;
   query: T;

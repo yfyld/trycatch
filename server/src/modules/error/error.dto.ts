@@ -45,6 +45,16 @@ export class QueryErrorListDto {
   guarderId: number;
 }
 
+export class UpdateErrorDto {
+  guarderId?: number;
+  level?: number;
+  status?: number;
+  @IsDefined()
+  errorIds: string[];
+  @IsDefined()
+  actionType: string;
+}
+
 export class SourceCodeDto {
   code: string;
   line: number;

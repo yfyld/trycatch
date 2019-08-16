@@ -46,13 +46,7 @@ async function bootstrap() {
 
   app.useGlobalFilters(new HttpExceptionFilter());
   // 验证
-  app.useGlobalPipes(
-    new ValidationPipe({
-      skipMissingProperties: true,
-      forbidNonWhitelisted: true,
-      whitelist: true,
-    }),
-  );
+  app.useGlobalPipes(new ValidationPipe({}));
 
   // 拦截器
   app.useGlobalInterceptors(

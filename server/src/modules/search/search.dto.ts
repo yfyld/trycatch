@@ -55,7 +55,7 @@ export class LogDto extends AddLogDto {
     isp: string;
     area: string;
   };
-  uaInfo: {
+  clientInfo: {
     ua: string;
     os: string;
     osVersion: string;

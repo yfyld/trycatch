@@ -11,7 +11,7 @@ import {
 import { InjectQueue } from 'nest-bull';
 import { Queue } from 'bull';
 import { QueryList } from '@/decotators/query-list.decorators';
-import { QueryListResult } from '@/interfaces/request.interface';
+import { QueryListQuery } from '@/interfaces/request.interface';
 
 @ApiUseTags('上传日志')
 @Controller('search')
@@ -49,24 +49,24 @@ export class SearchController {
     return;
   }
 
-  @ApiOperation({ title: '查询日志详情', description: '' })
-  @Get('/log-info/:logId')
-  public async getErrorLogInfo(
-    @Param('logId')
-    logId: string,
-  ): Promise<any> {
-    const result = await this.searchService.get({
-      index: 'logs',
-      id: logId,
-    });
+  // @ApiOperation({ title: '查询日志详情', description: '' })
+  // @Get('/log-info/:logId')
+  // public async getErrorLogInfo(
+  //   @Param('logId')
+  //   logId: string,
+  // ): Promise<any> {
+  //   const result = await this.searchService.get({
+  //     index: 'logs',
+  //     id: logId,
+  //   });
 
-    return { ...result._source, id: logId };
-  }
+  //   return { ...result._source, id: logId };
+  // }
 
   @ApiOperation({ title: '查询日志列表', description: '' })
-  @Get('/log-list')
+  @Get('/log')
   public async getErrorLogList(
-    @QueryList() query: QueryListResult<any>,
+    @QueryList() query: QueryListQuery<any>,
   ): Promise<PageData<any>> {
     return this.searchService.getLogList(query);
   }

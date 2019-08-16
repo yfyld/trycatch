@@ -1,5 +1,5 @@
 import { ParseIntPipe } from './../../pipes/parse-int.pipe';
-import { QueryListResult } from '@/interfaces/request.interface';
+import { QueryListQuery } from '@/interfaces/request.interface';
 import { QueryList } from './../../decotators/query-list.decorators';
 import { PageQuery, PageData } from './../../interfaces/request.interface';
 import {
@@ -43,7 +43,6 @@ import {
 } from './project.dto';
 import { Auth } from '@/decotators/user.decorators';
 import { UserModel } from '@/modules/user/user.model';
-
 
 @ApiUseTags('项目相关')
 @Controller('project')
@@ -103,7 +102,7 @@ export class ProjectController {
   // @UseGuards(JwtAuthGuard)
   @Get('/')
   getProjects(
-    @QueryList() query: QueryListResult<QueryProjectsDto>,
+    @QueryList() query: QueryListQuery<QueryProjectsDto>,
   ): Promise<PageData<ProjectModel>> {
     return this.projectService.getProjects(query);
   }

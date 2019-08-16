@@ -30,7 +30,7 @@ import {
   UserListReqDto,
   UpdateUserDto,
 } from './user.dto';
-import { QueryListResult, PageData } from '@/interfaces/request.interface';
+import { QueryListQuery, PageData } from '@/interfaces/request.interface';
 import { UseInterceptors } from '@nestjs/common';
 @ApiUseTags('账号权限')
 @Controller('user')
@@ -108,7 +108,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get('/')
   getUsers(
-    @QueryList() query: QueryListResult<UserListReqDto>,
+    @QueryList() query: QueryListQuery<UserListReqDto>,
   ): Promise<PageData<UserModel>> {
     return this.userService.getUsers(query);
   }

@@ -1,4 +1,4 @@
-import { QueryListResult } from '@/interfaces/request.interface';
+import { QueryListQuery } from '@/interfaces/request.interface';
 import { QueryList } from '../../decotators/query-list.decorators';
 import { PageQuery, PageData } from '../../interfaces/request.interface';
 import {
@@ -27,7 +27,7 @@ import {
 } from '@nestjs/swagger';
 import { Permissions } from '@/decotators/permissions.decotators';
 import { PermissionsGuard } from '@/guards/permission.guard';
-import { QueryErrorListDto } from './error.dto';
+import { QueryErrorListDto, UpdateErrorDto } from './error.dto';
 import { Auth } from '@/decotators/user.decorators';
 import { UserModel } from '@/modules/user/user.model';
 @ApiUseTags('错误相关')
@@ -52,7 +52,7 @@ export class ErrorController {
   // @UseGuards(JwtAuthGuard)
   @Get('/')
   getErrors(
-    @QueryList() query: QueryListResult<QueryErrorListDto>,
+    @QueryList() query: QueryListQuery<QueryErrorListDto>,
   ): Promise<PageData<ErrorModel>> {
     return this.errorService.getErrors(query);
   }
@@ -61,13 +61,10 @@ export class ErrorController {
   @ApiBearerAuth()
   @ApiResponse({ status: 200, type: Error })
   @HttpProcessor.handle('修改错误')
-  @Put('/:errorId')
+  @Put('/')
   @UseGuards(JwtAuthGuard)
-  updateError(
-    @Param('errorId') errorId: number,
-    @Body() body: any,
-  ): Promise<void> {
-    return this.errorService.updateError(errorId, body);
+  updateError(@Body() body: UpdateErrorDto): Promise<void> {
+    return this.errorService.updateError(body);
   }
 
   @Get('/test/test')
