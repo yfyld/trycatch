@@ -40,7 +40,7 @@ function ProjectMemberAdd({visible, userList, memberList, doCancel, doSubmit, fo
                         })(
                             <Select mode='multiple' placeholder='请选择' showSearch>
                                 {
-                                    userList.filter((item: User) => findIndex(memberList, (member: Member) => member.user.id === item.id) === -1).map(item => <Option key={item.id+''} value={item.id}>{item.nickname || item.username}</Option>)
+                                    userList.filter((item: User) => findIndex(memberList, (member: Member) => member.id === item.id) === -1).map(item => <Option key={item.id+''} value={item.id}>{item.nickname || item.username}</Option>)
                                 }
                             </Select>
                         )

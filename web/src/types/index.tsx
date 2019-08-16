@@ -55,8 +55,11 @@ export interface  Member{
   // isAdmin?:boolean
   // isOwner?:boolean
   id: number,
-  user: User,
-  role: Role
+  // user: User,
+  // role: Role
+  username: string,
+  nickname: string,
+  role: string
 }
 
 export interface User {

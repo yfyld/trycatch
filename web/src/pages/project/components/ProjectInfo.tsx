@@ -72,7 +72,7 @@ function ProjectInfo({ className, form, doSubmit, projectInfo, projectMembers }:
 					})(
 						<Select placeholder='请选择' showSearch>
 							{
-								projectMembers.map((item: Member) => <Option key={item.id+''} value={item.user.id}>{item.user.nickname || item.user.username}</Option>)
+								projectMembers.map((item: Member) => <Option key={item.id+''} value={item.id}>{item.nickname || item.username}</Option>)
 							}
 						</Select>
 					)
