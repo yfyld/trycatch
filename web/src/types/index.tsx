@@ -1,28 +1,26 @@
 import * as actions from '@/store/actions'
 import { ActionType } from 'typesafe-actions'
-import {StoreState} from '@/store/reducers'
-
-
+import { StoreState } from '@/store/reducers'
 
 export interface ResponseOk<T> {
-  message: string,
+  message: string
   result: T
 }
 
-export interface PageData<T>{
-  totalCount:number,
-  list:T[]
+export interface PageData<T> {
+  totalCount: number
+  list: T[]
 }
 
 export interface ListResult<T> {
   result: PageData<T>
 }
-export interface PageQuery{
-  page?:number,
-  pageSize?:number
+export interface PageQuery {
+  page?: number
+  pageSize?: number
 }
 
-export type StoreState=StoreState;
+export type StoreState = StoreState
 
 export type Action = ActionType<typeof actions>
 
@@ -31,8 +29,6 @@ export interface ActionAny {
   payload?: any
 }
 
-
-
 export interface UserInfo {
   username?: string
   id?: string
@@ -40,70 +36,67 @@ export interface UserInfo {
   password?: string
 }
 
-
 export interface ProjectListItem {
   name: string
   id: number
   description?: string
 }
 
-export interface  Member{
+export interface Member {
   // username?: string
   // nickName?: string
   // id: number
   // mobile?: string
   // isAdmin?:boolean
   // isOwner?:boolean
-  id: number,
-  user: User,
-  role: Role
+  id: number
+  username?: string
+  nickname: string
+  mobile?: string
+  roleCode: string
 }
 
 export interface User {
-  username?: string,
-  id: number,
+  username?: string
+  id: number
   nickname: string
 }
 
 export interface Role {
-  id: number,
-  name: string,
-  global: number,
-  code: string,
+  id: number
+  name: string
+  global: number
+  code: string
   status: number
 }
 
 export interface Project {
-  id: number,
+  id: number
   name: string
 }
 
 export interface ProjectInfo {
   name?: string
-  id?: number,
-  members?: Member[],
-  guarderId?: number,
-  description?: string,
-  guarder?: User,
-  language?: string,
-  version?: string,
-  alarmType?: string,
-  alarmHookUrl?: string,
-  
+  id?: number
+  members?: Member[]
+  guarderId?: number
+  description?: string
+  guarder?: User
+  language?: string
+  version?: string
+  alarmType?: string
+  alarmHookUrl?: string
 }
 
-
-
 export interface ProjectDetail {
-  activeKey: string,
+  activeKey: string
   tabs: string[]
 }
 
 export interface ProjectMemberOperate {
-  projectId: number,
+  projectId: number
   memberIds: number[]
 }
-
 
 export interface ErrorChartDataItem {
   date: number
@@ -124,14 +117,14 @@ export enum Order {
 export interface ErrorSearchParams extends PageQuery {
   status?: string
   type?: string
-  level?:number
-  projectId?:number
+  level?: number
+  projectId?: number
   order?: Order
   orderKey?: string
-  page?:number
-  pageSize?:number
-  endDate?:number,
-  startDate?:number
+  page?: number
+  pageSize?: number
+  endDate?: number
+  startDate?: number
 }
 
 export interface ErrorListDataItem {
@@ -158,49 +151,47 @@ export interface ErrorChangeParams {
   //   status?: string
   //   level?: number
   // }
-  guarderId?: number,
-  level?: number,
-  status?: number,
-  errorIds?: number[],
-  actionType?: string,
+  guarderId?: number
+  level?: number
+  status?: number
+  errorIds?: number[]
+  actionType?: string
   requestInfo?: boolean
 }
 
-
 export interface ErrorInfo {
   id?: number
-  status?: string,
-  eventNum?: number,
-  userNum?: number,
-  version?: string,
+  status?: string
+  eventNum?: number
+  userNum?: number
+  version?: string
   url?: string
 }
 
 export interface EventInfo {
   id?: number
   status?: string
-  url?:string
-  type?:string
-  source?:string,
-  name?: string,
-  ip?: string,
-  behavior?: BehaviorListItem[],
+  url?: string
+  type?: string
+  source?: string
+  name?: string
+  ip?: string
+  behavior?: BehaviorListItem[]
   stack?: Stack[]
 }
 
 export interface BehaviorListItem {
-  type?: string,
-  time?: number,
-  page?: string,
-  id?: string,
-  class?: string,
-  html?: string,
-  method?: string,
-  url?: string,
-  oldURL?: string,
-  newURL?: string,
+  type?: string
+  time?: number
+  page?: string
+  id?: string
+  class?: string
+  html?: string
+  method?: string
+  url?: string
+  oldURL?: string
+  newURL?: string
 }
-
 
 export interface Stack {
   line?: number
@@ -211,21 +202,21 @@ export interface Stack {
 }
 
 export interface ErrorJavaScript {
-  type: string,
-  level: number,
-  url: string,
-  time: number,
+  type: string
+  level: number
+  url: string
+  time: number
   message?: string
   name?: string
-  stack?: Stack[] 
-  line?: number,
+  stack?: Stack[]
+  line?: number
   column?: number
 }
 
 export interface HttpRequest {
   url: string
   method: string
-  data: string,
+  data: string
   params: string
 }
 
@@ -236,51 +227,55 @@ export interface HttpResponse {
 }
 
 export interface ErrorHttp {
-  type: string,
-  level: number,
+  type: string
+  level: number
   url: string
   time: number
   elapsedTime?: number
   response?: HttpResponse
-  request?: HttpRequest,
+  request?: HttpRequest
 }
 
 export interface ErrorLog {
-  type: string,
-  level: number,
-  url: string,
-  time: number,
+  type: string
+  level: number
+  url: string
+  time: number
   name?: string
   message?: string
 }
 
 export interface ErrorVue {
-  type: string,
-  level: number,
-  url: string,
-  time: number,
-  componentName?: string,
-  propsData?: any,
-  name?: string,
-  stack?: Stack[],
+  type: string
+  level: number
+  url: string
+  time: number
+  componentName?: string
+  propsData?: any
+  name?: string
+  stack?: Stack[]
   message?: string
 }
 
 export interface ErrorResource {
-  type: string,
-  level: number,
-  url: string,
-  time: number,
-  tagName?: string,
-  src?: string,
-  outerHTML?: string,
-  timeStamp?: number,
+  type: string
+  level: number
+  url: string
+  time: number
+  tagName?: string
+  src?: string
+  outerHTML?: string
+  timeStamp?: number
   name?: string
 }
 
-
 // export type IError = ErrorJavaScript | ErrorHttp | ErrorLog | ErrorVue | ErrorResource
-export interface IError extends ErrorJavaScript, ErrorHttp, ErrorLog, ErrorVue, ErrorResource {
+export interface IError
+  extends ErrorJavaScript,
+    ErrorHttp,
+    ErrorLog,
+    ErrorVue,
+    ErrorResource {
   errorId?: number
 }
 export interface EventListDataItem {
@@ -295,82 +290,80 @@ export interface EventListDataItem {
   // device?: string,
   // location?: Location,
   // createTime?: number
-  location: Location,
-  clientInfo: ClientInfo,
-  behavior: BehaviorListItem[],
-  libInfo: LibInfo,
-  info: Info,
-  data: IError,
-  source: Source,
+  location: Location
+  clientInfo: ClientInfo
+  behavior: BehaviorListItem[]
+  libInfo: LibInfo
+  info: Info
+  data: IError
+  source: Source
   id: number
 }
 
 export interface ErrorPostData {
-  url: string,
-  type: string,
-  name: string,
-  errorId: string,
-  stack: Stack[],
-  message: string,
+  url: string
+  type: string
+  name: string
+  errorId: string
+  stack: Stack[]
+  message: string
   time: number
 }
 
-
 export interface Source {
-  line: number,
-  column: number,
-  code: string,
-  sourceUrl: string,
+  line: number
+  column: number
+  code: string
+  sourceUrl: string
   name: string
 }
 export interface Location {
-  region: string,
-  isp: string,
+  region: string
+  isp: string
 }
 export interface ClientInfo {
-  ua: string,
-  os: string,
-  osVersion: string,
-  browser: string,
-  browserVersion: string,
+  ua: string
+  os: string
+  osVersion: string
+  browser: string
+  browserVersion: string
   device: string
 }
 
 export interface LibInfo {
-  libVersion: string,
+  libVersion: string
   libType: string
 }
 
 export interface Info {
-  projectId: number,
+  projectId: number
   version: string
 }
 export interface EventChartSearchData {
-  projectId: number,
-  errorId: number,
-  startDate: number,
+  projectId: number
+  errorId: number
+  startDate: number
   endDate: number
 }
 
 export interface ChartData<T> {
-  data: T[],
+  data: T[]
   totalCount: number
 }
 
-
 export interface EventChartData {
-  trendStat: ChartData<ChartDateData>,
-  osStat: ChartData<ChartCategoryDate>,
-  browserStat: ChartData<ChartCategoryDate>,
+  trendStat: ChartData<ChartDateData>
+  osStat: ChartData<ChartCategoryDate>
+  browserStat: ChartData<ChartCategoryDate>
   deviceStat: ChartData<ChartCategoryDate>
 }
 
 export interface ChartDateData {
-  date: number,
+  date: number
   count: number
 }
 
 export interface ChartCategoryDate {
-  name: string,
+  name: string
   count: number
 }

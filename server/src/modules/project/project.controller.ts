@@ -135,8 +135,8 @@ export class ProjectController {
   @ApiOperation({ title: '编辑成员', description: '' })
   @Post('/update-members')
   @HttpProcessor.handle({ message: '编辑成员' })
-  updateMember(@Body() body: DeleteMembersDto): Promise<void> {
-    return this.projectService.deleteMember(body);
+  updateMember(@Body() body: UpdateMembersDto): Promise<void> {
+    return this.projectService.updateMember(body);
   }
 
   @ApiOperation({ title: '添加sourcemap', description: '' })

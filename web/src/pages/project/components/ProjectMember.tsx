@@ -1,43 +1,45 @@
-import * as React from 'react';
-import { useState } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators,Dispatch } from 'redux'
-import { Table, Button } from 'antd';
-import findIndex from 'lodash/findIndex';
-import { StoreState, Member, Action, ProjectMemberOperate, User } from '@/types';
-import * as actions from "@/store/actions"
-import ProjectMemberAdd from './ProjectMemberAdd';
-import style from './ProjectMember.less';
+import * as React from 'react'
+import { useState } from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators, Dispatch } from 'redux'
+import { Table, Button, Popover, Menu } from 'antd'
+import findIndex from 'lodash/findIndex'
+import { StoreState, Member, Action, ProjectMemberOperate } from '@/types'
+import * as actions from '@/store/actions'
+import ProjectMemberAdd from './ProjectMemberAdd'
+import style from './ProjectMember.less'
+import { ProjectMemberUpdate } from '@/api'
 
 interface Props {
-    memberList: Member[],
-    doAddProjectMemberToggle: () => {},
-    projectMemberAddVisible: boolean,
-    className?: string,
-    doSelectProjectMember: (selectedKeys: number[]) => {},
-    selectedRowKeys: number[],
-    doDeleteProjectMember: (data: ProjectMemberOperate) => {},
-    projectId: number
+  memberList: Member[]
+  doAddProjectMemberToggle: () => {}
+  projectMemberAddVisible: boolean
+  className?: string
+  doSelectProjectMember: (selectedKeys: number[]) => {}
+  selectedRowKeys: number[]
+  doDeleteProjectMember: (data: ProjectMemberOperate) => {}
+  doUpdateProjectMember: (data: ProjectMemberUpdate) => {}
+  projectId: number
 }
 
-
-
 function renderColumns() {
-    const columns = [{
-        title: '姓名',
-        dataIndex: 'user',
-        key: 'nickname',
-        render :(user: User, record:Member) => user && (user.nickname || user.username)
-    }, {
-        title: '用户名',
-        dataIndex: 'user',
-        key: 'username',
-        render: (user: User, record: Member) => user && user.username
-    }, {
-        title: '角色',
-        dataIndex: 'role',
-        key: 'role'
+  const columns = [
+    {
+      title: '姓名',
+      dataIndex: 'nickname',
+      key: 'nickname'
     },
+    {
+      title: '用户名',
+      dataIndex: 'username',
+      key: 'username'
+    },
+    {
+      title: '角色',
+      dataIndex: 'roleCode',
+      key: 'roleCode',
+      render: (roleCode: String, record: Member) => roleCode
+    }
     // {
     //     title: '操作',
     //     dataIndex: 'id',
@@ -50,56 +52,102 @@ function renderColumns() {
     //         </div>
     //     )
     // }
-]
-    return columns;
+  ]
+  return columns
 }
 
-function ProjectMember({projectId, className, memberList, doAddProjectMemberToggle, projectMemberAddVisible, doSelectProjectMember, doDeleteProjectMember, ...props}: Props) {
-    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-    const rowSelection = {
-        // selectedRowKeys,
-        selectedRowKeys: selectedRowKeys.filter((i: number) => findIndex(memberList, (j: Member): boolean => j.id === i) !== -1),
-        onChange: (selectedKeys) => {
-        //   doSelectProjectMember(selectedKeys);
-         
-            setSelectedRowKeys(selectedKeys)
-        }
-    };
-    return (
-        <div className={className}>
-            <div className={style.action}>
-                <Button type='primary' onClick={doAddProjectMemberToggle}>添加项目成员</Button>
-                <Button type='primary' disabled={selectedRowKeys.length === 0} onClick={() => { doDeleteProjectMember({memberIds: selectedRowKeys, projectId}) }}>删除项目成员</Button>
-            </div>
-            <div>
-                <Table 
-                    pagination={false}
-                    columns={renderColumns()}
-                    rowKey='id'
-                    dataSource={memberList}
-                    rowSelection={rowSelection}
-                />
-            </div>
-        { projectMemberAddVisible && <ProjectMemberAdd/> }
-        </div>
-        
-    )
+function ProjectMember({
+  projectId,
+  className,
+  memberList,
+  doAddProjectMemberToggle,
+  projectMemberAddVisible,
+  doSelectProjectMember,
+  doDeleteProjectMember,
+  doUpdateProjectMember,
+  ...props
+}: Props) {
+  const [selectedRowKeys, setSelectedRowKeys] = useState([])
+  const rowSelection = {
+    // selectedRowKeys,
+    selectedRowKeys: selectedRowKeys.filter((i: number) => findIndex(memberList, (j: Member): boolean => j.id === i) !== -1),
+    onChange: selectedKeys => {
+      //   doSelectProjectMember(selectedKeys);
+
+      setSelectedRowKeys(selectedKeys)
+    }
+  }
+
+  const UpdateMemberMemu = (
+    <Menu
+      onClick={({ key }) => {
+        doUpdateProjectMember({
+          memberIds: selectedRowKeys,
+          projectId,
+          roleCode: key
+        })
+      }}
+    >
+      <Menu.Item key="ADMIN">管理员</Menu.Item>
+      <Menu.Item key="DEVELOPER">普通成员</Menu.Item>
+    </Menu>
+  )
+
+  return (
+    <div className={className}>
+      <div className={style.action}>
+        <Button type="primary" onClick={doAddProjectMemberToggle}>
+          添加项目成员
+        </Button>
+        <Button
+          type="primary"
+          disabled={selectedRowKeys.length === 0}
+          onClick={() => {
+            doDeleteProjectMember({ memberIds: selectedRowKeys, projectId })
+          }}
+        >
+          删除项目成员
+        </Button>
+        <Popover placement="bottom" content={UpdateMemberMemu} trigger="click">
+          <Button type="primary" disabled={selectedRowKeys.length === 0}>
+            修改项目成员权限
+          </Button>
+        </Popover>
+      </div>
+      <div>
+        <Table pagination={false} columns={renderColumns()} rowKey="id" dataSource={memberList} rowSelection={rowSelection} />
+      </div>
+      {projectMemberAddVisible && <ProjectMemberAdd />}
+    </div>
+  )
 }
 const mapStateToProps = (state: StoreState) => {
-    const { projectMembers: memberList = [], projectMemberAddVisible, projectMemberSelectedKeys: selectedRowKeys, projectId } = state.project;
-    return {
-        memberList,
-        projectMemberAddVisible,
-        selectedRowKeys,
-        projectId
-    }
+  const {
+    projectMembers: memberList = [],
+    projectMemberAddVisible,
+    projectMemberSelectedKeys: selectedRowKeys,
+    projectId
+  } = state.project
+  return {
+    memberList,
+    projectMemberAddVisible,
+    selectedRowKeys,
+    projectId
+  }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => bindActionCreators({
-    doAddProjectMemberToggle: () => actions.doAddProjectMemberToggle(true),
-    doSelectProjectMember: (selectedKeys: number[]) => actions.doSelectProjectMember(selectedKeys),
-    doDeleteProjectMember: (data: ProjectMemberOperate) => actions.doDeleteProjectMemberRequest(data) 
-}, dispatch)
+const mapDispatchToProps = (dispatch: Dispatch<Action>) =>
+  bindActionCreators(
+    {
+      doAddProjectMemberToggle: () => actions.doAddProjectMemberToggle(true),
+      doSelectProjectMember: (selectedKeys: number[]) => actions.doSelectProjectMember(selectedKeys),
+      doDeleteProjectMember: (data: ProjectMemberOperate) => actions.doDeleteProjectMemberRequest(data),
+      doUpdateProjectMember: (data: ProjectMemberUpdate) => actions.doUpdateProjectMemberRequest(data)
+    },
+    dispatch
+  )
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectMember)
-
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ProjectMember)

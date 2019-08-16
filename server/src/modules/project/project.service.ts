@@ -42,7 +42,6 @@ export class ProjectService {
   }
 
   public async getProjectInfo(projectId: number): Promise<ProjectDto> {
-
     const project = await this.getProjectById(projectId);
     const members = await this.memberModel.find({
       where: { project: { id: projectId } },
@@ -160,7 +159,7 @@ export class ProjectService {
     await this.memberModel
       .createQueryBuilder('member')
       .delete()
-      .where('projectId = :projectId AND id IN (:...memberIds) ', {
+      .where('project = :projectId AND userId IN (:...memberIds) ', {
         projectId,
         memberIds,
       })

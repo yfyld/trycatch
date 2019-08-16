@@ -1,50 +1,54 @@
-import * as React from 'react';
-import { Upload, Button, Icon, Table, Input } from 'antd';
+import * as React from 'react'
+import { Button, Table } from 'antd'
+import style from './Sourcemap.less'
+import SourcemapAdd from './SourcemapAdd'
 
 interface Props {
-    className: string
+  className: string
 }
 
-function Sourcemap({ className}: Props) {
-    const props = {
-        name: 'file',
-        action: 'http://127.0.0.1:3300/common/upload',
-        multiple: true,
-        headers: {
-            Authorization: 'Bearer ' + localStorage.getItem('accessToken')
-        },
-        onChange: ({file, fileList}) => {
-            if (file.status !== 'uploading') {
-                const fileName = file.name;
-                const url = file.response.result.url;
-                console.log(fileName);
-                console.log(url);
-                console.log([...fileList]);
-            }
-            
-        }
+function Sourcemap({ className }: Props) {
+  const [addSourcemapVisible, setAddSourcemapVisible] = React.useState(false)
+
+  //   const [operateSourcemapVisible, setoperateSourcemapVisible] = React.useState(false)
+
+  const columns = [
+    {
+      title: '文件名',
+      dataIndex: 'fileName',
+      key: 'fileName'
+    },
+    {
+      title: 'url',
+      dataIndex: 'url',
+      key: 'url'
+    },
+    {
+      title: '版本',
+      dataIndex: 'version',
+      key: 'version'
+    },
+    {
+      title: '是否带hash',
+      dataIndex: 'hash',
+      key: 'hash'
     }
-    const columns = [{
-        title: '文件名',
-        dataIndex: 'fileName',
-        key: 'fileName'
-    }, {
-        title: 'url',
-        dataIndex: 'url',
-        key: 'url'
-    }]
-    return (
-        <div className={className}>
-            <Upload {...props}>
-                <Button>
-                    <Icon type='upload'/> 上传sourcemap文件
-                </Button>    
-            </Upload>
-            <Input placeholder='请输入'/>
-            <Table columns={columns} pagination={false}/>
-        </div>
-        
-    )
+  ]
+  return (
+    <div className={className}>
+      <SourcemapAdd
+        visible={addSourcemapVisible}
+        doCancel={() => setAddSourcemapVisible(false)}
+      />
+      <div className={style.action}>
+        <Button type="primary" onClick={() => setAddSourcemapVisible(true)}>
+          上传sourcemap文件
+        </Button>
+        {/* <Button onClick={}>修改sourcemap</Button> */}
+      </div>
+      <Table columns={columns} pagination={false} />
+    </div>
+  )
 }
 
-export default Sourcemap;
+export default Sourcemap

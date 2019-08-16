@@ -1,7 +1,18 @@
 import * as lodash from 'lodash';
 import { isDevMode } from '@/app.environment';
-import { EHttpStatus, THttpErrorResponse, TExceptionOption, TMessage } from '@/interfaces/http.interface';
-import { ExceptionFilter, Catch, HttpException, ArgumentsHost, HttpStatus } from '@nestjs/common';
+import {
+  EHttpStatus,
+  THttpErrorResponse,
+  TExceptionOption,
+  TMessage,
+} from '@/interfaces/http.interface';
+import {
+  ExceptionFilter,
+  Catch,
+  HttpException,
+  ArgumentsHost,
+  HttpStatus,
+} from '@nestjs/common';
 
 /**
  * @class HttpExceptionFilter
@@ -12,17 +23,24 @@ export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     const request = host.switchToHttp().getRequest();
     const response = host.switchToHttp().getResponse();
-    const status = exception.getStatus && exception.getStatus() || HttpStatus.INTERNAL_SERVER_ERROR;
-    const errorOption: TExceptionOption = exception.getResponse ? exception.getResponse() as TExceptionOption : exception;
+    const status =
+      (exception.getStatus && exception.getStatus()) ||
+      HttpStatus.INTERNAL_SERVER_ERROR;
+    const errorOption: TExceptionOption = exception.getResponse
+      ? (exception.getResponse() as TExceptionOption)
+      : exception;
     const isString = (value): value is TMessage => lodash.isString(value);
-    const errMessage = isString(errorOption) ? errorOption : errorOption.message;
+    const errMessage = isString(errorOption)
+      ? errorOption
+      : errorOption.message;
     const errorInfo = isString(errorOption) ? null : errorOption.error;
     const parentErrorInfo = errorInfo ? String(errorInfo) : null;
     const isChildrenError = errorInfo && errorInfo.status && errorInfo.message;
-    const resultError = isChildrenError && errorInfo.message || parentErrorInfo;
+    const resultError =
+      (isChildrenError && errorInfo.message) || parentErrorInfo;
     const resultStatus = isChildrenError ? errorInfo.status : status;
     const data: THttpErrorResponse = {
-      status: EHttpStatus.Error,
+      status: resultStatus,
       message: errMessage,
       error: resultError,
       debug: isDevMode ? exception.stack : null,
@@ -32,6 +50,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       data.error = `资源不存在`;
       data.message = `接口 ${request.method} -> ${request.url} 无效`;
     }
-    return response.status(resultStatus).jsonp(data);
+    return response.status(HttpStatus.OK).jsonp(data);
   }
 }
