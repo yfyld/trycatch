@@ -51,8 +51,8 @@ export class ErrorModel {
   @Column()
   eventNum: number;
 
-  @Column()
-  projectId: number;
+  @ManyToOne(type => ProjectModel)
+  project: ProjectModel;
 
   @Column()
   userNum: number;

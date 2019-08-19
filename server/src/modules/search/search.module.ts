@@ -10,7 +10,7 @@ import { SearchController } from './search.controller';
 @Module({
   imports: [
     ElasticsearchModule.register({
-      host: '127.0.0.1:9600',
+      host: 'yfyld.cn:9006',
       log: 'trace',
     }),
     BullModule.forRoot({

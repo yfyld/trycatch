@@ -1,5 +1,6 @@
 import { IsNotEmpty, IsDefined, IsInt } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
+import { ProjectModel } from '../project/project.model';
 
 export class ErrorDto {
   @ApiModelProperty()
@@ -21,7 +22,7 @@ export class ErrorDto {
   @ApiModelProperty()
   version?: string;
   @ApiModelProperty()
-  projectId: number;
+  project: ProjectModel | { id: number };
 }
 
 export class QueryErrorListDto {

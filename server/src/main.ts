@@ -17,6 +17,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { HttpExceptionFilter } from './filters/error.filter';
 import { ErrorInterceptor } from './interceptors/error.intercptor';
 import { LoggingInterceptor } from './interceptors/logging.intercptor';
+import * as cookieParser from 'cookie-parser';
+import { renderFile } from 'ejs';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 const { log, warn, info } = console;
 const color = c => (isDevMode ? c : '');
@@ -31,12 +34,13 @@ global.console = Object.assign(console, {
 });
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.use(helmet());
   app.use(compression());
   app.use(bodyParser.json({ limit: '5mb' }));
   app.use(bodyParser.text({ limit: '5mb' }));
   app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(cookieParser());
   //app.use(rateLimit({ max: 1000, windowMs: 15 * 60 * 1000 }));
 
   // const permissionsGuard = app
@@ -56,6 +60,10 @@ async function bootstrap() {
   );
 
   app.use('/public', serveStatic(path.join(__dirname, 'publics'), {}));
+
+  app.setBaseViewsDir(path.join(__dirname, 'views'));
+  app.engine('html', renderFile);
+  app.setViewEngine('ejs');
 
   // swagger
   const options = new DocumentBuilder()

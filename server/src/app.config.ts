@@ -58,3 +58,7 @@ export const BASE_URL = {
     ? 'http://trycatch.yfyld.cn/api'
     : 'http://localhost:3300',
 };
+
+export const ALARMCONFIG = {
+  alarmWithlevelType: [1, 10, 100],
+};

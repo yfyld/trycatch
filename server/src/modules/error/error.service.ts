@@ -1,3 +1,4 @@
+import { InjectQueue } from 'nest-bull';
 import { SourcemapModel, ProjectModel } from './../project/project.model';
 import {
   QueryErrorListDto,
@@ -15,36 +16,52 @@ import { UserModel } from '@/modules/user/user.model';
 import { QueryListQuery, PageData } from '@/interfaces/request.interface';
 import * as SourceMap from 'source-map';
 import { RedisService } from 'nestjs-redis';
+import { Queue } from 'bull';
+import * as moment from 'moment';
 @Injectable()
 export class ErrorService {
   constructor(
     @InjectRepository(ErrorModel)
-    private readonly errorTypeModel: Repository<ErrorModel>,
+    private readonly errorModel: Repository<ErrorModel>,
     @InjectRepository(SourcemapModel)
     private readonly sourcemapModel: Repository<SourcemapModel>,
     @InjectRepository(ProjectModel)
     private readonly projectModel: Repository<ProjectModel>,
+    @InjectRepository(UserModel)
+    private readonly userModel: Repository<UserModel>,
     private readonly httpService: HttpService,
     private readonly redisService: RedisService,
+    @InjectQueue()
+    private readonly queue: Queue,
   ) {}
 
   public async createError(body: ErrorDto): Promise<void> {
-    let errorType = await this.getErrorById(body.id);
-    if (errorType) {
-      errorType.eventNum++;
-      return;
+    let error = await this.getErrorById(body.id);
+    if (error) {
+      error.eventNum++;
     } else {
-      errorType = this.errorTypeModel.create(body);
+      error = this.errorModel.create({
+        ...body,
+        eventNum: 1,
+        userNum: 1,
+      });
     }
-    await this.errorTypeModel.save(errorType);
+    await this.errorModel.save(error);
     return;
   }
 
-  public async getErrorById(errorTypeId: string): Promise<ErrorModel> {
-    const errorType = await this.errorTypeModel.findOne({
-      where: { id: errorTypeId },
+  public async getErrorById(errorId: string): Promise<ErrorModel> {
+    const error = await this.errorModel.findOne({
+      where: { id: errorId },
     });
-    return errorType;
+    return error;
+  }
+
+  public async getErrorAllInfo(errorId: string): Promise<string> {
+    const error = await this.errorModel.findOne({
+      where: { id: errorId },
+    });
+    return null;
   }
 
   public async getErrors(
@@ -68,7 +85,7 @@ export class ErrorService {
     if (query.query.guarderId) {
       searchBody.where['guarder'] = { id: guarderId };
     }
-    const [errorTypes, totalCount] = await this.errorTypeModel.findAndCount(
+    const [errorTypes, totalCount] = await this.errorModel.findAndCount(
       searchBody,
     );
     return {
@@ -86,7 +103,7 @@ export class ErrorService {
     } else {
       updateBody.guarder = { id: body.guarderId };
     }
-    await this.errorTypeModel
+    await this.errorModel
       .createQueryBuilder()
       .update()
       .set(updateBody)
@@ -186,5 +203,63 @@ ${rawLines[sm.line + 3]}`,
     }
     client.set(clearKey, JSON.stringify(result));
     return result;
+  }
+
+  public async computedAlarmErrors() {
+    const errors = await this.errorModel.find({
+      where: {},
+    });
+    errors.forEach(item => {
+      this.queue.add('sendAlarm', item);
+    });
+  }
+
+  public async sendAlarm(error) {
+    const guarder = await this.userModel.findOne(error.guarderId);
+    //const project = await this.projectModel.findOne(error.projectId);
+    await this.httpService.axiosRef.request({
+      // project.alarmHookUrl
+      url: `https://oapi.dingtalk.com/robot/send?access_token=76dc9eda9d95b1ff3f0c77ee8e0a0ebe7b43a388dfebead943a97d5d25a81c5a`,
+      method: 'post',
+      data: {
+        actionCard: {
+          title: error.name || error.type,
+          text: `### ${error.type}  ${error.name}  @${guarder.nickname} \n > ${
+            error.message
+          } ${error.url} \n * 错误等级: ${error.level} \n * 用户数:   ${
+            error.userNum
+          } \n * 事件数:   ${error.eventNum} \n * 版本:   ${
+            error.version
+          } \n * 创建时间:  ${moment(error.created_at).format(
+            'YYYY-MM-DD HH:mm:ss',
+          )} \n * 更新时间:  ${moment(error.updated_at).format(
+            'YYYY-MM-DD HH:mm:ss',
+          )}`,
+          hideAvatar: '0',
+          btnOrientation: '0',
+          btns: [
+            {
+              title: '查看详情',
+              actionURL: `http://127.0.0.1:7001/${error.projectId}/${error.id}`,
+            },
+            {
+              title: '前往处理',
+              actionURL: `http://127.0.0.1:7001/${error.projectId}/${error.id}`,
+            },
+            {
+              title: '暂不处理',
+              actionURL: `http://127.0.0.1:7001/${error.projectId}/${error.id}`,
+            },
+          ],
+        },
+        msgtype: 'actionCard',
+
+        at: {
+          atMobiles: [guarder.nickname],
+          isAtAll: false,
+        },
+      },
+    });
+    return true;
   }
 }

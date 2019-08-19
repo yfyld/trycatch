@@ -1,8 +1,13 @@
+import { ErrorService } from './error.service';
 import { Injectable } from '@nestjs/common';
 import { Cron, Interval, Timeout, NestSchedule } from 'nest-schedule';
 
 @Injectable()
 export class ErrorSchedule extends NestSchedule {
+  constructor(private readonly errorService: ErrorService) {
+    super();
+  }
+
   @Cron('0 0 2 * *', {
     startTime: new Date(),
     endTime: new Date(new Date().getTime() + 24 * 60 * 60 * 1000),
@@ -16,10 +21,10 @@ export class ErrorSchedule extends NestSchedule {
     console.log('executing once job');
   }
 
-  @Interval(2000)
+  @Interval(60000)
   intervalJob() {
-    console.log('executing interval job');
-
-    return true; //to stop
+    console.log('auto alarm');
+    this.errorService.computedAlarmErrors();
+    // return true; //to stop
   }
 }

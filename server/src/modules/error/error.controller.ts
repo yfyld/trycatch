@@ -14,6 +14,7 @@ import {
   Param,
   Put,
   All,
+  Render,
 } from '@nestjs/common';
 import { ErrorModel } from './error.model';
 import { ErrorService } from './error.service';
@@ -46,6 +47,17 @@ export class ErrorController {
     return this.errorService.getErrorById(errorId);
   }
 
+  @ApiOperation({ title: '获取错误信息byAlarm', description: '' })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, type: ErrorModel })
+  @HttpProcessor.handle('获取错误信息byAlarm')
+  @Get('/all-info')
+  @Render('errorInfo')
+  async getAllErrorInfo(@Query('errorId') errorId: string): Promise<any> {
+    const data = await this.errorService.getErrorAllInfo(errorId);
+    return { test: 'sdfsdfsdfs' };
+  }
+
   @ApiOperation({ title: '获取错误列表', description: '' })
   @ApiBearerAuth()
   @HttpProcessor.handle('获取错误列表')
@@ -67,7 +79,7 @@ export class ErrorController {
     return this.errorService.updateError(body);
   }
 
-  @Get('/test/test')
+  @Post('/clear/bull')
   test(): Promise<any> {
     return this.errorService.getSourceCode(
       {

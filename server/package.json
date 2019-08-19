@@ -36,11 +36,14 @@
     "class-transformer": "^0.2.0",
     "class-validator": "^0.9.1",
     "compression": "^1.7.4",
+    "cookie-parser": "^1.4.4",
+    "ejs": "^2.6.2",
     "elasticsearch": "^16.3.0",
     "express-rate-limit": "^3.5.0",
     "helmet": "^3.16.0",
     "js-base64": "^2.5.1",
     "lodash": "^4.17.11",
+    "moment": "^2.24.0",
     "mongoose": "^5.5.4",
     "mongoose-auto-increment": "^5.0.1",
     "mongoose-paginate": "^5.0.3",
@@ -61,7 +64,8 @@
     "tiny-lru": "^6.0.1",
     "typegoose": "^5.6.0",
     "typeorm": "^0.2.18",
-    "ua-device": "^0.1.10"
+    "ua-device": "^0.1.10",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@nestjs/testing": "^6.0.0",

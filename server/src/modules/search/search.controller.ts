@@ -1,3 +1,4 @@
+import { Cookie } from './../../decotators/cookie.decorators';
 import { PageData } from './../../interfaces/request.interface';
 import { SearchService } from './search.service';
 import { Controller, Get, Post, Query, Req, Param } from '@nestjs/common';
@@ -13,6 +14,8 @@ import { Queue } from 'bull';
 import { QueryList } from '@/decotators/query-list.decorators';
 import { QueryListQuery } from '@/interfaces/request.interface';
 
+import * as uuidv4 from 'uuid/v4';
+
 @ApiUseTags('上传日志')
 @Controller('search')
 export class SearchController {
@@ -25,12 +28,16 @@ export class SearchController {
   @ApiOperation({ title: '上报错误日志', description: '' })
   @ApiResponse({ status: 200 })
   @Post('/error.gif')
-  async createErrorLogByBody(@Req() req: any): Promise<any> {
-    const { body, ip, headers } = req;
+  async createErrorLogByBody(@Req() req: any, @Cookie() cookie): Promise<any> {
+    const { body, ip, headers, cookies } = req;
+    const data = JSON.parse(body); //JSON.parse(Buffer.from(body, 'base64').toString());
+    const uid = cookies.TRYCATCH_TOKEN || uuidv4();
+
     this.queue.add('getLog', {
-      body: JSON.parse(body),
+      body: data,
       ip: ip.replace(/[^.\d]/g, ''),
       ua: headers['user-agent'],
+      uid,
     });
     return;
   }
@@ -69,5 +76,10 @@ export class SearchController {
     @QueryList() query: QueryListQuery<any>,
   ): Promise<PageData<any>> {
     return this.searchService.getLogList(query);
+  }
+
+  @Get('/clear')
+  public async test(): Promise<any> {
+    return null;
   }
 }

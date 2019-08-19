@@ -16,6 +16,7 @@ export interface JobData {
   body: AddLogDto;
   ip: string;
   ua: string;
+  uid: string;
 }
 
 @Queue()
@@ -32,16 +33,13 @@ export class SearchQueue {
       job.data.body,
       job.data.ip,
       job.data.ua,
+      job.data.uid,
     );
   }
 
   @QueueProcess({ name: 'getUserNum' })
   processGetUserNum(job: Job<JobData>) {
-    return this.searchService.createLogIndex(
-      job.data.body,
-      job.data.ip,
-      job.data.ua,
-    );
+    return null
   }
 
   // @OnQueueActive()
@@ -58,7 +56,7 @@ export class SearchQueue {
     const data = job.data.body;
     const error: ErrorDto = {
       ...data.data,
-      projectId: data.info.projectId,
+      project: { id: data.info.projectId },
       id: data.info.projectId + '-' + data.data.errorId,
     };
     this.errorService.createError(error);

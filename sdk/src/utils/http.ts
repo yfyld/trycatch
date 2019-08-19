@@ -3,20 +3,12 @@ import Base64 from './base64'
 
 const config = getConfig()
 
-export default function(
-  data: object,
-  isAjax: boolean = false,
-  isSendBeacon: boolean = true
-) {
+export default function(data: object, isAjax: boolean = false, isSendBeacon: boolean = true) {
   return new Promise(resolve => {
     console.log(JSON.stringify(data, null, 2))
-    const dataStr = Base64.encode(JSON.stringify(data))
+    const dataStr = JSON.stringify(data) //Base64.encode(JSON.stringify(data))
     const url = `${config.url}?time=${Date.now()}`
-    if (
-      isSendBeacon &&
-      typeof window.navigator.sendBeacon === 'function' &&
-      typeof Blob === 'function'
-    ) {
+    if (isSendBeacon && typeof window.navigator.sendBeacon === 'function' && typeof Blob === 'function') {
       const headers = {
         type: 'text/plain; charset=UTF-8'
       }

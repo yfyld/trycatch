@@ -39,11 +39,20 @@ export class SearchService {
     });
   }
 
-  public async createLogIndex(body: AddLogDto, ip: string, ua: string) {
+  public async createLogIndex(
+    body: AddLogDto,
+    ip: string,
+    ua: string,
+    uid: string,
+  ) {
     const location = await this.ipService.query(ip);
     body.location = location;
     const uaDetail = this.uaService.parse(ua);
-    const bulk: LogDto[] = this.bulk('logs', 'log', { ...uaDetail, ...body });
+    const bulk: LogDto[] = this.bulk('logs', 'log', {
+      clientInfo: uaDetail,
+      ...body,
+      uid,
+    });
     return await this.elasticsearchService.getClient().bulk({
       body: bulk,
       index: 'logs',
