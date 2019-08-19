@@ -2,7 +2,7 @@ import * as ACTIONTYPE from '@/constants/actionType'
 import { createAction } from 'typesafe-actions'
 import { ProjectListItem, ProjectInfo, PageData, ProjectMemberOperate, Member } from '@/types'
 import { WrappedFormUtils } from 'antd/lib/form/Form'
-import { ProjectMemberUpdate, SourcemapAdd, SourcemapOperate } from '@/api'
+import { ProjectMemberUpdate, SourcemapOperate } from '@/api'
 
 export const doGetProjectListRequest = createAction(ACTIONTYPE.GET_PROJECT_LIST_REQUEST)
 
@@ -78,7 +78,7 @@ export const doDeleteProjectFailure = createAction(ACTIONTYPE.DELETE_PROJECT_FAI
 
 export const doAddSourcemapRequest = createAction(
   ACTIONTYPE.ADD_SOURCEMAP_REQUEST,
-  resolve => (form: WrappedFormUtils<SourcemapAdd>) => resolve(form)
+  resolve => (form: WrappedFormUtils) => resolve(form)
 )
 export const doAddSourcemapSuccess = createAction(ACTIONTYPE.ADD_SOURCEMAP_SUCCESS)
 export const doAddSourcemapFailure = createAction(ACTIONTYPE.ADD_SOURCEMAP_FAILURE)
@@ -90,3 +90,5 @@ export const doOperateSourcemapSuccess = createAction(ACTIONTYPE.OPERATE_SOURCEM
 export const doOperateSourcemapFailure = createAction(ACTIONTYPE.OPERATE_SOURCEMAP_FAILURE)
 
 // export const doFileUploadRequest = createAction(ACTIONTYPE.)
+
+export const doAddProjectSourcemapToggle = createAction(ACTIONTYPE.ADD_PROJECT_SOURCEMAP_TOGGLE, resolve => (toggle: boolean) => resolve(toggle))

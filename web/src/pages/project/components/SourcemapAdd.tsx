@@ -12,7 +12,7 @@ interface Props {
   visible: boolean
   doCancel: () => void
   form: WrappedFormUtils
-  doSubmit?: (form: WrappedFormUtils) => {}
+  doSubmit: (form: WrappedFormUtils) => {}
 }
 
 function SourcemapAdd({ visible, doCancel, doSubmit, form, ...props }: Props) {
@@ -26,7 +26,8 @@ function SourcemapAdd({ visible, doCancel, doSubmit, form, ...props }: Props) {
       Authorization: 'Bearer ' + localStorage.getItem('accessToken')
     },
     onChange: ({ file, fileList }) => {
-      if (file.status !== 'uploading') {
+      console.log(file);
+      if (file.status === 'done') {
         const fileName = file.name
         const url = file.response.result.url
         console.log(fileName)
@@ -65,7 +66,7 @@ function SourcemapAdd({ visible, doCancel, doSubmit, form, ...props }: Props) {
         <FormItem>
           {getFieldDecorator('version', {
             initialValue: ''
-          })(<Input placeholder="请输入" />)}
+          })(<Input placeholder="请输入version" />)}
         </FormItem>
       </Form>
     </Modal>
@@ -74,22 +75,21 @@ function SourcemapAdd({ visible, doCancel, doSubmit, form, ...props }: Props) {
 
 const mapStateToProps = (state: StoreState) => {
   return {
-    visible: state.project.projectMemberAddVisible,
-    userList: state.app.userList,
-    memberList: state.project.projectMembers
+    visible: state.project.projectSourcemapAddVisible
   }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) =>
   bindActionCreators(
     {
-      doSubmit: (form: WrappedFormUtils) => actions.doAddSourcemapRequest(form)
+      doSubmit: (form: WrappedFormUtils) => actions.doAddSourcemapRequest(form),
+      doCancel: () => actions.doAddProjectSourcemapToggle(false)
     },
     dispatch
   )
 
-export default Form.create<Props>()(
-  connect<any, any, Props>(
+export default Form.create()(
+  connect(
     mapStateToProps,
     mapDispatchToProps
   )(SourcemapAdd)

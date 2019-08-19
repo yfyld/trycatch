@@ -1,14 +1,19 @@
 import * as React from 'react'
+import { connect } from 'react-redux';
+import { bindActionCreators, Dispatch } from 'redux'
 import { Button, Table } from 'antd'
 import style from './Sourcemap.less'
 import SourcemapAdd from './SourcemapAdd'
+import { Action, StoreState, ProjectSourcemapListItem } from '@/types'
+import * as actions from '@/store/actions'
 
 interface Props {
-  className: string
+  className: string,
+  doVisible: () => void,
+  sourcemap: ProjectSourcemapListItem[]
 }
 
-function Sourcemap({ className }: Props) {
-  const [addSourcemapVisible, setAddSourcemapVisible] = React.useState(false)
+function Sourcemap({ className, doVisible, sourcemap }: Props) {
 
   //   const [operateSourcemapVisible, setoperateSourcemapVisible] = React.useState(false)
 
@@ -31,24 +36,36 @@ function Sourcemap({ className }: Props) {
     {
       title: '是否带hash',
       dataIndex: 'hash',
-      key: 'hash'
+      key: 'hash',
+      render: (hash) => hash ? '是' : '否'
     }
   ]
   return (
     <div className={className}>
-      <SourcemapAdd
-        visible={addSourcemapVisible}
-        doCancel={() => setAddSourcemapVisible(false)}
-      />
+      <SourcemapAdd />
       <div className={style.action}>
-        <Button type="primary" onClick={() => setAddSourcemapVisible(true)}>
+        <Button type="primary" onClick={() => doVisible()}>
           上传sourcemap文件
         </Button>
         {/* <Button onClick={}>修改sourcemap</Button> */}
       </div>
-      <Table columns={columns} pagination={false} />
+      <Table columns={columns} pagination={false} dataSource={sourcemap}/>
     </div>
   )
 }
 
-export default Sourcemap
+const mapStateToProps = (state: StoreState) => ({
+  sourcemap: state.project.projectSourcemapList
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<Action>) =>
+  bindActionCreators(
+    {
+      doVisible: () => actions.doAddProjectSourcemapToggle(true),
+      // doCancel: () => actions.doAddProjectSourcemapToggle(false)
+    },
+    dispatch
+  )
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Sourcemap)

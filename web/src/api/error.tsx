@@ -4,7 +4,7 @@ import { ErrorChangeParams } from '@/types'
 
 // 错误
 export function fetchErrorChartData(params?: object) {
-  return from(fetch.get(`/stat/error`, params))
+  return from(fetch.get(`/search/stat/error`, params))
 }
 
 export function fetchErrorListData(params?: object) {

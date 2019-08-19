@@ -77,7 +77,7 @@ const userMenu=(keys:number[],doErrorChange:Function,projectMembers)=>(
     onClick={({key})=>doErrorChange({guarderId: key, errorIds: keys, actionType: 'GUARDER'})}>
     {projectMembers.map(item=>(
       <Menu.Item key={item.id}>
-        {item.nickName || item.username}
+        {item.nickname || item.username}
       </Menu.Item>
     ))}
   </Menu>
