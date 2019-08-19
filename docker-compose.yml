@@ -41,7 +41,6 @@ services:
   #     - "trycatch_net"
   #   build:
   #     context: server
-
   # web:
   #   container_name: trycatch-web-container
   #   image: nginx
@@ -52,27 +51,48 @@ services:
   #     # - ./web/build/:/home/trycatch/web/
   #   ports:
   #     - '8060:8080'
-
-  es01:
-    image: elasticsearch:7.3.0
-    container_name: trycatch-elasticsearch-container
-    environment:
-      - node.name=es01
-      # - discovery.seed_hosts=es02
-      - cluster.initial_master_nodes=es01 #,es02
-      - cluster.name=docker-cluster
-      - bootstrap.memory_lock=true
-      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - ./esdata01:/usr/share/elasticsearch/data
-    ports:
-      - 9600:9200
-    networks:
-      - trycatch_net
+  # es01:
+  #   image: elasticsearch:7.3.0
+  #   container_name: trycatch-es01-container
+  #   environment:
+  #     - node.name=es01
+  #     - node.master=true
+  #     - node.data=true
+  #     - discovery.seed_hosts=es02
+  #     - cluster.initial_master_nodes=es01 ,es02
+  #     - cluster.name=docker-cluster
+  #     - bootstrap.memory_lock=true
+  #     - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   volumes:
+  #     - ./esdata/esdata01:/usr/share/elasticsearch/data
+  #   ports:
+  #     - 9600:9200
+  #   networks:
+  #     - trycatch_net
+  # es02:
+  #   image: elasticsearch:7.3.0
+  #   container_name: trycatch-es02-container
+  #   environment:
+  #     - node.name=es02
+  #     - node.master=true
+  #     - node.data=true
+  #     - discovery.seed_hosts=es01
+  #     - cluster.initial_master_nodes=es01,es02
+  #     - cluster.name=docker-cluster
+  #     - bootstrap.memory_lock=true
+  #     - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   volumes:
+  #     - ./esdata/esdata02:/usr/share/elasticsearch/data
+  #   networks:
+  #     - trycatch_net
 networks:
   trycatch_net:
     driver: bridge
