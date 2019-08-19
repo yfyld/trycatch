@@ -48,21 +48,19 @@ export class SearchService {
     const location = await this.ipService.query(ip);
     body.location = location;
     const uaDetail = this.uaService.parse(ua);
-    const bulk: LogDto[] = this.bulk('logs', 'log', {
+    const bulk: LogDto[] = this.bulk(body.info.projectId + '', 'log', {
       clientInfo: uaDetail,
       ...body,
       uid,
     });
     return await this.elasticsearchService.getClient().bulk({
       body: bulk,
-      index: 'logs',
-      type: 'log',
     });
   }
 
   public async getLogList<T>(query: QueryListQuery<any>) {
     const result = await this.search({
-      index: 'logs',
+      index: query.query.projectId,
       body: {
         from: query.skip,
         size: query.take,
