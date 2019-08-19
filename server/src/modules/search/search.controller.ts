@@ -78,6 +78,64 @@ export class SearchController {
     return this.searchService.getLogList(query);
   }
 
+  @ApiOperation({ title: '统计error', description: '' })
+  @Get('/stat/error')
+  public async statError(@Query() query: any): Promise<any> {
+    const dateCount = (query.endDate - query.startDate) / 3600000 / 24;
+    return this.searchService.search({
+      index: query.projectId,
+      body: {
+        size: 0,
+        query: {
+          constant_score: {
+            filter: {
+              range: {
+                'data.time': {
+                  gt: query.startDate,
+                  lt: query.endDate,
+                },
+              },
+            },
+          },
+        },
+        aggs: {
+          data: {
+            date_histogram: {
+              field: 'data.time',
+              interval: `${dateCount > 15 ? Math.round(dateCount / 15) : 1}d`,
+              format: 'yyyy-MM-dd',
+            },
+          },
+        },
+      },
+    });
+  }
+
+  @ApiOperation({ title: '统计error日志', description: '' })
+  @Get('/stat/log')
+  public async statLog(@Query() query: any): Promise<any> {
+    return this.searchService.search({
+      index: query.projectId,
+      body: {
+        size: 0,
+        aggs: {
+          os_terms: {
+            terms: {
+              field: 'clientInfo.browser',
+              size: 20,
+            },
+            browser_terms: {
+              terms: {
+                field: 'clientInfo.browser',
+                size: 20,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
   @Get('/clear')
   public async test(): Promise<any> {
     return null;
