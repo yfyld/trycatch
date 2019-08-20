@@ -1,3 +1,7 @@
+import { STAT_USER_NUM_INTERVAL } from './../../app.config';
+import { ErrorModel } from './../error/error.model';
+import { InjectRepository } from '@nestjs/typeorm';
+import { InjectQueue } from 'nest-bull';
 import { ErrorService } from './../error/error.service';
 import { AddLogDto, LogDto } from './search.dto';
 import { IpService } from './../../providers/helper/helper.ip.service';
@@ -6,15 +10,20 @@ import { Injectable } from '@nestjs/common';
 import * as UA from 'ua-device';
 import { UaService } from '@/providers/helper/helper.ua.service';
 import { QueryListQuery } from '@/interfaces/request.interface';
+import { Queue } from 'bull';
+import { Repository, getConnection, Between } from 'typeorm';
 
 @Injectable()
 export class SearchService {
   constructor(
     private readonly elasticsearchService: ElasticsearchService,
-
+    @InjectRepository(ErrorModel)
+    private readonly errorModel: Repository<ErrorModel>,
     private readonly ipService: IpService,
     private readonly errorService: ErrorService,
     private readonly uaService: UaService,
+    @InjectQueue()
+    private readonly queue: Queue,
   ) {}
   private bulk(index: string, type: string, generic: any): any[] {
     const bulk = [];
@@ -96,5 +105,56 @@ export class SearchService {
       totalCount: (result as any).hits.total.value,
       list,
     };
+  }
+
+  public async addComputedErrorsUserNumTask() {
+    const errors = await this.errorModel.find({
+      where: {
+        updatedAt: Between(
+          new Date(Date.now() - STAT_USER_NUM_INTERVAL),
+          new Date(),
+        ),
+      },
+    });
+    errors.forEach(item => {
+      this.queue.add('countUserNum', item);
+    });
+  }
+
+  public async computedErrorsUserNum(error) {
+    const { aggregations } = await this.search({
+      index: '1',
+      body: {
+        size: 0,
+        aggs: {
+          queryResult: {
+            filter: {
+              match: {
+                'data.errorId': error.id.replace(/^\d+\-/, ''),
+              },
+            },
+            aggs: {
+              userNum: {
+                cardinality: {
+                  field: 'uid.keyword',
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    error.userNum = aggregations.queryResult.userNum.value;
+    await this.errorModel
+      .query(
+        `UPDATE error_model set userNum = ${error.userNum} where id = "${error.id}"`, //防止更新更新时间
+      )
+      .catch(e => {
+        console.log(e);
+      });
+    console.log(
+      `UPDATE error_model set userNum = ${error.userNum} where id = ${error.id}`,
+    );
+    return true;
   }
 }

@@ -31,6 +31,7 @@ export class ErrorService {
     private readonly userModel: Repository<UserModel>,
     private readonly httpService: HttpService,
     private readonly redisService: RedisService,
+
     @InjectQueue()
     private readonly queue: Queue,
   ) {}

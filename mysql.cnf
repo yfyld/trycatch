@@ -26,4 +26,7 @@
 # For explanations see
 # http://dev.mysql.com/doc/mysql/en/server-system-variables.html
 
+
+
 [mysql]
+default-time-zone = '+08:00'

@@ -22,7 +22,7 @@ export class ErrorSchedule extends NestSchedule {
   }
 
   @Interval(60000)
-  intervalJob() {
+  intervalAlarm() {
     console.log('auto alarm');
     this.errorService.computedAlarmErrors();
     // return true; //to stop

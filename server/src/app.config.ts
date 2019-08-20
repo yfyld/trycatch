@@ -62,3 +62,5 @@ export const BASE_URL = {
 export const ALARMCONFIG = {
   alarmWithlevelType: [1, 10, 100],
 };
+
+export const STAT_USER_NUM_INTERVAL = 6000;
