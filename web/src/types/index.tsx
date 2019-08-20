@@ -136,6 +136,12 @@ export interface ErrorSearchParams extends PageQuery {
   startDate?: number
 }
 
+export interface EventListParams extends PageQuery {
+  endDate?: number,
+  startDate?: number,
+  errorId?: number,
+  projectId?: number
+}
 export interface ErrorListDataItem {
   key: string
   type: string

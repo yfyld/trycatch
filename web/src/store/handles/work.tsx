@@ -29,7 +29,7 @@ export default {
   ],
   '/dashboard/:projectId/:errorId': ({ pathname, search,projectId, errorId }, state) => [
     {
-      action: actions.doGetEventListDataRequest({ errorId,...errorSearchParams}),
+      action: actions.doGetEventListDataRequest({ errorId, projectId: Number(projectId), ...errorSearchParams}),
       ttl: CACHE_TIME,
       isExist: false
     },

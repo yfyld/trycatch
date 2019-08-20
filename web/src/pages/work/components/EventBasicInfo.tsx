@@ -20,7 +20,7 @@ interface Props {
 
 function EventInfo({ data, clientInfo, location, libInfo, source }: Props) {
     React.useEffect(() => {
-        if (source.code) {
+        if (source && source.code) {
             const dom = document.querySelector(".code");
             hljs.highlightBlock(dom);
             const html = dom.innerHTML;
@@ -28,7 +28,7 @@ function EventInfo({ data, clientInfo, location, libInfo, source }: Props) {
             
         
         }
-    }, [source.code])
+    }, [source && source.code])
     return (
         <div className={style.wrapper}>
             <div className={style.info}>

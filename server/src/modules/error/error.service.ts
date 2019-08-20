@@ -69,12 +69,13 @@ export class ErrorService {
   public async getErrors(
     query: QueryListQuery<QueryErrorListDto>,
   ): Promise<PageData<ErrorModel>> {
-    const { endDate, startDate, guarderId } = query.query;
+    const { endDate, startDate, guarderId, projectId, ...querys } = query.query;
     const searchBody = {
       skip: query.skip,
       take: query.take,
       where: {
-        ...query.query,
+        ...querys,
+        project: { id: projectId },
         cratedAt: LessThan(new Date(endDate)),
         updateAt: MoreThan(new Date(startDate)),
       },
@@ -165,8 +166,7 @@ ${rawLines[sm.line + 3]}`,
     version: string,
   ): Promise<SourceCodeDto> {
     const client = this.redisService.getClient();
-
-    const fileName = stack.url.match(/[^/]+$/)[0];
+    const fileName = stack.url.match(/[^/]+\/?$/) && stack.url.match(/[^/]+\/?$/)[0];
     const line = stack.line;
     const column = stack.column;
     const targetSrc = stack.url;

@@ -73,8 +73,9 @@ const getEventListData: Epic<Action, Action, StoreState> = (action$, state$) =>
     filter(isActionOf(actions.doGetEventListDataRequest)),
     switchMap(action =>
       Api.fetchEventList({
-        ...state$.value.work.errorSearchParams,
-        ...state$.value.work.eventListParams
+        // ...state$.value.work.errorSearchParams,
+        // ...state$.value.work.eventListParams,
+        ...action.payload
       }).pipe(
         mergeMap(({ data: { result: { list = [], totalCount = 0 }}}: AxiosResponse<ResponseOk<PageData<EventListDataItem>>>) => {
           const page = state$.value.work.eventListParams.page;
