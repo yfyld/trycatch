@@ -1,3 +1,4 @@
+import { ParseIntPipe } from './../../pipes/parse-int.pipe';
 import { Cookie } from './../../decotators/cookie.decorators';
 import { PageData } from './../../interfaces/request.interface';
 import { SearchService } from './search.service';
@@ -15,6 +16,7 @@ import { QueryList } from '@/decotators/query-list.decorators';
 import { QueryListQuery } from '@/interfaces/request.interface';
 
 import * as uuidv4 from 'uuid/v4';
+import { StatLogQuery } from './search.dto';
 
 @ApiUseTags('上传日志')
 @Controller('search')
@@ -121,8 +123,11 @@ export class SearchController {
 
   @ApiOperation({ title: '统计error日志', description: '' })
   @Get('/stat/log')
-  public async statLog(@Query() query: any): Promise<any> {
-    this.searchService.statLog(query);
+  public async statLog(
+    @Query(new ParseIntPipe(['startDate', 'endDate', 'projectId']))
+    query: StatLogQuery,
+  ): Promise<any> {
+    return this.searchService.statLog(query);
   }
 
   @Get('/clear')

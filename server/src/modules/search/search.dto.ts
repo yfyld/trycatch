@@ -1,5 +1,6 @@
 import { IsNotEmpty, IsDefined, IsInt } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 
 export class AddLogDto {
   data: {
@@ -63,4 +64,17 @@ export class LogDto extends AddLogDto {
     browserVersion: string;
     device: string;
   };
+}
+
+export class StatLogQuery {
+  @IsInt()
+  @Transform(value => Number(value))
+  startDate: number;
+  @IsInt()
+  @Transform(value => Number(value))
+  endDate: number;
+  @IsInt()
+  @Transform(value => Number(value))
+  projectId: number;
+  errorId: string;
 }
