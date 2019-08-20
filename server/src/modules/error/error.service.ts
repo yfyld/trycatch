@@ -74,7 +74,7 @@ export class ErrorService {
       skip: query.skip,
       take: query.take,
       where: {
-        project: { id: parseInt(projectId, 10) },
+        project: { id: projectId },
         cratedAt: LessThan(new Date(endDate)),
         updateAt: MoreThan(new Date(startDate)),
       },
