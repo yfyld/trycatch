@@ -4,22 +4,27 @@ export const ERROR_STATUS = [
   {
     text: '未解决',
     color: 'red',
-    value: 'UNSOLVED'
+    // value: 'UNSOLVED'
+    value: 0
   },
   {
     text: '解决',
     color: 'green',
-    value: 'SOLVED'
+    // value: 'SOLVED'
+    value: 1
   },
   {
     text: '忽略',
     color: '#ccc',
-    value: 'IGNORE'
+    // value: 'IGNORE'
+    value: 2
   },
   {
     text: '处理中',
     color: 'orange',
-    value: 'PROGRESS'
+    // value: 'PROGRESS'
+    value: 3
+
   }
 ]
 
