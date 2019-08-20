@@ -54,7 +54,7 @@ export class ProjectService {
       ...project,
       members: members.map(item => ({
         ...item.user,
-        roleCode: item.role.code,
+        roleCode: item.role && item.role.code,
       })),
       sourcemap,
     };

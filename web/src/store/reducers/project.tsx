@@ -1,6 +1,6 @@
 import { getType } from 'typesafe-actions'
 import * as actions from '../actions'
-import { ProjectListItem, ProjectInfo, Action, ProjectDetail, Member } from '@/types'
+import { ProjectListItem, ProjectInfo, Action, ProjectDetail, Member, ProjectSourcemapListItem } from '@/types'
 import update from 'immutability-helper'
 
 export interface ProjectState {
@@ -12,7 +12,9 @@ export interface ProjectState {
   projectDetail: ProjectDetail
   projectMemberAddVisible: boolean
   projectMemberSelectedKeys: number[]
-  fileList: any[]
+  fileList: any[],
+  projectSourcemapAddVisible: boolean,
+  projectSourcemapList: ProjectSourcemapListItem[]
 }
 
 const initialState = {
@@ -27,7 +29,9 @@ const initialState = {
   },
   projectMemberAddVisible: false,
   projectMemberSelectedKeys: [],
-  fileList: []
+  fileList: [],
+  projectSourcemapAddVisible: false,
+  projectSourcemapList: []
 }
 
 export const projectReducer = (state: ProjectState = initialState, action: Action): ProjectState => {
@@ -43,7 +47,8 @@ export const projectReducer = (state: ProjectState = initialState, action: Actio
         projectDetail: {
           activeKey: { $set: '1' },
           tabs: { $set: ['1'] }
-        }
+        },
+        projectSourcemapList: { $set: action.payload.sourcemap }
       })
 
     case getType(actions.doAddProjectToggle):
@@ -73,6 +78,10 @@ export const projectReducer = (state: ProjectState = initialState, action: Actio
     case getType(actions.doSelectProjectMember):
       return update(state, {
         projectMemberSelectedKeys: { $set: action.payload }
+      })
+    case getType(actions.doAddProjectSourcemapToggle):
+      return update(state, { 
+        projectSourcemapAddVisible: { $set: action.payload }
       })
     default:
       return state

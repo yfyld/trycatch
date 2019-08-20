@@ -85,12 +85,21 @@ export interface ProjectInfo {
   language?: string
   version?: string
   alarmType?: string
-  alarmHookUrl?: string
+  alarmHookUrl?: string,
+  sourcemap?: ProjectSourcemapListItem[]
 }
 
 export interface ProjectDetail {
   activeKey: string
   tabs: string[]
+}
+
+export interface ProjectSourcemapListItem {
+  fileName: string,
+  url: string,
+  id: number,
+  hash: boolean,
+  version: string
 }
 
 export interface ProjectMemberOperate {
@@ -160,7 +169,7 @@ export interface ErrorChangeParams {
 }
 
 export interface ErrorInfo {
-  id?: number
+  id?: string
   status?: string
   eventNum?: number
   userNum?: number

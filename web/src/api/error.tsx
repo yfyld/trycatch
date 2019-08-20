@@ -4,7 +4,7 @@ import { ErrorChangeParams } from '@/types'
 
 // 错误
 export function fetchErrorChartData(params?: object) {
-  return from(fetch.get(`/stat/error`, params))
+  return from(fetch.get(`/search/stat/error`, params))
 }
 
 export function fetchErrorListData(params?: object) {
@@ -15,7 +15,7 @@ export function fetchErrorStatusUpdate(errorId: number, params?: object) {
   return from(fetch.post(`/error/${errorId}`, params))
 }
 
-export function fetchErrorInfo(errorId: number) {
+export function fetchErrorInfo(errorId: string) {
   return from(fetch.get(`/error/info`, { errorId }))
 }
 
@@ -24,7 +24,7 @@ export function fetchErrorChange(data: ErrorChangeParams) {
 }
 
 export function fetchEventList(params: any) {
-  return from(fetch.get(`/error/log`, params))
+  return from(fetch.get(`/search/log`, params))
 }
 
 export function fetchEventInfo(params) {
@@ -32,5 +32,5 @@ export function fetchEventInfo(params) {
 }
 
 export function fetchEventChart(params) {
-  return from(fetch.get(`stat/log`, params))
+  return from(fetch.get(`search/stat/log`, params))
 }

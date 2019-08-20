@@ -10,12 +10,12 @@ import * as actions from '@/store/actions';
 interface Props {
     projectMembers: Member[],
     errorInfo: IErrorInfo,
-    errorId: number,
+    errorId: string,
     doErrorChange: (params) => void
 }
 
 function ErrorInfo({errorInfo, projectMembers, errorId, ...props}: Props) {
-    const userMenu=(keys:number[],doErrorChange:Function,projectMembers)=>(
+    const userMenu=(keys:string[],doErrorChange:Function,projectMembers)=>(
         <Menu 
           onClick={({key})=>doErrorChange({guarderId: key, errorIds: keys, actionType: 'GUARDER', requestInfo: true})}>
           {projectMembers.map(item=>(
@@ -27,7 +27,7 @@ function ErrorInfo({errorInfo, projectMembers, errorId, ...props}: Props) {
       )
       
       
-      const statusMenu=(keys:number[],doErrorChange:Function)=>(
+      const statusMenu=(keys:string[],doErrorChange:Function)=>(
         <Menu onClick={({key})=>doErrorChange({errorIds: keys, status: key, actionType: 'STATUS', requestInfo: true})}>
           {
             ERROR_STATUS.map(status=>(
@@ -39,7 +39,7 @@ function ErrorInfo({errorInfo, projectMembers, errorId, ...props}: Props) {
         </Menu>
       )
       
-      const levelMenu=(keys:number[],doErrorChange:Function)=>(
+      const levelMenu=(keys:string[],doErrorChange:Function)=>(
         <Menu onClick={({key})=>doErrorChange({errorIds:keys, level: key, actionType: 'LEVEL', requestInfo: true})}>
           {
             ERROR_LEVEL.map(level=>(

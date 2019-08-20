@@ -176,16 +176,25 @@ const addSourcemap: Epic<Action, Action, StoreState> = (action$, state$) =>
     filter(isActionOf(actions.doAddSourcemapRequest)),
     mergeMap(action =>
       bindNodeCallback<SourcemapAdd>(action.payload.validateFields)().pipe(
-        mergeMap(params =>
-          Api.fetchSourcemapAdd(params).pipe(
+        mergeMap(params => {
+          const data: any = {
+            hash: params.hash,
+            version: params.version,
+            projectId: state$.value.project.projectId
+          };
+          data.files = ((params.files) as any).fileList.map(item => ({url: item.response.result.url, fileName: item.response.result.filename}));
+          return Api.fetchSourcemapAdd({...data}).pipe(
             tap(() => {
               message.success('添加成功')
             }),
             mergeMap(response => [
               actions.doAddSourcemapSuccess(),
+              actions.doAddProjectSourcemapToggle(false),
               actions.doGetProjectDetailsRequest(state$.value.project.projectId)
             ])
           )
+        }
+          
         ),
         catchError(error => {
           message.error('添加失败')

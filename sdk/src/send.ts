@@ -58,7 +58,7 @@ export function sendData(data: IError) {
     //限制上传数量
     return
   }
-  data.errorId = errorId
+  data.errorId = errorId + '-' + config.projectId;
   if (_ignoreSend(data, config)) {
     return
   }
