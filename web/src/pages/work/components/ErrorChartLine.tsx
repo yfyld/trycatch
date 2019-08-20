@@ -19,7 +19,7 @@ const getOption=(data)=>({
     },
     xAxis: {
      
-        type: 'time',
+        type: 'category',
         boundaryGap: ['20%', '20%'],
         splitLine:false,
         axisLine:{
