@@ -79,8 +79,8 @@ export class SearchService {
         },
       },
     });
-    const list: any[] = result.hits.hits.map(({ _source }) => {
-      return _source;
+    const list: any[] = result.hits.hits.map(({ _source, _id }) => {
+      return { ..._source, id: _id };
     });
     let source;
     const sameStack = {};

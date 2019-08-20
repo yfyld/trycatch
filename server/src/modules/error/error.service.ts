@@ -170,7 +170,7 @@ ${rawLines[sm.line + 3]}`,
     const line = stack.line;
     const column = stack.column;
     const targetSrc = stack.url;
-    const clearKey = `${projectId}-${stack.fileName}-${line}-${column}-${version}`;
+    const clearKey = `${projectId}-${fileName}-${line}-${column}-${version}`;
     let sourceCode = await client.get(clearKey);
     let sourcemapSrc;
 
