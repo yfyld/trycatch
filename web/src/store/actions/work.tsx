@@ -30,7 +30,7 @@ export const doGetEventInfoSuccess = createAction(ACTIONTYPE.GET_EVENT_INFO_SUCC
 export const doGetEventInfoFailure = createAction(ACTIONTYPE.GET_EVENT_INFO_FAILURE);
 
 
-export const doGetErrorInfoRequest = createAction(ACTIONTYPE.GET_ERROR_INFO_REQUEST,resolve=>(errorId:number)=>resolve(errorId));
+export const doGetErrorInfoRequest = createAction(ACTIONTYPE.GET_ERROR_INFO_REQUEST,resolve=>(errorId:string)=>resolve(errorId));
 export const doGetErrorInfoSuccess = createAction(ACTIONTYPE.GET_ERROR_INFO_SUCCESS,resolve=>(data: ErrorInfo)=>resolve(data));
 export const doGetErrorInfoFailure = createAction(ACTIONTYPE.GET_ERROR_INFO_FAILURE);
 

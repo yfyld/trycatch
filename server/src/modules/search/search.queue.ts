@@ -40,7 +40,7 @@ export class SearchQueue {
     const error: ErrorDto = {
       ...data.data,
       project: { id: data.info.projectId },
-      id: data.info.projectId + '-' + data.data.errorId,
+      id: data.data.errorId,
     };
     await this.errorService.createError(error);
     return true;

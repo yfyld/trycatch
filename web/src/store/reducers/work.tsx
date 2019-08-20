@@ -15,7 +15,7 @@ import {
 } from '@/types'
 
 export interface WorkState {
-	errorId: number,
+	errorId: string,
 	errorChartData: ErrorChartData
 	errorListData: ErrorListData
 	errorSearchParams: ErrorSearchParams

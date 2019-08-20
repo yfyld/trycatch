@@ -169,7 +169,7 @@ export interface ErrorChangeParams {
 }
 
 export interface ErrorInfo {
-  id?: number
+  id?: string
   status?: string
   eventNum?: number
   userNum?: number

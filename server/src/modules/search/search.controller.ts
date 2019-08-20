@@ -47,11 +47,13 @@ export class SearchController {
   @ApiResponse({ status: 200 })
   @Get('/error.gif')
   createErrorLogByQuery(@Req() req: any): Promise<void> {
-    const { query, ip, headers } = req;
+    const { query, ip, headers, cookies } = req;
+    const uid = cookies.TRYCATCH_TOKEN || uuidv4();
     this.queue.add('getLog', {
       body: JSON.parse(query),
       ip: ip.replace(/[^.\d]/g, ''),
       ua: headers['user-agent'],
+      uid,
     });
     return;
   }
@@ -116,6 +118,11 @@ export class SearchController {
   public async statLog(@Query() query: any): Promise<any> {
     return this.searchService.search({
       index: query.projectId,
+      query: {
+        match_all: { 
+          errorId: query.errorId
+        }
+      },
       body: {
         size: 0,
         aggs: {

@@ -44,7 +44,7 @@ export default {
       isExist: false,
     },
     {
-      action: actions.doGetErrorInfoRequest(Number(errorId)),
+      action: actions.doGetErrorInfoRequest(errorId),
       ttl: CACHE_TIME,
       isExist: false
     }

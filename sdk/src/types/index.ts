@@ -87,7 +87,7 @@ export interface ErrorResource {
 
 // export type IError = ErrorJavaScript | ErrorHttp | ErrorLog | ErrorVue | ErrorResource
 export interface IError extends ErrorJavaScript, ErrorHttp, ErrorLog, ErrorVue, ErrorResource {
-  errorId?: number
+  errorId?: string
 }
 export interface HttpDetailData {
   elapsedTime: number
