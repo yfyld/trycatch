@@ -33,6 +33,10 @@ export class SearchService {
     return bulk;
   }
 
+  private escape(query: string) {
+    return query.replace(/([-\!\*\+\&\|\(\)\[\]\{\}\^\~\?\:\"\/])/g, '\\$1');
+  }
+
   async search<T>(params) {
     return await this.elasticsearchService.getClient().search<T>(params);
   }
@@ -69,14 +73,21 @@ export class SearchService {
   }
 
   public async getLogList<T>(query: QueryListQuery<any>) {
-    
     const result = await this.search({
       index: query.query.projectId,
       body: {
         from: query.skip,
         size: query.take,
         query: {
-          match: { 'data.errorId': query.query.errorId },
+          bool: {
+            filter: [
+              {
+                term: {
+                  'data.errorId': query.query.errorId,
+                },
+              },
+            ],
+          },
         },
       },
     });
@@ -86,7 +97,6 @@ export class SearchService {
     let source;
     const sameStack = {};
     for (let item of list) {
-      
       if (!item.data.stack || (item.data.stack && !item.data.stack[0])) {
         continue;
       }
@@ -132,7 +142,7 @@ export class SearchService {
         aggs: {
           queryResult: {
             filter: {
-              match: {
+              term: {
                 'data.errorId': error.id,
               },
             },
@@ -194,7 +204,7 @@ export class SearchService {
           bool: {
             filter: [
               {
-                match: {
+                term: {
                   'data.errorId': query.errorId,
                 },
               },
@@ -269,5 +279,9 @@ export class SearchService {
         })),
       },
     };
+  }
+
+  public statError(query: any) {
+    return null;
   }
 }

@@ -90,35 +90,21 @@ export class SearchController {
 
   @ApiOperation({ title: '统计error', description: '' })
   @Get('/stat/error')
-  public async statError(@Query() query: any): Promise<any> {
+  public async statError(
+    @Query(
+      new ParseIntPipe([
+        'startDate',
+        'endDate',
+        'projectId',
+        'level',
+        'status',
+        'guarderId',
+      ]),
+    )
+    query: any,
+  ): Promise<any> {
     const dateCount = (query.endDate - query.startDate) / 3600000 / 24;
-    return this.searchService.search({
-      index: query.projectId,
-      body: {
-        size: 0,
-        query: {
-          constant_score: {
-            filter: {
-              range: {
-                'data.time': {
-                  gt: query.startDate,
-                  lt: query.endDate,
-                },
-              },
-            },
-          },
-        },
-        aggs: {
-          data: {
-            date_histogram: {
-              field: 'data.time',
-              interval: `${dateCount > 15 ? Math.round(dateCount / 15) : 1}d`,
-              format: 'yyyy-MM-dd',
-            },
-          },
-        },
-      },
-    });
+    return this.searchService.statError(query);
   }
 
   @ApiOperation({ title: '统计error日志', description: '' })
