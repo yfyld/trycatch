@@ -69,12 +69,12 @@ export class ErrorService {
   public async getErrors(
     query: QueryListQuery<QueryErrorListDto>,
   ): Promise<PageData<ErrorModel>> {
-    const { endDate, startDate, guarderId } = query.query;
+    const { endDate, startDate, guarderId, projectId } = query.query;
     const searchBody = {
       skip: query.skip,
       take: query.take,
       where: {
-        ...query.query,
+        project: { id: parseInt(projectId, 10) },
         cratedAt: LessThan(new Date(endDate)),
         updateAt: MoreThan(new Date(startDate)),
       },
