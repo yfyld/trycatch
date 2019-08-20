@@ -114,26 +114,7 @@ export class SearchController {
   @ApiOperation({ title: '统计error日志', description: '' })
   @Get('/stat/log')
   public async statLog(@Query() query: any): Promise<any> {
-    return this.searchService.search({
-      index: query.projectId,
-      body: {
-        size: 0,
-        aggs: {
-          os_terms: {
-            terms: {
-              field: 'clientInfo.os',
-              size: 4,
-            },
-            browser_terms: {
-              terms: {
-                field: 'clientInfo.browser',
-                size: 4,
-              },
-            },
-          },
-        },
-      },
-    });
+    this.searchService.statLog(query);
   }
 
   @Get('/clear')

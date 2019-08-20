@@ -64,3 +64,5 @@ export const ALARMCONFIG = {
 };
 
 export const STAT_USER_NUM_INTERVAL = 6000;
+
+export const ALARM_INTERVAL = 6000;
