@@ -121,13 +121,13 @@ export class SearchController {
         aggs: {
           os_terms: {
             terms: {
-              field: 'clientInfo.browser',
-              size: 20,
+              field: 'clientInfo.os',
+              size: 4,
             },
             browser_terms: {
               terms: {
                 field: 'clientInfo.browser',
-                size: 20,
+                size: 4,
               },
             },
           },

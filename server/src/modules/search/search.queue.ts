@@ -1,3 +1,4 @@
+import { ErrorModel } from './../error/error.model';
 import { AddLogDto } from './search.dto';
 import { ErrorService } from './../error/error.service';
 import { ErrorDto } from './../error/error.dto';
@@ -28,45 +29,32 @@ export class SearchQueue {
   ) {}
 
   @QueueProcess({ name: 'getLog' })
-  processGetLog(job: Job<JobData>) {
-    return this.searchService.createLogIndex(
+  async processGetLog(job: Job<JobData>) {
+    await this.searchService.createLogIndex(
       job.data.body,
       job.data.ip,
       job.data.ua,
       job.data.uid,
     );
-  }
-
-  @QueueProcess({ name: 'getUserNum' })
-  processGetUserNum(job: Job<JobData>) {
-    return null
-  }
-
-  // @OnQueueActive()
-  // onActive(job: Job) {
-  //   this.logger.log(
-  //     `Processing job ${job.id} of type ${job.name} with data ${job.data}...`,
-  //   );
-  // }
-
-  @OnQueueEvent(BullQueueEvents.COMPLETED)
-  onCompleted(job: Job<JobData>) {
-    console.log(job.returnvalue.items[0]);
-    console.log(job.data.body);
     const data = job.data.body;
     const error: ErrorDto = {
       ...data.data,
       project: { id: data.info.projectId },
       id: data.info.projectId + '-' + data.data.errorId,
     };
-    this.errorService.createError(error);
+    await this.errorService.createError(error);
+    return true;
   }
 
-  // @OnQueueEvent(BullQueueEvents.FAILED)
-  // onFailed(job: Job) {
-  //   // todo: how to get just the job error message
-  //   this.logger.log(
-  //     `Failed job ${job.id} of type ${job.name}.\n${job.stacktrace}`,
-  //   );
-  // }
+  @QueueProcess({ name: 'countUserNum' })
+  async processCountUserNum(job: Job<ErrorModel>) {
+    await this.searchService.computedErrorsUserNum(job.data);
+    return true;
+  }
+
+  @OnQueueEvent(BullQueueEvents.COMPLETED)
+  onCompleted(job: Job<JobData>) {
+    // console.log(job.returnvalue.items[0]);
+    // console.log(job.data.body);
+  }
 }

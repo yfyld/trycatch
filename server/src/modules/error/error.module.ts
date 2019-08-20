@@ -1,3 +1,4 @@
+import { SearchService } from './../search/search.service';
 import { BullModule } from 'nest-bull';
 import { ErrorSchedule } from './error.schedule';
 import { Module, HttpModule } from '@nestjs/common';
