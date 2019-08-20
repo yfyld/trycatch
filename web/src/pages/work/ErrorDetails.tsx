@@ -30,10 +30,11 @@ interface Props extends EventChartData{
   eventListData:PageData<EventListDataItem>,
   eventListMoreShow:boolean
   eventInfoLoading:boolean,
-  projectMembers: Member[]
+  projectMembers: Member[],
+  eventId: number,
 }
 
-const ErrorDetails = ({eventInfoLoading,doSetEventId,eventListMoreShow, errorInfo,eventInfo,eventListLoading,doErrorChange, doErrorDetails ,eventListData,doGetEventListDataRequest,projectMembers, trendStat, deviceStat, osStat, browserStat}: Props) => {
+const ErrorDetails = ({eventInfoLoading,doSetEventId,eventListMoreShow, errorInfo,eventInfo,eventListLoading,doErrorChange, doErrorDetails ,eventListData,doGetEventListDataRequest,projectMembers, trendStat, deviceStat, osStat, browserStat, eventId}: Props) => {
  
 
   const loadMore = !eventListLoading&&eventListMoreShow ? (
@@ -72,7 +73,7 @@ const ErrorDetails = ({eventInfoLoading,doSetEventId,eventListMoreShow, errorInf
               loadMore={loadMore}
               dataSource={eventListData.list}
               renderItem={item => (
-                <List.Item className={item.id === eventInfo.id ? style.selected: ''} onClick={()=>doSetEventId(item.id)}>
+                <List.Item className={item.id === eventId ? style.selected: ''} onClick={()=>doSetEventId(item.id)}>
                     <EventListItem {...item}/>
                 </List.Item>
               )}
@@ -123,7 +124,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 const mapStateToprops = (state: StoreState) => {
   const { project, work } = state;
   const { projectMembers } = project;
-  const { eventListLoading, eventListData, eventInfo, errorInfo, eventListMoreShow, eventInfoLoading, eventChartData } = work;
+  const { eventListLoading, eventListData, eventInfo, errorInfo, eventListMoreShow, eventInfoLoading, eventChartData, eventId } = work;
   return {
     eventListLoading,
     eventListData,
@@ -132,6 +133,7 @@ const mapStateToprops = (state: StoreState) => {
     eventListMoreShow,
     eventInfoLoading,
     projectMembers,
+    eventId,
     ...eventChartData,
     
   }

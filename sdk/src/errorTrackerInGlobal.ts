@@ -62,6 +62,7 @@ class ErrorTrackerInGlobal {
     error.type = ERROR_TYPE.JAVASCRIPT_ERROR;
     error.line = lineNo;
     error.column = columnNo;
+    error.time = Date.now();
     return error
   }
   computedStackTraceWithoutError(

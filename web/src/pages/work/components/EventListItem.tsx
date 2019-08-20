@@ -24,7 +24,7 @@ function EventListItem(props: Props) {
             </div>
             <div className={style.other}>
                 <div className={style.date}>{isToday ? moment(time).format('HH:mm') : moment(time).format('MM-DD')}</div>
-                <div className={style.time}>{(elapsedTime || timeStamp || 0).toFixed(2)}ms</div>
+                <div className={style.time}>{(elapsedTime || timeStamp) ? `${(elapsedTime || timeStamp).toFixed(2)}ms` : ' '}</div>
                 <div className={style.location}>{props.location && props.location.region}</div>
             </div>
             

@@ -22,8 +22,15 @@ function ErrorBehavior({behavior}: Props) {
                             {item.method ? <li className={style.item}><span className={style.name}>method：</span><span>{item.method}</span></li> : null}
                             {item.url ? <li className={style.item}><span className={style.name}>url：</span><span>{item.url}</span></li> : null}
                             {
+                                item.newURL ? <li className={style.item}><span className={style.name}>url：</span><span>{item.newURL}</span></li> : null
+                            }
+                            {
+                                item.oldURL ? <li className={style.item}><span className={style.name}>oldURL：</span><span>{item.oldURL}</span></li> : null
+                            }
+                            {
                                 item.html ? <li className={style.item}><span className={style.name}>html：</span><span>{item.html}</span></li> : null
                             }
+                            
                             <li className={style.time}>{moment(item.time).format('YYYY-MM-DD HH:mm:ss')}</li>
                         </ul>
                         
