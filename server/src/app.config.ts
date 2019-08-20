@@ -63,6 +63,6 @@ export const ALARMCONFIG = {
   alarmWithlevelType: [1, 10, 100],
 };
 
-export const STAT_USER_NUM_INTERVAL = 6000;
+export const STAT_USER_NUM_INTERVAL = 30000;
 
-export const ALARM_INTERVAL = 6000;
+export const ALARM_INTERVAL = 30000;

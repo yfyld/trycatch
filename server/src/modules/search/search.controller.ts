@@ -1,8 +1,8 @@
 import { Cookie } from './../../decotators/cookie.decorators';
 import { PageData } from './../../interfaces/request.interface';
 import { SearchService } from './search.service';
-import { Controller, Get, Post, Query, Req, Param } from '@nestjs/common';
-
+import { Controller, Get, Post, Query, Req, Param, Res } from '@nestjs/common';
+import { Request, Response } from 'express';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -28,18 +28,26 @@ export class SearchController {
   @ApiOperation({ title: '上报错误日志', description: '' })
   @ApiResponse({ status: 200 })
   @Post('/error.gif')
-  async createErrorLogByBody(@Req() req: any, @Cookie() cookie): Promise<any> {
+  async createErrorLogByBody(
+    @Res() response: Response,
+    @Req() req: Request,
+    @Cookie() cookie,
+  ): Promise<any> {
     const { body, ip, headers, cookies } = req;
     const data = JSON.parse(body); //JSON.parse(Buffer.from(body, 'base64').toString());
     const uid = cookies.TRYCATCH_TOKEN || uuidv4();
-
+    response.cookie('TRYCATCH_TOKEN', uid, {
+      maxAge: 999999999999,
+      httpOnly: true,
+      path: '/',
+    });
     this.queue.add('getLog', {
       body: data,
       ip: ip.replace(/[^.\d]/g, ''),
       ua: headers['user-agent'],
       uid,
     });
-    return;
+    return response.send('');
   }
 
   @ApiOperation({ title: '上报错误日志', description: '' })
