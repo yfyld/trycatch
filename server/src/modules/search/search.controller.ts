@@ -103,7 +103,6 @@ export class SearchController {
     )
     query: any,
   ): Promise<any> {
-    const dateCount = (query.endDate - query.startDate) / 3600000 / 24;
     return this.searchService.statError(query);
   }
 

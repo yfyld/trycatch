@@ -23,6 +23,9 @@ export class ParseIntPipe implements PipeTransform<string> {
       }
       for (let i in this.keys) {
         const key = this.keys[i];
+        if (!value[key]) {
+          continue;
+        }
         value[key] = parseInt(value[key], 10);
         if (isNaN(value[key])) {
           throw new HttpBadRequestError('Validation failed');

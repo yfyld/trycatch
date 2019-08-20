@@ -76,8 +76,8 @@ export class ErrorService {
       where: {
         ...querys,
         project: { id: projectId },
-        cratedAt: LessThan(new Date(endDate)),
-        updateAt: MoreThan(new Date(startDate)),
+        createdAt: LessThan(new Date(endDate)),
+        updatedAt: MoreThan(new Date(startDate)),
       },
       order: {},
       relations: ['guarder'],
@@ -166,7 +166,8 @@ ${rawLines[sm.line + 3]}`,
     version: string,
   ): Promise<SourceCodeDto> {
     const client = this.redisService.getClient();
-    const fileName = stack.url.match(/[^/]+\/?$/) && stack.url.match(/[^/]+\/?$/)[0];
+    const fileName =
+      stack.url.match(/[^/]+\/?$/) && stack.url.match(/[^/]+\/?$/)[0];
     const line = stack.line;
     const column = stack.column;
     const targetSrc = stack.url;
