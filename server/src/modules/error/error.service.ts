@@ -75,9 +75,9 @@ export class ErrorService {
       take: query.take,
       where: {
         ...querys,
-        project: { id: projectId },
-        createdAt: LessThan(new Date(endDate)),
-        updatedAt: MoreThan(new Date(startDate)),
+        project: { id: Number(projectId) },
+        createdAt: LessThan(new Date(Number(endDate))),
+        updatedAt: MoreThan(new Date(Number(startDate))),
       },
       order: {},
       relations: ['guarder'],

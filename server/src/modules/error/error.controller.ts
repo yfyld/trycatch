@@ -1,3 +1,5 @@
+import { ParsePageQueryIntPipe } from './../../pipes/parse-page-query-int.pipe';
+import { ParseIntPipe } from './../../pipes/parse-int.pipe';
 import { QueryListQuery } from '@/interfaces/request.interface';
 import { QueryList } from '../../decotators/query-list.decorators';
 import { PageQuery, PageData } from '../../interfaces/request.interface';
@@ -64,7 +66,17 @@ export class ErrorController {
   // @UseGuards(JwtAuthGuard)
   @Get('/')
   getErrors(
-    @QueryList() query: QueryListQuery<QueryErrorListDto>,
+    @QueryList(
+      new ParsePageQueryIntPipe([
+        'projectId',
+        'endDate',
+        'startDate',
+        'level',
+        'status',
+        'guarder',
+      ]),
+    )
+    query: QueryListQuery<QueryErrorListDto>,
   ): Promise<PageData<ErrorModel>> {
     return this.errorService.getErrors(query);
   }

@@ -5,7 +5,7 @@ import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common';
 @Injectable()
 export class ParseIntPipe implements PipeTransform<string> {
   keys: string[] = [];
-  constructor(keys) {
+  constructor(keys = []) {
     if (keys) {
       this.keys = keys;
     }

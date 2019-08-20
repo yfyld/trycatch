@@ -68,7 +68,7 @@ export class ProjectController {
   // @UseGuards(JwtAuthGuard)
   updateProject(
     @Body() body: UpdateProjectDto,
-    @Param('projectId', new ParseIntPipe([])) projectId: number,
+    @Param('projectId', new ParseIntPipe()) projectId: number,
   ): Promise<void> {
     return this.projectService.updateProject(body, projectId);
   }
@@ -78,7 +78,7 @@ export class ProjectController {
   @Delete('/:projectId')
   // @UseGuards(JwtAuthGuard)
   deleteProject(
-    @Param('projectId', new ParseIntPipe([])) projectId: number,
+    @Param('projectId', new ParseIntPipe()) projectId: number,
   ): Promise<void> {
     return this.projectService.deleteProject(projectId);
   }
@@ -91,7 +91,7 @@ export class ProjectController {
   @Get('/info')
   // @UseGuards(JwtAuthGuard)
   getProjectInfo(
-    @Query('projectId', new ParseIntPipe([])) projectId: number,
+    @Query('projectId', new ParseIntPipe()) projectId: number,
   ): Promise<ProjectDto> {
     return this.projectService.getProjectInfo(projectId);
   }
