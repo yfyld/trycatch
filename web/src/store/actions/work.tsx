@@ -1,6 +1,6 @@
 import * as ACTIONTYPE from "@/constants/actionType";
 import { createAction } from "typesafe-actions";
-import {ErrorChartData,ErrorSearchParams,ErrorChangeParams,EventListDataItem,PageData,EventInfo,ErrorInfo, ErrorListDataItem, EventChartSearchData, EventChartData} from "@/types"
+import {ErrorChartData,ErrorSearchParams,ErrorChangeParams,EventListDataItem,PageData,EventInfo,ErrorInfo, ErrorListDataItem, EventChartSearchData, EventChartData, EventListParams} from "@/types"
 
 
 export const doGetErrorAllData = createAction(ACTIONTYPE.GET_ERROR_ALL_DATA,resolve=>(params:ErrorSearchParams)=>resolve(params));
@@ -20,7 +20,7 @@ export const doErrorListSelectionChange = createAction(ACTIONTYPE.ERROR_LIST_SEL
 export const doErrorChange = createAction(ACTIONTYPE.ERROR_CHANGE,resolve=>(params:ErrorChangeParams)=>resolve(params));
 
 
-export const doGetEventListDataRequest = createAction(ACTIONTYPE.GET_EVENT_LIST_REQUEST,resolve=>(params:{page?:number,errorId?:number})=>resolve(params));
+export const doGetEventListDataRequest = createAction(ACTIONTYPE.GET_EVENT_LIST_REQUEST,resolve=>(params: EventListParams)=>resolve(params));
 export const doGetEventListDataSuccess = createAction(ACTIONTYPE.GET_EVENT_LIST_SUCCESS,resolve=>(data: PageData<EventListDataItem>)=>resolve(data));
 export const doGetEventListDataFailure = createAction(ACTIONTYPE.GET_EVENT_LIST_FAILURE);
 

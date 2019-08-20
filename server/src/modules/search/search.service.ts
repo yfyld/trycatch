@@ -69,6 +69,7 @@ export class SearchService {
   }
 
   public async getLogList<T>(query: QueryListQuery<any>) {
+    
     const result = await this.search({
       index: query.query.projectId,
       body: {
@@ -85,10 +86,11 @@ export class SearchService {
     let source;
     const sameStack = {};
     for (let item of list) {
-      if (!item.data.stack || !item.data.stack[0]) {
+      
+      if (!item.data.stack || (item.data.stack && !item.data.stack[0])) {
         continue;
       }
-      const key = `${item.data.stack.url}-${item.data.stack.line}-${item.data.stack.column}-${item.info.version}`;
+      const key = `${item.data.stack[0].url}-${item.data.stack[0].line}-${item.data.stack[0].column}-${item.info.version}`;
       if (!!sameStack[key]) {
         source = sameStack[key];
       } else {
@@ -151,7 +153,7 @@ export class SearchService {
         `UPDATE error_model set userNum = ${error.userNum} where id = "${error.id}"`, //防止更新更新时间
       )
       .catch(e => {
-        console.log(e);
+        // console.log(e);
       });
     console.log(
       `UPDATE error_model set userNum = ${error.userNum} where id = ${error.id}`,

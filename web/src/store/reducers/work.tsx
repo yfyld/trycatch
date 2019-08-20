@@ -11,7 +11,8 @@ import {
 	EventInfo,
 	EventListDataItem,
 	PageData,
-	EventChartData
+	EventChartData,
+	EventListParams
 } from '@/types'
 
 export interface WorkState {
@@ -29,10 +30,7 @@ export interface WorkState {
 	eventListMoreShow: boolean
 	eventInfoLoading: boolean
 	errorInfoLoading: boolean
-	eventListParams: {
-		page: number
-		errorId: number
-	},
+	eventListParams: EventListParams,
 	eventChartData: EventChartData,
 	eventId: number
 }
@@ -64,7 +62,11 @@ const initialState = {
 
 	eventListParams: {
 		page: 1,
-		errorId: null
+		pageSize: 20,
+		errorId: null,
+		projectId: null,
+		startDate: Date.now() - 30 * 24 * 3600000,
+		endDate: Date.now()
 	},
 	eventListMoreShow: false,
 	eventListLoading: false,
