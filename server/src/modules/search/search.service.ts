@@ -157,4 +157,27 @@ export class SearchService {
     );
     return true;
   }
+
+  public statLog(query) {
+    return this.search({
+      index: query.projectId,
+      body: {
+        size: 0,
+        aggs: {
+          os_terms: {
+            terms: {
+              field: 'clientInfo.os',
+              size: 4,
+            },
+            browser_terms: {
+              terms: {
+                field: 'clientInfo.browser',
+                size: 4,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
 }

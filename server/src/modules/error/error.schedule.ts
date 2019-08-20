@@ -1,3 +1,4 @@
+import { ALARM_INTERVAL } from './../../app.config';
 import { ErrorService } from './error.service';
 import { Injectable } from '@nestjs/common';
 import { Cron, Interval, Timeout, NestSchedule } from 'nest-schedule';
@@ -21,7 +22,7 @@ export class ErrorSchedule extends NestSchedule {
     console.log('executing once job');
   }
 
-  @Interval(60000)
+  @Interval(ALARM_INTERVAL)
   intervalAlarm() {
     console.log('auto alarm');
     this.errorService.computedAlarmErrors();

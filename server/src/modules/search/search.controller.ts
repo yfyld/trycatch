@@ -1,8 +1,8 @@
 import { Cookie } from './../../decotators/cookie.decorators';
 import { PageData } from './../../interfaces/request.interface';
 import { SearchService } from './search.service';
-import { Controller, Get, Post, Query, Req, Param } from '@nestjs/common';
-
+import { Controller, Get, Post, Query, Req, Param, Res } from '@nestjs/common';
+import { Request, Response } from 'express';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -28,18 +28,26 @@ export class SearchController {
   @ApiOperation({ title: '上报错误日志', description: '' })
   @ApiResponse({ status: 200 })
   @Post('/error.gif')
-  async createErrorLogByBody(@Req() req: any, @Cookie() cookie): Promise<any> {
+  async createErrorLogByBody(
+    @Res() response: Response,
+    @Req() req: Request,
+    @Cookie() cookie,
+  ): Promise<any> {
     const { body, ip, headers, cookies } = req;
     const data = JSON.parse(body); //JSON.parse(Buffer.from(body, 'base64').toString());
     const uid = cookies.TRYCATCH_TOKEN || uuidv4();
-
+    response.cookie('TRYCATCH_TOKEN', uid, {
+      maxAge: 999999999999,
+      httpOnly: true,
+      path: '/',
+    });
     this.queue.add('getLog', {
       body: data,
       ip: ip.replace(/[^.\d]/g, ''),
       ua: headers['user-agent'],
       uid,
     });
-    return;
+    return response.send('');
   }
 
   @ApiOperation({ title: '上报错误日志', description: '' })
@@ -47,13 +55,11 @@ export class SearchController {
   @ApiResponse({ status: 200 })
   @Get('/error.gif')
   createErrorLogByQuery(@Req() req: any): Promise<void> {
-    const { query, ip, headers, cookies } = req;
-    const uid = cookies.TRYCATCH_TOKEN || uuidv4();
+    const { query, ip, headers } = req;
     this.queue.add('getLog', {
       body: JSON.parse(query),
       ip: ip.replace(/[^.\d]/g, ''),
       ua: headers['user-agent'],
-      uid,
     });
     return;
   }
@@ -116,31 +122,7 @@ export class SearchController {
   @ApiOperation({ title: '统计error日志', description: '' })
   @Get('/stat/log')
   public async statLog(@Query() query: any): Promise<any> {
-    return this.searchService.search({
-      index: query.projectId,
-      query: {
-        match_all: { 
-          errorId: query.errorId
-        }
-      },
-      body: {
-        size: 0,
-        aggs: {
-          os_terms: {
-            terms: {
-              field: 'clientInfo.os',
-              size: 4,
-            },
-            browser_terms: {
-              terms: {
-                field: 'clientInfo.browser',
-                size: 4,
-              },
-            },
-          },
-        },
-      },
-    });
+    this.searchService.statLog(query);
   }
 
   @Get('/clear')

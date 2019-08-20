@@ -1,3 +1,4 @@
+import { ALARM_INTERVAL } from './../../app.config';
 import { InjectQueue } from 'nest-bull';
 import { SourcemapModel, ProjectModel } from './../project/project.model';
 import {
@@ -9,7 +10,7 @@ import {
 import { HttpBadRequestError } from '../../errors/bad-request.error';
 import { ErrorModel } from './error.model';
 import { Injectable, HttpService } from '@nestjs/common';
-import { Repository, In, LessThan, MoreThan } from 'typeorm';
+import { Repository, In, LessThan, MoreThan, Between } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { UserModel } from '@/modules/user/user.model';
@@ -208,7 +209,9 @@ ${rawLines[sm.line + 3]}`,
 
   public async computedAlarmErrors() {
     const errors = await this.errorModel.find({
-      where: {},
+      where: {
+        updatedAt: Between(new Date(Date.now() - ALARM_INTERVAL), new Date()),
+      },
     });
     errors.forEach(item => {
       this.queue.add('sendAlarm', item);
