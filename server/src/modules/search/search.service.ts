@@ -11,8 +11,14 @@ import * as UA from 'ua-device';
 import { UaService } from '@/providers/helper/helper.ua.service';
 import { QueryListQuery } from '@/interfaces/request.interface';
 import { Queue } from 'bull';
-import { Repository, getConnection, Between } from 'typeorm';
-import { eachDay, format } from 'date-fns';
+import {
+  Repository,
+  getConnection,
+  Between,
+  LessThan,
+  MoreThan,
+} from 'typeorm';
+import { eachDay, format, addMonths, addYears } from 'date-fns';
 
 @Injectable()
 export class SearchService {
@@ -31,6 +37,10 @@ export class SearchService {
     bulk.push({ index: { _index: index, _type: type } });
     bulk.push(generic);
     return bulk;
+  }
+
+  private escape(query: string) {
+    return query.replace(/([-\!\*\+\&\|\(\)\[\]\{\}\^\~\?\:\"\/])/g, '\\$1');
   }
 
   async search<T>(params) {
@@ -69,14 +79,21 @@ export class SearchService {
   }
 
   public async getLogList<T>(query: QueryListQuery<any>) {
-    
     const result = await this.search({
       index: query.query.projectId,
       body: {
         from: query.skip,
         size: query.take,
         query: {
-          match: { 'data.errorId': query.query.errorId },
+          bool: {
+            filter: [
+              {
+                term: {
+                  'data.errorId': query.query.errorId,
+                },
+              },
+            ],
+          },
         },
       },
     });
@@ -86,7 +103,6 @@ export class SearchService {
     let source;
     const sameStack = {};
     for (let item of list) {
-      
       if (!item.data.stack || (item.data.stack && !item.data.stack[0])) {
         continue;
       }
@@ -132,7 +148,7 @@ export class SearchService {
         aggs: {
           queryResult: {
             filter: {
-              match: {
+              term: {
                 'data.errorId': error.id,
               },
             },
@@ -161,32 +177,76 @@ export class SearchService {
     return true;
   }
 
-  public async statLog(query: StatLogQuery) {
-    let days = eachDay(new Date(query.startDate), new Date(query.endDate));
+  private getTimes(startDate, endDate) {
+    let dayNum = (endDate - startDate) / 3600000 / 24;
+    let startTime = new Date(startDate);
     let times = [];
-    if (days.length > 24) {
-      const interval = Math.ceil(days.length / 24);
-      times = days
-        .reverse()
-        .filter((item, index) => !(index % interval === interval - 1))
-        .map(item => ({
+    let type = 'YYYY-MM-DD';
+    if (dayNum > 365) {
+      const interval = Math.ceil(dayNum / 365);
+      for (let i = 0; i < interval; i++) {
+        times.push({
+          from: addYears(startTime, i).getTime(),
+          to: addYears(startTime, i + 1).getTime(),
+        });
+      }
+      type = 'YYYY';
+    } else if (dayNum > 31) {
+      const interval = Math.ceil(dayNum / 31);
+      for (let i = 0; i < interval; i++) {
+        times.push({
+          from: addMonths(startTime, i).getTime(),
+          to: addMonths(startTime, i + 1).getTime(),
+        });
+      }
+      type = 'YYYY-MM';
+    } else {
+      let days = eachDay(new Date(startDate), new Date(endDate));
+      if (days.length === 1) {
+        const day = days[0];
+        times = [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+        ].map(item => ({
+          from: day.setHours(item - 1),
+          to: day.setHours(item + 1),
+        }));
+        type = 'HH:mm';
+      } else {
+        times = days.map(item => ({
           from: item.getTime(),
           to: item.setHours(24),
-        }))
-        .reverse();
-    } else if (days.length === 1) {
-      const day = days[0];
-      times = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23].map(item => ({
-        from: day.setHours(item - 1),
-        to: day.setHours(item + 1),
-      }));
-    } else {
-      times = days.map(item => ({
-        from: item.getTime(),
-        to: item.setHours(24),
-      }));
+        }));
+      }
     }
 
+    return { times, type };
+  }
+
+  public async statLog(query: StatLogQuery) {
+    const { times, type } = this.getTimes(query.startDate, query.endDate);
     const { hits, aggregations } = await this.search({
       index: query.projectId,
       body: {
@@ -194,7 +254,7 @@ export class SearchService {
           bool: {
             filter: [
               {
-                match: {
+                term: {
                   'data.errorId': query.errorId,
                 },
               },
@@ -243,7 +303,7 @@ export class SearchService {
       trendStat: {
         totalCount: hits.total,
         data: aggregations.trendStat.buckets.map(item => ({
-          date: item.from,
+          date: format(item.from, type),
           count: item.doc_count,
         })),
       },
@@ -268,6 +328,67 @@ export class SearchService {
           count: item.doc_count,
         })),
       },
+    };
+  }
+
+  public async statError(query: any) {
+    const { endDate, startDate, projectId, guarderId, otherQuery } = query;
+    const errorQueryBody = {
+      ...otherQuery,
+      project: { id: projectId },
+      createdAt: LessThan(new Date(endDate)),
+      updatedAt: MoreThan(new Date(startDate)),
+    };
+    if (guarderId) {
+      errorQueryBody.guarder = { id: guarderId };
+    }
+    const errors = await this.errorModel.find(errorQueryBody);
+
+    const { times, type } = this.getTimes(startDate, endDate);
+
+    const filterIn = [];
+    errors.forEach(item => {
+      filterIn.push({
+        term: {
+          'data.errorId': item.id,
+        },
+      });
+    });
+    const { hits, aggregations } = await this.search({
+      index: projectId,
+      body: {
+        query: {
+          bool: {
+            filter: [
+              {
+                range: {
+                  'data.time': {
+                    gt: startDate,
+                    lt: endDate,
+                  },
+                },
+              },
+            ],
+            should: filterIn,
+          },
+        },
+        size: 0,
+        aggs: {
+          trendStat: {
+            range: {
+              field: 'data.time',
+              ranges: times,
+            },
+          },
+        },
+      },
+    });
+    return {
+      totalCount: hits.total,
+      data: aggregations.trendStat.buckets.map(item => ({
+        date: format(item.from, type),
+        count: item.doc_count,
+      })),
     };
   }
 }
