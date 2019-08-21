@@ -70,7 +70,7 @@ export class ProjectService {
       where: {
         name: Like(`%${query.query.projectName || ''}%`),
       },
-      relations: ['creator'],
+      relations: ['creator', 'guarder'],
     });
     return {
       totalCount,
