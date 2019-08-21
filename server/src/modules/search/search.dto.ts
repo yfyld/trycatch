@@ -66,7 +66,7 @@ export class LogDto extends AddLogDto {
   };
 }
 
-export class StatLogQuery {
+export class QueryStatLogDto {
   @IsInt()
   @Transform(value => Number(value))
   startDate: number;
@@ -77,4 +77,23 @@ export class StatLogQuery {
   @Transform(value => Number(value))
   projectId: number;
   errorId: string;
+}
+
+export class QueryLogListDto {
+  @IsInt()
+  @Transform(value => Number(value))
+  projectId: number;
+  errorId: string;
+}
+
+export class LogListDto {
+  location: any;
+  clientInfo: any;
+  behavior: any[];
+  data: any;
+  libInfo: any;
+  info: any;
+  id: string;
+  source: any;
+  ua: string;
 }

@@ -3,13 +3,19 @@ import { ErrorModel } from './../error/error.model';
 import { InjectRepository } from '@nestjs/typeorm';
 import { InjectQueue } from 'nest-bull';
 import { ErrorService } from './../error/error.service';
-import { AddLogDto, LogDto, StatLogQuery } from './search.dto';
+import {
+  AddLogDto,
+  LogDto,
+  QueryStatLogDto,
+  QueryLogListDto,
+  LogListDto,
+} from './search.dto';
 import { IpService } from './../../providers/helper/helper.ip.service';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { Injectable } from '@nestjs/common';
 import * as UA from 'ua-device';
 import { UaService } from '@/providers/helper/helper.ua.service';
-import { QueryListQuery } from '@/interfaces/request.interface';
+import { QueryListQuery, PageData } from '@/interfaces/request.interface';
 import { Queue } from 'bull';
 import {
   Repository,
@@ -78,7 +84,9 @@ export class SearchService {
     });
   }
 
-  public async getLogList<T>(query: QueryListQuery<any>) {
+  public async getLogList<T>(
+    query: QueryListQuery<QueryLogListDto>,
+  ): Promise<PageData<LogListDto>> {
     const result = await this.search({
       index: query.query.projectId,
       body: {
@@ -245,7 +253,7 @@ export class SearchService {
     return { times, type };
   }
 
-  public async statLog(query: StatLogQuery) {
+  public async statLog(query: QueryStatLogDto) {
     const { times, type } = this.getTimes(query.startDate, query.endDate);
     const { hits, aggregations } = await this.search({
       index: query.projectId,

@@ -1,3 +1,4 @@
+import { ParsePageQueryIntPipe } from './../../pipes/parse-page-query-int.pipe';
 import { ParseIntPipe } from './../../pipes/parse-int.pipe';
 import { Cookie } from './../../decotators/cookie.decorators';
 import { PageData } from './../../interfaces/request.interface';
@@ -16,7 +17,7 @@ import { QueryList } from '@/decotators/query-list.decorators';
 import { QueryListQuery } from '@/interfaces/request.interface';
 
 import * as uuidv4 from 'uuid/v4';
-import { StatLogQuery } from './search.dto';
+import { QueryStatLogDto, QueryLogListDto, LogListDto } from './search.dto';
 
 @ApiUseTags('上传日志')
 @Controller('search')
@@ -83,8 +84,9 @@ export class SearchController {
   @ApiOperation({ title: '查询日志列表', description: '' })
   @Get('/log')
   public async getErrorLogList(
-    @QueryList() query: QueryListQuery<any>,
-  ): Promise<PageData<any>> {
+    @QueryList(new ParsePageQueryIntPipe(['projectId']))
+    query: QueryListQuery<QueryLogListDto>,
+  ): Promise<PageData<LogListDto>> {
     return this.searchService.getLogList(query);
   }
 
@@ -110,7 +112,7 @@ export class SearchController {
   @Get('/stat/log')
   public async statLog(
     @Query(new ParseIntPipe(['startDate', 'endDate', 'projectId']))
-    query: StatLogQuery,
+    query: QueryStatLogDto,
   ): Promise<any> {
     return this.searchService.statLog(query);
   }

@@ -145,11 +145,10 @@ export class ErrorService {
     // 输出源码行，因为数组索引从0开始，故行数需要-1
 
     return {
-      code: `
-${rawLines[sm.line - 3]}
+      code: `${rawLines[sm.line - 3]}
 ${rawLines[sm.line - 2]}
 ${rawLines[sm.line - 1]}
-> ${rawLines[sm.line]}
+${rawLines[sm.line]}
 ${rawLines[sm.line + 1]}
 ${rawLines[sm.line + 2]}
 ${rawLines[sm.line + 3]}`,
