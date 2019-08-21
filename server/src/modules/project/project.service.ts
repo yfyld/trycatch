@@ -70,6 +70,7 @@ export class ProjectService {
       where: {
         name: Like(`%${query.query.projectName || ''}%`),
       },
+      relations: ['creator'],
     });
     return {
       totalCount,
@@ -95,18 +96,11 @@ export class ProjectService {
     projectInfo: AddProjectDto,
     user: UserModel,
   ): Promise<AddProjectResDto> {
-    if (projectInfo.adminId) {
-      projectInfo.admin = await this.userModel.findOne(projectInfo.adminId);
-    } else {
-      projectInfo.admin = user;
-    }
-    if (projectInfo.guarderId) {
-      projectInfo.guarder = await this.userModel.findOne(projectInfo.guarderId);
-    } else {
-      projectInfo.guarder = user;
-    }
-
-    const project = this.projectModel.create(projectInfo);
+    const project = this.projectModel.create({
+      creator: user,
+      guarder: { id: projectInfo.guarderId || user.id },
+      ...projectInfo,
+    });
     const { id } = await this.projectModel.save(project);
     await this.addMembers({
       projectId: id,

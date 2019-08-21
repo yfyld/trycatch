@@ -41,6 +41,7 @@ export interface ProjectListItem {
   id: number
   description?: string
   image?: string
+  creator?: UserInfo
 }
 
 export interface Member {
@@ -89,6 +90,7 @@ export interface ProjectInfo {
   alarmType?: string
   alarmHookUrl?: string
   sourcemap?: ProjectSourcemapListItem[]
+  creator?: UserInfo
 }
 
 export interface ProjectDetail {

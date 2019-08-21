@@ -64,7 +64,7 @@ export class ChartService {
           chart.dispose();
         }
         return `${BASE_URL.serverUrl}/public/charts/${config.path.replace(
-          /^.*([^/]+\.png)/,
+          /^.*\/([^/]+\.png)/,
           '$1',
         )}`;
       } catch (err) {

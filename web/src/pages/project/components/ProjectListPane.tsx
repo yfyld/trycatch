@@ -34,7 +34,7 @@ function ProjectListPane({ projectInfo, onDelete }: Props) {
         cover={<img src={projectInfo.image || defaultImg} />}
       >
         <Meta
-          avatar={<Avatar>{projectInfo.name.substring(0, 3)}</Avatar>}
+          avatar={<Avatar>{projectInfo.creator.nickname.substring(0, 3)}</Avatar>}
           title={projectInfo.name}
           description={projectInfo.description}
         />

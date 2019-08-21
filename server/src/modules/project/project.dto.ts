@@ -27,9 +27,6 @@ export class AddProjectDto {
   version: string;
 
   guarderId?: number;
-  adminId?: number;
-  guarder?: UserModel;
-  admin?: UserModel;
 }
 
 export class AddProjectResDto {
