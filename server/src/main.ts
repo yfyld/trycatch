@@ -20,6 +20,7 @@ import { LoggingInterceptor } from './interceptors/logging.intercptor';
 import * as cookieParser from 'cookie-parser';
 import { renderFile } from 'ejs';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { dirExists } from './utils/dirExists';
 
 const { log, warn, info } = console;
 const color = c => (isDevMode ? c : '');
@@ -32,6 +33,10 @@ global.console = Object.assign(console, {
   error: (...args) =>
     info(color('\x1b[31m%s\x1b[0m'), '[error]', '[nodepress]', ...args),
 });
+
+dirExists(path.join(__dirname, 'publics/doc'));
+dirExists(path.join(__dirname, 'publics/uploads'));
+dirExists(path.join(__dirname, 'publics/charts'));
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
