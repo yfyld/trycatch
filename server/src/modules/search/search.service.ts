@@ -472,7 +472,10 @@ export class SearchService {
 
     const image = this.chartService.generateImg({
       option: this.getChartOption(data),
-      path: path.join(__dirname, `../../publics/charts/${projectId}.png`),
+      path: path.join(
+        __dirname,
+        `../../publics/charts/${projectId}_${Date.now()}.png`,
+      ),
     });
 
     const project = await this.projectModel.findOne(projectId);
