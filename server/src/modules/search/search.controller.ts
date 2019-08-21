@@ -1,3 +1,4 @@
+import { ChartService } from './../../providers/helper/helper.chart.service';
 import { ParsePageQueryIntPipe } from './../../pipes/parse-page-query-int.pipe';
 import { ParseIntPipe } from './../../pipes/parse-int.pipe';
 import { Cookie } from './../../decotators/cookie.decorators';
@@ -17,6 +18,7 @@ import { QueryList } from '@/decotators/query-list.decorators';
 import { QueryListQuery } from '@/interfaces/request.interface';
 
 import * as uuidv4 from 'uuid/v4';
+import * as path from 'path';
 import { QueryStatLogDto, QueryLogListDto, LogListDto } from './search.dto';
 
 @ApiUseTags('上传日志')

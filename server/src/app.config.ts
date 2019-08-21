@@ -64,5 +64,5 @@ export const ALARMCONFIG = {
 };
 
 export const STAT_USER_NUM_INTERVAL = 30000;
-
 export const ALARM_INTERVAL = 30000;
+export const GENERATE_IMG_CRON = '0 0 11 * *';

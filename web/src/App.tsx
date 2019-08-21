@@ -2,7 +2,6 @@ import * as React from 'react'
 import style from './App.less'
 import Routes from '@/router'
 
-
 class App extends React.Component {
   public render() {
     return (

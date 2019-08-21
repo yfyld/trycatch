@@ -22,6 +22,9 @@ export class ProjectModel {
   name: string;
 
   @Column()
+  image: string;
+
+  @Column()
   description: string;
 
   @Column()

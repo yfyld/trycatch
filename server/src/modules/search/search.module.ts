@@ -9,10 +9,11 @@ import { SearchService } from './search.service';
 import { SearchController } from './search.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SearchSchedule } from './search.schedule';
+import { ProjectModel } from '../project/project.model';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ErrorModel]),
+    TypeOrmModule.forFeature([ErrorModel, ProjectModel]),
     ElasticsearchModule.register({
       host: 'yfyld.cn:9006',
       log: 'trace',

@@ -1,4 +1,4 @@
-import { STAT_USER_NUM_INTERVAL } from './../../app.config';
+import { STAT_USER_NUM_INTERVAL, GENERATE_IMG_CRON } from './../../app.config';
 import { SearchService } from './search.service';
 import { Injectable } from '@nestjs/common';
 import { Cron, Interval, Timeout, NestSchedule } from 'nest-schedule';
@@ -14,5 +14,12 @@ export class SearchSchedule extends NestSchedule {
     console.log('count user num');
     this.searchService.addComputedErrorsUserNumTask();
     // return true; //to stop
+  }
+
+  @Interval(60000)
+  //@Cron(GENERATE_IMG_CRON)
+  intervalGenerateImg() {
+    console.log('generate project img');
+    this.searchService.addGenerateImgTask();
   }
 }

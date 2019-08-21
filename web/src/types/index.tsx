@@ -40,6 +40,7 @@ export interface ProjectListItem {
   name: string
   id: number
   description?: string
+  image?: string
 }
 
 export interface Member {
@@ -78,6 +79,7 @@ export interface Project {
 export interface ProjectInfo {
   name?: string
   id?: number
+  image?: string
   members?: Member[]
   guarderId?: number
   description?: string
@@ -85,7 +87,7 @@ export interface ProjectInfo {
   language?: string
   version?: string
   alarmType?: string
-  alarmHookUrl?: string,
+  alarmHookUrl?: string
   sourcemap?: ProjectSourcemapListItem[]
 }
 
@@ -95,10 +97,10 @@ export interface ProjectDetail {
 }
 
 export interface ProjectSourcemapListItem {
-  fileName: string,
-  url: string,
-  id: number,
-  hash: boolean,
+  fileName: string
+  url: string
+  id: number
+  hash: boolean
   version: string
 }
 
@@ -137,9 +139,9 @@ export interface ErrorSearchParams extends PageQuery {
 }
 
 export interface EventListParams extends PageQuery {
-  endDate?: number,
-  startDate?: number,
-  errorId?: number,
+  endDate?: number
+  startDate?: number
+  errorId?: number
   projectId?: number
 }
 export interface ErrorListDataItem {

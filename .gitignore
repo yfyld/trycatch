@@ -13,6 +13,7 @@ db/data/
 !.autod.conf.js
 
 server/src/publics/uploads/
+server/src/publics/charts/
 
 sdk/.rpt2_cache
 

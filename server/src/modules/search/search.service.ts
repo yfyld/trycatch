@@ -1,3 +1,5 @@
+import { ProjectModel } from './../project/project.model';
+import { ChartService } from './../../providers/helper/helper.chart.service';
 import { STAT_USER_NUM_INTERVAL } from './../../app.config';
 import { ErrorModel } from './../error/error.model';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -25,6 +27,7 @@ import {
   MoreThan,
 } from 'typeorm';
 import { eachDay, format, addMonths, addYears } from 'date-fns';
+import * as path from 'path';
 
 @Injectable()
 export class SearchService {
@@ -32,9 +35,12 @@ export class SearchService {
     private readonly elasticsearchService: ElasticsearchService,
     @InjectRepository(ErrorModel)
     private readonly errorModel: Repository<ErrorModel>,
+    @InjectRepository(ProjectModel)
+    private readonly projectModel: Repository<ProjectModel>,
     private readonly ipService: IpService,
     private readonly errorService: ErrorService,
     private readonly uaService: UaService,
+    private readonly chartService: ChartService,
     @InjectQueue()
     private readonly queue: Queue,
   ) {}
@@ -398,5 +404,80 @@ export class SearchService {
         count: item.doc_count,
       })),
     };
+  }
+
+  /**
+   * addGenerateImgTask
+   */
+  public async addGenerateImgTask() {
+    const errors = await this.errorModel.find({
+      where: {
+        updatedAt: Between(new Date(Date.now() - 24 * 3600 * 1000), new Date()),
+      },
+    });
+
+    const projectIds = errors.map(item => item.projectId);
+
+    projectIds.forEach(item => {
+      this.queue.add('generateImg', item);
+    });
+  }
+
+  private getChartOption(data) {
+    return {
+      grid: {
+        left: 10,
+        top: 10,
+        bottom: 50,
+        right: 10,
+      },
+      xAxis: {
+        type: 'category',
+        boundaryGap: ['20%', '20%'],
+        splitLine: false,
+        axisLine: {
+          lineStyle: {
+            color: '#999',
+          },
+        },
+        data: data.data.map(item => item.date),
+      },
+      yAxis: {
+        show: false,
+        type: 'value',
+        splitLine: false,
+      },
+      series: [
+        {
+          data: data.data.map(item => item.value),
+          type: 'line',
+          lineStyle: {
+            color: '#09c',
+          },
+          areaStyle: {
+            color: '#09c',
+          },
+          smooth: true,
+        },
+      ],
+    };
+  }
+
+  public async generateImg(projectId) {
+    const data = await this.statError({
+      endDate: Date.now(),
+      startDate: Date.now() - 86400000 * 7,
+      projectId,
+    });
+
+    const image = this.chartService.generateImg({
+      option: this.getChartOption(data),
+      path: path.join(__dirname, `../../publics/charts/${projectId}.png`),
+    });
+
+    const project = await this.projectModel.findOne(projectId);
+    project.image = image;
+    this.projectModel.save(project);
+    return true;
   }
 }

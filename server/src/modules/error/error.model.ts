@@ -53,6 +53,8 @@ export class ErrorModel {
 
   @ManyToOne(type => ProjectModel)
   project: ProjectModel;
+  @Column()
+  projectId: number;
 
   @Column()
   userNum: number;

@@ -52,6 +52,12 @@ export class SearchQueue {
     return true;
   }
 
+  @QueueProcess({ name: 'generateImg' })
+  async processGenerateImg(job: Job<number>) {
+    await this.searchService.generateImg(job.data);
+    return true;
+  }
+
   @OnQueueEvent(BullQueueEvents.COMPLETED)
   onCompleted(job: Job<JobData>) {
     // console.log(job.returnvalue.items[0]);
