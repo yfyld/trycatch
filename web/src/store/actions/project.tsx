@@ -1,10 +1,10 @@
 import * as ACTIONTYPE from '@/constants/actionType'
 import { createAction } from 'typesafe-actions'
-import { ProjectListItem, ProjectInfo, PageData, ProjectMemberOperate, Member } from '@/types'
+import { ProjectListItem, ProjectInfo, PageData, ProjectMemberOperate, Member, PageDataQuery } from '@/types'
 import { WrappedFormUtils } from 'antd/lib/form/Form'
 import { ProjectMemberUpdate, SourcemapOperate } from '@/api'
 
-export const doGetProjectListRequest = createAction(ACTIONTYPE.GET_PROJECT_LIST_REQUEST)
+export const doGetProjectListRequest = createAction(ACTIONTYPE.GET_PROJECT_LIST_REQUEST, resolve => (data: PageDataQuery<any>) => resolve(data))
 
 export const doGetProjectListSuccess = createAction(
   ACTIONTYPE.GET_PROJECT_LIST_SUCCESS,

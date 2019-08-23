@@ -4,7 +4,7 @@ import * as actions from '@/store/actions';
 export default {
   '/project': ({ pathname, search },state) => [
     {
-      action: actions.doGetProjectListRequest(),
+      action: actions.doGetProjectListRequest({page: 1, pageSize: 20}),
       ttl: CACHE_TIME,
       isExist: false
     },
