@@ -1,4 +1,4 @@
-export const CACHE_PERFIX = '__nodepress_cache_';
+export const CACHE_PERFIX = '__trycatch_cache_';
 export const INFO = CACHE_PERFIX + 'info';
 export const TAGS = CACHE_PERFIX + 'tags';
 export const HOT_ARTICLES = CACHE_PERFIX + 'hot-articles';

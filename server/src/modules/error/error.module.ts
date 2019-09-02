@@ -1,3 +1,6 @@
+import { RedisModule } from './../../providers/redis/redis.module';
+import { BullQueueModule } from './../../providers/bull-queue/bull-queue.module';
+
 import { SearchService } from './../search/search.service';
 import { BullModule } from 'nest-bull';
 import { ErrorSchedule } from './error.schedule';
@@ -9,7 +12,7 @@ import { ErrorModel } from './error.model';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModel } from '../user/user.model';
 import { SourcemapModel, ProjectModel } from '../project/project.model';
-import { RedisModule } from 'nestjs-redis';
+
 import { ScheduleModule } from 'nest-schedule';
 import { ErrorQueue } from './error.queue';
 @Module({
@@ -20,25 +23,10 @@ import { ErrorQueue } from './error.queue';
       SourcemapModel,
       ProjectModel,
     ]),
-    HttpModule,
-    RedisModule.register({
-      host: '127.0.0.1',
-      port: 6666,
-      db: 3,
-    }),
     ScheduleModule.register(),
-    BullModule.forRoot({
-      //name: 'store',
-      options: {
-        redis: {
-          host: '127.0.0.1',
-          port: 6666,
-          password: '342531',
-          db: 1,
-        },
-      },
-      processors: [],
-    }),
+    HttpModule,
+    RedisModule,
+    BullQueueModule,
   ],
   providers: [ErrorService, ErrorSchedule, ErrorQueue],
   controllers: [ErrorController],

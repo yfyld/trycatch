@@ -1,3 +1,4 @@
+import { EsModule } from './providers/es/es.module';
 import { HelperModule } from './providers/helper/helper.module';
 import { SearchModule } from './modules/search/search.module';
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
@@ -19,6 +20,7 @@ import { PermissionsGuard } from './guards/permission.guard';
     CommonModule,
     ErrorModule,
     HelperModule,
+    EsModule,
   ],
   controllers: [AppController],
   providers: [PermissionsGuard],
