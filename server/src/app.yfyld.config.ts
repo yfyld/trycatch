@@ -35,8 +35,8 @@ export const ALARM_INTERVAL = 30000;
 export const GENERATE_IMG_CRON = '0 0 11 * *';
 
 export const BASE_URL = {
-  webUrl: 'http://trycatch.yfyld.cn',
-  serverUrl: 'http://trycatch.yfyld.cn/api',
+  webUrl: 'http://trycatch.yfyld.com',
+  serverUrl: 'http://trycatch.yfyld.com/api',
 };
 
 export const ORMCONFIG: MysqlConnectionOptions = {
@@ -58,6 +58,6 @@ export const REDIS = {
 };
 
 export const ES_CONFIG = {
-  host: 'yfyld.cn:9006',
+  host: '49.235.154.22:9600',
   log: 'trace',
 };

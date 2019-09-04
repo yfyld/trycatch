@@ -1,6 +1,6 @@
 import { getType } from 'typesafe-actions'
 import * as actions from '../actions'
-import { ProjectListItem, ProjectInfo, Action, ProjectDetail, Member, ProjectSourcemapListItem } from '@/types'
+import { ProjectListItem, ProjectInfo, Action, ProjectDetail, Member, ProjectSourcemapListItem, Page } from '@/types'
 import update from 'immutability-helper'
 
 export interface ProjectState {
@@ -14,11 +14,15 @@ export interface ProjectState {
   projectMemberSelectedKeys: number[]
   fileList: any[],
   projectSourcemapAddVisible: boolean,
-  projectSourcemapList: ProjectSourcemapListItem[]
+  projectSourcemapList: ProjectSourcemapListItem[],
+  projectPage: Page
 }
 
 const initialState = {
   projectList: [],
+  projectPage: {
+    page: 1, pageSize: 10, totalCount: 0
+  },
   projectInfo: {},
   projectMembers: [],
   projectId: null,
@@ -37,7 +41,14 @@ const initialState = {
 export const projectReducer = (state: ProjectState = initialState, action: Action): ProjectState => {
   switch (action.type) {
     case getType(actions.doGetProjectListSuccess):
-      return update(state, { projectList: { $set: action.payload.list } })
+      return update(state, { 
+        projectList: { $set: action.payload.list },
+        projectPage: { 
+          page: { $set: action.payload.page },
+          pageSize: { $set: action.payload.pageSize },
+          totalCount: { $set: action.payload.totalCount }
+        }
+      })
 
     case getType(actions.doGetProjectDetailsSuccess):
       return update(state, {

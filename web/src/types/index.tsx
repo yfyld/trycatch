@@ -8,7 +8,9 @@ export interface ResponseOk<T> {
 }
 
 export interface PageData<T> {
-  totalCount: number
+  totalCount: number,
+  page?: number,
+  pageSize?: number,
   list: T[]
 }
 
@@ -18,6 +20,15 @@ export interface ListResult<T> {
 export interface PageQuery {
   page?: number
   pageSize?: number
+}
+
+export interface PageDataQuery<T> extends PageQuery{
+  data?: T
+}
+export interface Page {
+  page: number,
+  pageSize: number,
+  totalCount: number
 }
 
 export type StoreState = StoreState

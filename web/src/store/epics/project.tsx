@@ -14,10 +14,10 @@ import { SourcemapAdd } from '@/api'
 const getProjectList: Epic<Action, Action, StoreState> = action$ =>
   action$.pipe(
     filter(isActionOf(actions.doGetProjectListRequest)),
-    mergeMap(action =>
-      Api.fetchProjectList().pipe(
+    mergeMap(({ payload: { page, pageSize, data = {}}}) =>
+      Api.fetchProjectList({page, pageSize, ...data}).pipe(
         map(({ data: { result: { list = [], totalCount = 0 } } }: AxiosResponse<ResponseOk<PageData<ProjectListItem>>>) =>
-          actions.doGetProjectListSuccess({ list, totalCount })
+          actions.doGetProjectListSuccess({ list, totalCount, page, pageSize })
         ),
         catchError(error => {
           message.warning(error.message || '查询失败')
@@ -230,7 +230,7 @@ const deleteProject: Epic<Action, Action, StoreState> = action$ =>
     mergeMap(action =>
       Api.fetchProjectDel(action.payload).pipe(
         tap(() => message.success('删除成功')),
-        mergeMap(() => [actions.doDeleteProjectSuccess(), actions.doGetProjectListRequest()])
+        mergeMap(() => [actions.doDeleteProjectSuccess(), actions.doGetProjectListRequest({page: 1, pageSize: 20})])
       )
     ),
     catchError(error => {
