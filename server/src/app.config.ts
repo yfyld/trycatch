@@ -2,7 +2,7 @@ import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOpti
 import * as path from 'path';
 
 export const APP = {
-  port: 3008,
+  port: 3007,
   version: '1.0.0',
 };
 
@@ -35,13 +35,13 @@ export const ALARM_INTERVAL = 30000;
 export const GENERATE_IMG_CRON = '0 0 11 * *';
 
 export const BASE_URL = {
-  webUrl: 'http://trycatch.yfyld.cn',
-  serverUrl: 'http://trycatch.yfyld.cn/api',
+  webUrl: 'http://trycatch.yfyld.com',
+  serverUrl: 'http://trycatch.yfyld.com/api',
 };
 
 export const ORMCONFIG: MysqlConnectionOptions = {
   type: 'mysql',
-  host: 'db',
+  host: 'mysql',
   port: 3306,
   username: 'root',
   password: '342531',
@@ -58,6 +58,6 @@ export const REDIS = {
 };
 
 export const ES_CONFIG = {
-  host: 'yfyld.cn:9006',
+  host: '49.235.154.22:9600',
   log: 'trace',
 };

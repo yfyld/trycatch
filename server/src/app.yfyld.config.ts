@@ -41,7 +41,7 @@ export const BASE_URL = {
 
 export const ORMCONFIG: MysqlConnectionOptions = {
   type: 'mysql',
-  host: 'db',
+  host: 'mysql',
   port: 3306,
   username: 'root',
   password: '342531',
