@@ -32,7 +32,7 @@ export const ALARMCONFIG = {
 
 export const STAT_USER_NUM_INTERVAL = 30000;
 export const ALARM_INTERVAL = 30000;
-export const GENERATE_IMG_CRON = '0 0 11 * *';
+export const GENERATE_IMG_CRON = '0 0 3 * *';
 
 export const BASE_URL = {
   webUrl: 'http://trycatch.yfyld.com',

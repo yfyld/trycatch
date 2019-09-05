@@ -32,7 +32,7 @@ export const ALARMCONFIG = {
 
 export const STAT_USER_NUM_INTERVAL = 60000;
 export const ALARM_INTERVAL = 60000;
-export const GENERATE_IMG_CRON = '0 0 11 * *';
+export const GENERATE_IMG_CRON = '0 0 03 * *';
 
 export const BASE_URL = {
   webUrl: 'http://127.0.0.1:5000',
