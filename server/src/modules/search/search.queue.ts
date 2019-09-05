@@ -28,7 +28,7 @@ export class SearchQueue {
     private readonly errorService: ErrorService,
   ) {}
 
-  @QueueProcess({ name: 'getLog' })
+  @QueueProcess({ name: 'createLog' })
   async processGetLog(job: Job<JobData>) {
     await this.searchService.createLogIndex(
       job.data.body,

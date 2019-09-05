@@ -31,6 +31,7 @@ services:
     restart: always
     volumes:
       - ./server/:/home/server/
+      - ./publics/:/home/server/src/publics
     ports:
       - "3007:3007"
       - "9223:9223"

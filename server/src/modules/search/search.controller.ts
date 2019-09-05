@@ -17,7 +17,6 @@ import { Queue } from 'bull';
 import { QueryList } from '@/decotators/query-list.decorators';
 import { QueryListQuery } from '@/interfaces/request.interface';
 
-import * as uuidv4 from 'uuid/v4';
 import * as path from 'path';
 import { QueryStatLogDto, QueryLogListDto, LogListDto } from './search.dto';
 
@@ -33,26 +32,8 @@ export class SearchController {
   @ApiOperation({ title: '上报错误日志', description: '' })
   @ApiResponse({ status: 200 })
   @Post('/error.gif')
-  async createErrorLogByBody(
-    @Res() response: Response,
-    @Req() req: Request,
-    @Cookie() cookie,
-  ): Promise<any> {
-    const { body, ip, headers, cookies } = req;
-    const data = JSON.parse(body); //JSON.parse(Buffer.from(body, 'base64').toString());
-    const uid = cookies.TRYCATCH_TOKEN || uuidv4();
-    response.cookie('TRYCATCH_TOKEN', uid, {
-      maxAge: 999999999999,
-      httpOnly: true,
-      path: '/',
-    });
-    this.queue.add('getLog', {
-      body: data,
-      ip: ip.replace(/[^.\d]/g, ''),
-      ua: headers['user-agent'],
-      uid,
-    });
-    return response.send('');
+  createErrorLogByBody(@Res() response: Response, @Req() req: Request) {
+    return this.searchService.createLogByQueue(response, req);
   }
 
   @ApiOperation({ title: '上报错误日志', description: '' })

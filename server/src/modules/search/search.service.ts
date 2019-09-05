@@ -19,6 +19,7 @@ import * as UA from 'ua-device';
 import { UaService } from '@/providers/helper/helper.ua.service';
 import { QueryListQuery, PageData } from '@/interfaces/request.interface';
 import { Queue } from 'bull';
+import * as uuidv4 from 'uuid/v4';
 import {
   Repository,
   getConnection,
@@ -69,6 +70,23 @@ export class SearchService {
       type: 'string',
       body: 'any',
     });
+  }
+
+  public createLogByQueue(response, { body, ip, headers, cookies }) {
+    const data = JSON.parse(body); //JSON.parse(Buffer.from(body, 'base64').toString());
+    const uid = cookies.TRYCATCH_TOKEN || uuidv4();
+    response.cookie('TRYCATCH_TOKEN', uid, {
+      maxAge: 999999999999,
+      httpOnly: true,
+      path: '/',
+    });
+    this.queue.add('createLog', {
+      body: data,
+      ip: ip.replace(/[^.\d]/g, ''),
+      ua: headers['user-agent'],
+      uid,
+    });
+    return response.send('');
   }
 
   public async createLogIndex(

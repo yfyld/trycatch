@@ -244,15 +244,15 @@ ${rawLines[sm.line + 3]}`,
           btns: [
             {
               title: '查看详情',
-              actionURL: `http://127.0.0.1:7001/${error.projectId}/${error.id}`,
+              actionURL: `http://trycath.yfyld.com/${error.projectId}/${error.id}`,
             },
             {
               title: '前往处理',
-              actionURL: `http://127.0.0.1:7001/${error.projectId}/${error.id}`,
+              actionURL: `http://trycath.yfyld.com/${error.projectId}/${error.id}`,
             },
             {
               title: '暂不处理',
-              actionURL: `http://127.0.0.1:7001/${error.projectId}/${error.id}`,
+              actionURL: `http://trycath.yfyld.com/${error.projectId}/${error.id}`,
             },
           ],
         },

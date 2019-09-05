@@ -65,6 +65,6 @@ export const REDIS = {
 };
 
 export const ES_CONFIG = {
-  host: 'yfyld.cn:9006',
+  host: 'trycatch.yfyld.com:9006',
   log: 'trace',
 };

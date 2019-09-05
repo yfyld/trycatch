@@ -1,3 +1,4 @@
+import { BullQueueModule } from './providers/bull-queue/bull-queue.module';
 import { EsModule } from './providers/es/es.module';
 import { HelperModule } from './providers/helper/helper.module';
 import { SearchModule } from './modules/search/search.module';
@@ -21,6 +22,7 @@ import { PermissionsGuard } from './guards/permission.guard';
     ErrorModule,
     HelperModule,
     EsModule,
+    BullQueueModule,
   ],
   controllers: [AppController],
   providers: [PermissionsGuard],
