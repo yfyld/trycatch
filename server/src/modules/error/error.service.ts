@@ -244,22 +244,22 @@ ${rawLines[sm.line + 3]}`,
           btns: [
             {
               title: '查看详情',
-              actionURL: `http://trycath.yfyld.com/${error.projectId}/${error.id}`,
+              actionURL: `http://trycath.yfyld.com/dashboard/${error.projectId}/${error.id}`,
             },
             {
               title: '前往处理',
-              actionURL: `http://trycath.yfyld.com/${error.projectId}/${error.id}`,
+              actionURL: `http://trycath.yfyld.com/dashboard/${error.projectId}/${error.id}`,
             },
             {
               title: '暂不处理',
-              actionURL: `http://trycath.yfyld.com/${error.projectId}/${error.id}`,
+              actionURL: `http://trycath.yfyld.com/dashboard/${error.projectId}/${error.id}`,
             },
           ],
         },
         msgtype: 'actionCard',
 
         at: {
-          atMobiles: [guarder.nickname],
+          atMobiles: [guarder.mobile],
           isAtAll: false,
         },
       },

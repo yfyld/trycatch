@@ -6,6 +6,8 @@ services:
     restart: always
     volumes:
       - ./redis.conf:/usr/local/etc/redis/redis.conf
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     networks:
       - 'trycatch_net'
     ports:
@@ -21,7 +23,9 @@ services:
     volumes:
       - ./mysql.cnf:/etc/mysql/conf.d/mysql.cnf
       - ./db/data/:/var/lib/mysql
-    environment:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    environment: 
       MYSQL_ROOT_PASSWORD: 342531
     networks:
       - "trycatch_net"
@@ -32,10 +36,12 @@ services:
     volumes:
       - ./server/:/home/server/
       - ./publics/:/home/server/src/publics
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     ports:
       - "3007:3007"
       - "9223:9223"
-    environment:
+    environment: 
       WAIT_HOSTS: mysql:3306
       WAIT_HOSTS: redis:6379
     depends_on:
@@ -55,6 +61,8 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/trycatch.conf
       - ./web/build/:/home/web/
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     ports:
       - '8070:8080'
 
