@@ -16,7 +16,7 @@ export class SearchSchedule extends NestSchedule {
     // return true; //to stop
   }
 
-  @Interval(600000)
+  @Interval(60000)
   //@Cron(GENERATE_IMG_CRON)
   intervalGenerateImg() {
     console.log('generate project img');

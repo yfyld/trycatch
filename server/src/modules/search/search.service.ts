@@ -467,7 +467,7 @@ export class SearchService {
       },
       series: [
         {
-          data: data.data.map(item => item.value),
+          data: data.data.map(item => item.count),
           type: 'line',
           lineStyle: {
             color: '#09c',

@@ -43,8 +43,8 @@ export class ChartService {
       };
 
     let defaultConfig = {
-      width: 500,
-      height: 500,
+      width: 600,
+      height: 400,
       option,
       enableAutoDispose: true,
       path: path.join(__dirname, '../../publics/charts/default.png'),

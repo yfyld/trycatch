@@ -1,11 +1,12 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { Icon, Card, Avatar } from 'antd'
+import { Icon, Card, Avatar, Modal } from 'antd'
 import { ProjectListItem } from '@/types'
 import style from './ProjectListPane.less'
 import defaultImg from '@/assets/imgs/default.jpeg'
 
 const { Meta } = Card
+const { confirm } = Modal
 
 interface Props {
   projectInfo: ProjectListItem
@@ -13,32 +14,47 @@ interface Props {
 }
 
 function ProjectListPane({ projectInfo, onDelete }: Props) {
+  const handleDelete = (projectId: number) => {
+    confirm({
+      title: '提示?',
+      content: '确定要删除该项目吗',
+      okType: 'danger',
+      onOk() {
+        onDelete(projectId)
+      }
+    })
+  }
   return (
     <div className={style.wrapper}>
-      <Card
-        actions={[
-          <Link to={`/project/${projectInfo.id}`} key="project">
-            <Icon type="edit" />
-          </Link>,
-          <Link to={`/dashboard/${projectInfo.id}`} key="error">
-            <Icon type="exclamation-circle" />
-          </Link>,
-          <Icon
-            type="delete"
-            key="delete"
-            onClick={() => {
-              onDelete(projectInfo.id)
-            }}
+      <Link to={`/dashboard/${projectInfo.id}`}>
+        <Card
+          actions={[
+            <Link to={`/project/${projectInfo.id}`} key="project">
+              <Icon type="edit" />
+            </Link>,
+            <Icon type="exclamation-circle" key="error" />,
+            <Icon
+              type="delete"
+              key="delete"
+              onClick={e => {
+                e.preventDefault()
+                handleDelete(projectInfo.id)
+              }}
+            />
+          ]}
+          cover={
+            <div className={style.image}>
+              <img src={projectInfo.image || defaultImg} />
+            </div>
+          }
+        >
+          <Meta
+            avatar={<Avatar>{projectInfo.creator.nickname.substring(0, 3)}</Avatar>}
+            title={projectInfo.name}
+            description={projectInfo.description}
           />
-        ]}
-        cover={<img src={projectInfo.image || defaultImg} />}
-      >
-        <Meta
-          avatar={<Avatar>{projectInfo.creator.nickname.substring(0, 3)}</Avatar>}
-          title={projectInfo.name}
-          description={projectInfo.description}
-        />
-      </Card>
+        </Card>
+      </Link>
     </div>
   )
 }

@@ -78,7 +78,7 @@ export function getPercentByNumber(num: number, total: number) {
 
 export const getBaseURL = () => {
   if (/127|localhost|192/.test(window.location.host)) {
-    return 'http://127.0.0.1:3004/'
+    return 'http://127.0.0.1:7001/'
   } else {
     return window.location.origin + '/api/'
   }
