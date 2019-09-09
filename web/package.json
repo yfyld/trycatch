@@ -68,6 +68,8 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
+    "oss": "node scripts/oss.js",
+    "build:yfyld": "PUBLIC_URL=//yfyld.oss-cn-hangzhou.aliyuncs.com/trycatch npm run oss && node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom"
   },
   "devDependencies": {
@@ -79,6 +81,7 @@
     "@types/react-router-redux": "^5.0.17",
     "@types/rx": "^4.1.1",
     "@types/swiper": "^4.4.1",
+    "ali-oss": "^6.1.1",
     "sass-resources-loader": "^2.0.0",
     "ts-import-plugin": "^1.5.5",
     "typescript": "^3.2.2"

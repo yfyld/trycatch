@@ -48,10 +48,10 @@ export class ProjectModel {
   @Column()
   sourcemapOnline: boolean;
 
-  @ManyToOne(type => UserModel)
+  @ManyToOne(type => UserModel, { cascade: true, onDelete: 'CASCADE' })
   creator: UserModel;
 
-  @ManyToOne(type => UserModel)
+  @ManyToOne(type => UserModel, { cascade: true, onDelete: 'CASCADE' })
   guarder: UserModel;
 }
 
@@ -59,11 +59,11 @@ export class ProjectModel {
 export class MemberModel {
   @PrimaryGeneratedColumn()
   id: number;
-  @ManyToOne(type => ProjectModel)
+  @ManyToOne(type => ProjectModel, { cascade: true, onDelete: 'CASCADE' })
   project: ProjectModel;
-  @ManyToOne(type => UserModel)
+  @ManyToOne(type => UserModel, { cascade: true, onDelete: 'CASCADE' })
   user: UserModel;
-  @ManyToOne(type => RoleModel)
+  @ManyToOne(type => RoleModel, { cascade: true, onDelete: 'CASCADE' })
   role: RoleModel;
 }
 
@@ -85,6 +85,6 @@ export class SourcemapModel {
   @Column()
   fileName: string;
 
-  @ManyToOne(type => ProjectModel)
+  @ManyToOne(type => ProjectModel, { cascade: true, onDelete: 'CASCADE' })
   project: ProjectModel;
 }
