@@ -1,8 +1,7 @@
 import { BullQueueModule } from './../../providers/bull-queue/bull-queue.module';
 import { EsModule } from './../../providers/es/es.module';
 import { ErrorModel } from './../error/error.model';
-import { ErrorModule } from './../error/error.module';
-import { ErrorService } from './../error/error.service';
+import { ProjectModule } from './../project/project.module';
 
 import { SearchQueue } from './search.queue';
 import { Module } from '@nestjs/common';
@@ -18,7 +17,7 @@ import { ProjectModel } from '../project/project.model';
     TypeOrmModule.forFeature([ErrorModel, ProjectModel]),
     EsModule,
     BullQueueModule,
-    ErrorModule,
+    ProjectModule,
   ],
   controllers: [SearchController],
   providers: [SearchService, SearchQueue, SearchSchedule],

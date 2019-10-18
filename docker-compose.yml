@@ -6,8 +6,6 @@ services:
     restart: always
     volumes:
       - ./redis.conf:/usr/local/etc/redis/redis.conf
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
     networks:
       - 'trycatch_net'
     ports:
@@ -23,94 +21,91 @@ services:
     volumes:
       - ./mysql.cnf:/etc/mysql/conf.d/mysql.cnf
       - ./db/data/:/var/lib/mysql
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-    environment: 
+    environment:
       MYSQL_ROOT_PASSWORD: 342531
     networks:
-      - "trycatch_net"
+      - 'trycatch_net'
 
-  server:
-    container_name: trycatch-server-container
-    restart: always
-    volumes:
-      - ./server/:/home/server/
-      - ./publics/:/home/server/src/publics
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-    ports:
-      - "3007:3007"
-      - "9223:9223"
-    environment: 
-      WAIT_HOSTS: mysql:3306
-      WAIT_HOSTS: redis:6379
-    depends_on:
-      - mysql
-      - redis
-    networks:
-      - "trycatch_net" 
-    # build:
-    #   context: server
-    image: trycatch-server:1.0
-  web:
-    container_name: trycatch-web-container
-    image: nginx
-    restart: always
-    networks:
-      - "trycatch_net"
-    volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/trycatch.conf
-      - ./web/build/:/home/web/
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-    ports:
-      - '8070:8080'
-
-  # es01:
-  #   image: elasticsearch:7.3.0
-  #   container_name: trycatch-es01-container
-  #   environment:
-  #     - node.name=es01
-  #     - node.master=true
-  #     - node.data=true
-  #     - http.cors.enabled=true
-  #     - http.cors.allow-origin=*
-  #     - network.host=0.0.0.0
-  #     - discovery.seed_hosts=es02
-  #     - cluster.initial_master_nodes=es01 ,es02
-  #     - cluster.name=docker-cluster
-  #     - bootstrap.memory_lock=true
-  #     - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
-  #   ulimits:
-  #     memlock:
-  #       soft: -1
-  #       hard: -1
+  # server:
+  #   container_name: trycatch-server-container
+  #   restart: always
   #   volumes:
-  #     - ./esdata/esdata01:/usr/share/elasticsearch/data
+  #     - ./server/:/home/server/
+  #     - ./publics/:/home/server/src/publics
+  #     - /etc/localtime:/etc/localtime:ro
+  #     - /etc/timezone:/etc/timezone:ro
   #   ports:
-  #     - 9600:9200
-  #   networks:
-  #     - trycatch_net
-  # es02:
-  #   image: elasticsearch:7.3.0
-  #   container_name: trycatch-es02-container
+  #     - "3007:3007"
+  #     - "9223:9223"
   #   environment:
-  #     - node.name=es02
-  #     - node.master=true
-  #     - node.data=true
-  #     - discovery.seed_hosts=es01
-  #     - cluster.initial_master_nodes=es01,es02
-  #     - cluster.name=docker-cluster
-  #     - bootstrap.memory_lock=true
-  #     - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
-  #   ulimits:
-  #     memlock:
-  #       soft: -1
-  #       hard: -1
-  #   volumes:
-  #     - ./esdata/esdata02:/usr/share/elasticsearch/data
+  #     WAIT_HOSTS: mysql:3306
+  #     WAIT_HOSTS: redis:6379
+  #   depends_on:
+  #     - mysql
+  #     - redis
   #   networks:
-  #     - trycatch_net
+  #     - "trycatch_net"
+  #   # build:
+  #   #   context: server
+  #   image: trycatch-server:1.0
+  # web:
+  #   container_name: trycatch-web-container
+  #   image: nginx
+  #   restart: always
+  #   networks:
+  #     - "trycatch_net"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/conf.d/trycatch.conf
+  #     - ./web/build/:/home/web/
+  #     - /etc/localtime:/etc/localtime:ro
+  #     - /etc/timezone:/etc/timezone:ro
+  #   ports:
+  #     - '8070:8080'
+  es01:
+    image: elasticsearch:7.3.0
+    container_name: trycatch-es01-container
+    environment:
+      - node.name=es01
+      - node.master=true
+      - node.data=true
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - network.host=0.0.0.0
+      - discovery.seed_hosts=es02
+      - cluster.initial_master_nodes=es01 ,es02
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./esdata/esdata01:/usr/share/elasticsearch/data
+    ports:
+      - 9600:9200
+    networks:
+      - trycatch_net
+  es02:
+    image: elasticsearch:7.3.0
+    container_name: trycatch-es02-container
+    environment:
+      - node.name=es02
+      - node.master=true
+      - node.data=true
+      - discovery.seed_hosts=es01
+      - cluster.initial_master_nodes=es01,es02
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./esdata/esdata02:/usr/share/elasticsearch/data
+    networks:
+      - trycatch_net
 networks:
   trycatch_net:
     driver: bridge

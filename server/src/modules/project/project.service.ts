@@ -1,7 +1,9 @@
+import { RedisService } from 'nestjs-redis';
+import { SourceCodeDto } from './../error/error.dto';
 import { RoleModel } from './../user/user.model';
 import { HttpBadRequestError } from './../../errors/bad-request.error';
 import { ProjectModel, MemberModel, SourcemapModel } from './project.model';
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpService } from '@nestjs/common';
 import { Repository, In, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
@@ -18,6 +20,7 @@ import {
 } from './project.dto';
 import { UserModel } from '@/modules/user/user.model';
 import { QueryListQuery, PageData } from '@/interfaces/request.interface';
+import * as SourceMap from 'source-map';
 import { UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 @Injectable()
 export class ProjectService {
@@ -32,6 +35,8 @@ export class ProjectService {
     private readonly memberModel: Repository<MemberModel>,
     @InjectRepository(SourcemapModel)
     private readonly sourcemapModel: Repository<SourcemapModel>,
+    private readonly httpService: HttpService,
+    private readonly redisService: RedisService
   ) {}
 
   public getProjectById(projectId: number): Promise<ProjectModel> {
@@ -41,6 +46,13 @@ export class ProjectService {
     });
   }
 
+  /**
+   *查询项目信息
+   *
+   * @param {number} projectId
+   * @returns {Promise<ProjectDto>}
+   * @memberof ProjectService
+   */
   public async getProjectInfo(projectId: number): Promise<ProjectDto> {
     const project = await this.getProjectById(projectId);
     const members = await this.memberModel.find({
@@ -61,8 +73,17 @@ export class ProjectService {
     return result;
   }
 
+
+  /**
+   *根据项目名称查询项目列表
+   *带分页
+   * 
+   * @param {QueryListQuery<QueryProjectsDto>} query
+   * @returns {Promise<PageData<ProjectModel>>}
+   * @memberof ProjectService
+   */
   public async getProjects(
-    query: QueryListQuery<QueryProjectsDto>,
+    query: QueryListQuery<QueryProjectsDto>
   ): Promise<PageData<ProjectModel>> {
     const [projects, totalCount] = await this.projectModel.findAndCount({
       skip: query.skip,
@@ -78,6 +99,14 @@ export class ProjectService {
     };
   }
 
+
+  /**
+   *获取自己建立的项目
+   *
+   * @param {UserModel} user
+   * @returns {Promise<any>}
+   * @memberof ProjectService
+   */
   public async getMyProjects(user: UserModel): Promise<any> {
     const projects = await this.memberModel.find({
       where: { user },
@@ -92,9 +121,18 @@ export class ProjectService {
     };
   }
 
+
+  /**
+   *新增项目
+   *
+   * @param {AddProjectDto} projectInfo
+   * @param {UserModel} user
+   * @returns {Promise<AddProjectResDto>}
+   * @memberof ProjectService
+   */
   public async addProject(
     projectInfo: AddProjectDto,
-    user: UserModel,
+    user: UserModel
   ): Promise<AddProjectResDto> {
     const project = this.projectModel.create({
       creator: user,
@@ -110,9 +148,15 @@ export class ProjectService {
     return { id };
   }
 
+
+  /**
+   *  更新项目
+   * @param projectInfo 
+   * @param projectId 
+   */
   public async updateProject(
     projectInfo: UpdateProjectDto,
-    projectId: number,
+    projectId: number
   ): Promise<void> {
     let project = await this.projectModel.findOne(projectId);
     project = { ...project, ...projectInfo };
@@ -120,12 +164,28 @@ export class ProjectService {
     return;
   }
 
+
+  /**
+   *删除项目
+   *
+   * @param {number} projectId
+   * @returns {Promise<void>}
+   * @memberof ProjectService
+   */
   public async deleteProject(projectId: number): Promise<void> {
     const project = await this.projectModel.findOne(projectId);
     await this.projectModel.remove(project);
     return;
   }
 
+
+  /**
+   *添加项目成员
+   *
+   * @param {AddMembersDto} body
+   * @returns {Promise<void>}
+   * @memberof ProjectService
+   */
   public async addMembers(body: AddMembersDto): Promise<void> {
     const { memberIds, projectId, roleCode } = body;
     const role = await this.roleModel.findOne({ code: roleCode });
@@ -191,7 +251,7 @@ export class ProjectService {
           hash,
           version,
           ...file,
-        })),
+        }))
       )
       .execute();
     return;
@@ -224,5 +284,137 @@ export class ProjectService {
       })
       .execute();
     return;
+  }
+
+  private async parseSourcemap(
+    sourcemapSrc,
+    line,
+    column
+  ): Promise<SourceCodeDto> {
+   try {
+    var rawSourceMap = await this.httpService.axiosRef.request({
+      url: sourcemapSrc,
+    });
+    if (!rawSourceMap || !rawSourceMap.data) {
+      return null;
+    }
+
+    var consumer = await new SourceMap.SourceMapConsumer(rawSourceMap.data);
+
+    var sm = consumer.originalPositionFor({
+      line,
+      column,
+    });
+    var sources = consumer.sources;
+
+    if(!sm.source){
+      return{
+        code: null,
+        line: null,
+        column: null,
+        sourceUrl: null,
+        name: null,
+      }
+    }
+
+    var smIndex = sources.indexOf(sm.source);
+
+    var smContent = consumer.sourcesContent[smIndex];
+
+    const rawLines = smContent.split(/\r?\n/g);
+
+    let code = '';
+    for(let i =-4;i<3;i++){
+      if(sm.line + i<0){
+        continue;
+      }
+      code+=`${rawLines[sm.line + i]}
+`
+    }
+
+
+    return {
+      code: code.replace(/([^\n]{0,1000}).*\n/g,'$1\n'), //省略过长code
+      line: sm.line,
+      column: sm.column,
+      sourceUrl: sm.source,
+      name: sm.name,
+    };
+   } catch (error) {
+     return null;
+   }
+  }
+
+
+  /**
+   *获取源码段
+   *
+   * cache = true 只在缓存中找
+   * 
+   * @param {*} stack
+   * @param {number} projectId
+   * @param {string} version
+   * @param {boolean} [cache=false]
+   * @returns {Promise<SourceCodeDto>}
+   * @memberof ProjectService
+   */
+  public async getSourceCode(
+    stack: any,
+    projectId: number,
+    version: string,
+    cache=false
+  ): Promise<SourceCodeDto> {
+    const client = this.redisService.getClient();
+    const fileName =
+      stack.url.match(/[^/]+\/?$/) && stack.url.match(/[^/]+\/?$/)[0];
+    const line = stack.line;
+    const column = stack.column;
+    const targetSrc = stack.url;
+    const cacheKey = `${projectId}-${fileName}-${line}-${column}-${version}`;
+    let sourceCode = await client.get(cacheKey);
+    let sourcemapSrc;
+
+    if (sourceCode) {
+      return JSON.parse(sourceCode);
+    }
+
+    if(cache){
+      return null;
+    }
+
+    let sourcemap = await this.sourcemapModel.findOne({
+      where: { fileName, projectId, hash: true },
+    });
+    if (!sourcemap) {
+      sourcemap = await this.sourcemapModel.findOne({
+        where: { fileName, projectId, version },
+      });
+    }
+
+    if (!sourcemap) {
+      const project = await this.projectModel.findOne({
+        where: { id: projectId },
+      });
+      if (project.sourcemapOnline) {
+        sourcemapSrc = targetSrc + '.map';
+      }
+    }
+
+    if (!sourcemapSrc) {
+      return null;
+    }
+    let result = await this.parseSourcemap(sourcemapSrc, line, column);
+
+
+    if(!sourcemap||result){
+      client.set(cacheKey, JSON.stringify(result),'EX', 3600*24*7).catch(e=>{
+        console.error(e)
+      });
+    }
+    if (!result) {
+      return null;
+    }
+
+    return result;
   }
 }

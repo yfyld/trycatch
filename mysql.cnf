@@ -28,6 +28,6 @@
 
 
 
-[mysqld]
+# [mysqld]
 
-default-time-zone = '+08:00'
+# default-time-zone = '+08:00'

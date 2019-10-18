@@ -13,6 +13,12 @@ import { Job } from 'bull';
 import { Injectable } from '@nestjs/common';
 import { RedisService } from 'nestjs-redis';
 
+
+interface IQueueUpdateErrorData{
+  data:any;
+  eventNum:number;
+}
+
 @Queue()
 @Injectable()
 export class ErrorQueue {
@@ -30,5 +36,18 @@ export class ErrorQueue {
       client.set(job.data.id, JSON.stringify(job.data.eventNum));
     }
     return true;
+  }
+
+  @QueueProcess({ name: 'updateError' })
+  async processUpdateError(job: Job<ErrorDto[]>) {
+    for(let ErrorDto of job.data){
+      await this.errorService.createError(ErrorDto);
+    }
+    return true;
+  }
+
+  @OnQueueEvent(BullQueueEvents.COMPLETED)
+  onCompleted(job: Job<ErrorModel>) {
+    job.remove();
   }
 }

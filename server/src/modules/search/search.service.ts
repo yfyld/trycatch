@@ -1,10 +1,11 @@
+import { ErrorDto } from './../error/error.dto';
 import { ProjectModel } from './../project/project.model';
 import { ChartService } from './../../providers/helper/helper.chart.service';
 import { STAT_USER_NUM_INTERVAL } from './../../app.config';
 import { ErrorModel } from './../error/error.model';
 import { InjectRepository } from '@nestjs/typeorm';
 import { InjectQueue } from 'nest-bull';
-import { ErrorService } from './../error/error.service';
+import { ProjectService } from './../project/project.service';
 import {
   AddLogDto,
   LogDto,
@@ -29,6 +30,7 @@ import {
 } from 'typeorm';
 import { eachDay, format, addMonths, addYears } from 'date-fns';
 import * as path from 'path';
+import { ILogJobData } from './search.queue';
 
 @Injectable()
 export class SearchService {
@@ -39,12 +41,13 @@ export class SearchService {
     @InjectRepository(ProjectModel)
     private readonly projectModel: Repository<ProjectModel>,
     private readonly ipService: IpService,
-    private readonly errorService: ErrorService,
+    private readonly projectService: ProjectService,
     private readonly uaService: UaService,
     private readonly chartService: ChartService,
     @InjectQueue()
     private readonly queue: Queue,
   ) {}
+
   private bulk(index: string, type: string, generic: any): any[] {
     const bulk = [];
     bulk.push({ index: { _index: index, _type: type } });
@@ -71,30 +74,32 @@ export class SearchService {
       body: 'any',
     });
   }
-
-  public createLogByQueue(response, { body, ip, headers, cookies }) {
+  /**
+   *添加处理日志队列
+   *
+   * @param {*} { body, ip, ua, uid }
+   * @returns
+   * @memberof SearchService
+   */
+  public dealLogByQueue({ body, ip, ua, uid }) {
     const data = JSON.parse(body); //JSON.parse(Buffer.from(body, 'base64').toString());
-    const uid = cookies.TRYCATCH_TOKEN || uuidv4();
-    response.cookie('TRYCATCH_TOKEN', uid, {
-      maxAge: 999999999999,
-      httpOnly: true,
-      path: '/',
-    });
-    this.queue.add('createLog', {
+    this.queue.add('dealLog', {
       body: data,
       ip: ip.replace(/[^.\d]/g, ''),
-      ua: headers['user-agent'],
+      ua,
       uid,
     });
-    return response.send('');
+    return;
   }
 
-  public async createLogIndex(
-    body: AddLogDto,
-    ip: string,
-    ua: string,
-    uid: string,
-  ) {
+  /**
+   *队列日志处理函数
+   *解析ip 和 ua
+   * @param {ILogJobData} { body, ip, ua, uid }
+   * @returns
+   * @memberof SearchService
+   */
+  public async dealLog({ body, ip, ua, uid }: ILogJobData) {
     const location = await this.ipService.query(ip);
     body.location = location;
     const uaDetail = this.uaService.parse(ua);
@@ -103,6 +108,44 @@ export class SearchService {
       ...body,
       uid,
     });
+    //this.queue.add('createLog', bulk);
+    this.saveLogToEs(bulk);
+    return bulk;
+  }
+
+  private getErrors(bulks:LogDto[]):ErrorDto[]{
+    const errorMap:{[prop:string]:{data:LogDto,num:number}} = this.bulks.reduce((total, item) => {
+      if (item.data) {
+        if (total[item.data.errorId]) {
+          total[item.data.errorId].num++;
+        } else {
+          total[item.data.errorId] = { data: item, num: 1 };
+        }
+      }
+      return total;
+    }, {});
+    const result:ErrorDto[]=Object.values(errorMap).map(item=>({
+      id:item.data.data.errorId,
+      project:{id:item.data.info.projectId},
+      ...item.data.data,
+      eventNum:item.num
+    }))
+    return result
+  }
+  private time = Date.now();
+  private bulks:LogDto[] = [];
+  private saveLogToEs(bulk: LogDto[]) {
+    this.bulks = this.bulks.concat(bulk);
+    if (this.time < Date.now() - 10 * 1000 || this.bulks.length > 10) {
+      this.time = Date.now();
+      const errorDatas = this.getErrors(this.bulks)
+      this.queue.add('updateError', errorDatas);
+      this.createLogIndex(this.bulks);
+      this.bulks = [];
+    }
+  }
+
+  public async createLogIndex(bulk: LogDto[]) {
     return await this.elasticsearchService.getClient().bulk({
       body: bulk,
     });
@@ -142,7 +185,7 @@ export class SearchService {
       if (!!sameStack[key]) {
         source = sameStack[key];
       } else {
-        source = await this.errorService.getSourceCode(
+        source = await this.projectService.getSourceCode(
           item.data.stack[0],
           item.info.projectId,
           item.info.version,

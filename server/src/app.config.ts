@@ -30,9 +30,9 @@ export const ALARMCONFIG = {
   alarmWithlevelType: [1, 10, 100],
 };
 
-export const STAT_USER_NUM_INTERVAL = 60000;
-export const ALARM_INTERVAL = 60000;
-export const GENERATE_IMG_CRON = '0 0 03 * *';
+export const STAT_USER_NUM_INTERVAL = 30000;
+export const ALARM_INTERVAL = 30000;
+export const GENERATE_IMG_CRON = '0 0 11 * *';
 
 export const BASE_URL = {
   webUrl: 'http://127.0.0.1:5000',
@@ -65,6 +65,6 @@ export const REDIS = {
 };
 
 export const ES_CONFIG = {
-  host: 'trycatch.yfyld.com:9006',
+  host: '127.0.0.1:9600',
   log: 'trace',
 };

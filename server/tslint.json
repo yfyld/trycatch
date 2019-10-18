@@ -12,7 +12,17 @@
     "interface-name": [false],
     "arrow-parens": false,
     "max-classes-per-file": false,
-    "object-literal-sort-keys": false
+    "object-literal-sort-keys": false,
+    "trailing-comma": [
+      false,
+      {
+        "multiline": {
+          "objects": "always",
+          "arrays": "never"
+        },
+        "esSpecCompliant": true
+      }
+    ]
   },
   "rulesDirectory": []
 }

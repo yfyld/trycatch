@@ -1,5 +1,6 @@
+import { RedisModule } from './../../providers/redis/redis.module';
 import { RoleModel } from './../user/user.model';
-import { Module } from '@nestjs/common';
+import { Module, HttpModule } from '@nestjs/common';
 import { ProjectController } from './project.controller';
 import { ProjectService } from './project.service';
 import { ProjectModel, SourcemapModel, MemberModel } from './project.model';
@@ -14,11 +15,13 @@ import { UserModel } from '../user/user.model';
       UserModel,
       RoleModel,
       SourcemapModel,
-      MemberModel,
+      MemberModel
     ]),
+    HttpModule,
+    RedisModule
   ],
   providers: [ProjectService],
   controllers: [ProjectController],
-  exports: [ProjectService],
+  exports: [ProjectService]
 })
 export class ProjectModule {}

@@ -91,16 +91,5 @@ export class ErrorController {
     return this.errorService.updateError(body);
   }
 
-  @Post('/clear/bull')
-  test(): Promise<any> {
-    return this.errorService.getSourceCode(
-      {
-        url: 'http://zyyh.91jkys.com/assets/js/vendor.baca39463fd704390477.js',
-        line: 1,
-        column: 200,
-      },
-      19,
-      null,
-    );
-  }
+
 }

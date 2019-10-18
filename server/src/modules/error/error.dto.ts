@@ -3,30 +3,21 @@ import { ApiModelProperty } from '@nestjs/swagger';
 import { ProjectModel } from '../project/project.model';
 
 export class ErrorDto {
-  @ApiModelProperty()
   @IsDefined()
   @IsNotEmpty({ message: '项目名称不能为空' })
   name: string;
-  @ApiModelProperty()
   id: string;
-  @ApiModelProperty()
   type: string;
-  @ApiModelProperty()
   level: number;
-  @ApiModelProperty()
   status: number;
-  @ApiModelProperty()
   message: string;
-  @ApiModelProperty()
   url: string;
-  @ApiModelProperty()
   version?: string;
-  @ApiModelProperty()
+  eventNum:number;
   project: ProjectModel | { id: number };
 }
 
 export class QueryErrorListDto {
-  @ApiModelProperty()
   @IsDefined()
   @IsNotEmpty({ message: '项目名称不能为空' })
   projectId: string;

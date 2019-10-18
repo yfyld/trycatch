@@ -1,5 +1,5 @@
 import { connect as connectComponent } from 'react-redux'
-import createHistory from 'history/createBrowserHistory'
+import {createBrowserHistory as createHistory} from 'history'
 import { matchPath } from 'react-router-dom'
 import { StoreState, Action } from '@/types'
 
