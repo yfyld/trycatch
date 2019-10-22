@@ -1,19 +1,24 @@
 import { getType } from 'typesafe-actions'
 import update from 'immutability-helper'
 import * as actions from '../actions'
-import { Action,UserInfo, User, Project } from '@/types'
+import { IAction,IUser, IProject } from '@/types'
+import { IUserInfo } from "@/api"
 
 export interface AppState {
   loading: boolean
-  userInfo: UserInfo,
-  userList: User[],
+  userInfo: IUserInfo,
+  userList: IUser[],
   isLogin: boolean,
-  projectList: Project[]
+  projectList: IProject[]
 }
 
 const initialState=():AppState => ({
   loading: false,
-  userInfo: {},
+  userInfo: {
+    nickname:'',
+    id:null,
+    username:''
+  },
   userList: [],
   isLogin: false,
   projectList: []
@@ -21,7 +26,7 @@ const initialState=():AppState => ({
 
 export const appReducer = (
   state: AppState = initialState(),
-  action: Action
+  action: IAction
 ): AppState => {
   switch (action.type) {
     case getType(actions.doLoginSuccess):

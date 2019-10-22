@@ -4,7 +4,7 @@ import { bindActionCreators, Dispatch } from 'redux'
 import { Modal, Form, Select } from 'antd'
 import { WrappedFormUtils } from 'antd/lib/form/Form'
 import findIndex from 'lodash/findIndex'
-import { StoreState, User, Member, Action } from '@/types'
+import { IStoreState, IUser, IMember, IAction } from '@/types'
 import * as actions from '@/store/actions'
 
 const FormItem = Form.Item
@@ -12,8 +12,8 @@ const Option = Select.Option
 
 interface Props {
   visible: boolean
-  userList: User[]
-  memberList: Member[]
+  userList: IUser[]
+  memberList: IMember[]
   doCancel: () => {}
   form: WrappedFormUtils
   doSubmit: (form: WrappedFormUtils) => {}
@@ -30,7 +30,7 @@ function ProjectMemberAdd({ visible, userList, memberList, doCancel, doSubmit, f
           })(
             <Select mode="multiple" placeholder="请选择" showSearch>
               {userList
-                .filter((item: User) => findIndex(memberList, (member: Member) => member.id === item.id) === -1)
+                .filter((item: IUser) => findIndex(memberList, (member: IMember) => member.id === item.id) === -1)
                 .map(item => (
                   <Option key={item.id + ''} value={item.id}>
                     {item.nickname || item.username}
@@ -44,7 +44,7 @@ function ProjectMemberAdd({ visible, userList, memberList, doCancel, doSubmit, f
   )
 }
 
-const mapStateToProps = (state: StoreState) => {
+const mapStateToProps = (state: IStoreState) => {
   return {
     visible: state.project.projectMemberAddVisible,
     userList: state.app.userList,
@@ -52,7 +52,7 @@ const mapStateToProps = (state: StoreState) => {
   }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) =>
+const mapDispatchToProps = (dispatch: Dispatch<IAction>) =>
   bindActionCreators(
     {
       doCancel: () => actions.doAddProjectMemberToggle(false),

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {DatePicker,Tag,Button} from 'antd'
 import * as moment from "moment";
-import { ErrorSearchParams,StoreState } from '@/types'
+import { IErrorSearchParams,IStoreState } from '@/types'
 import {connect} from 'react-redux'
 import {ERROR_STATUS,ERROR_TYPE,ERROR_LEVEL} from "@/constants"
 import { findOne } from "@/utils";
@@ -11,8 +11,8 @@ const dateFormat='YYYY/MM/DD';
 const ButtonGroup=Button.Group
 
 interface Props{
-    doGetErrorAllData: (params:ErrorSearchParams) => any
-    errorSearchParams:ErrorSearchParams
+    doGetErrorAllData: (params:IErrorSearchParams) => any
+    errorSearchParams:IErrorSearchParams
     dashboard?:boolean
 }
 
@@ -59,7 +59,7 @@ const FilterBar =({dashboard=true,doGetErrorAllData,errorSearchParams}:Props)=>{
 
 
 
-const mapStateToprops = (state: StoreState) => {
+const mapStateToprops = (state: IStoreState) => {
     return {
         errorSearchParams:state.work.errorSearchParams
     }

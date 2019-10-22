@@ -1,7 +1,7 @@
 import { connect as connectComponent } from 'react-redux'
 import {createBrowserHistory as createHistory} from 'history'
 import { matchPath } from 'react-router-dom'
-import { StoreState, Action } from '@/types'
+import { IStoreState, IAction } from '@/types'
 
 export const connect = (mapStateToProps?: any, actions?: any) => {
   return (target: any) => connectComponent(mapStateToProps, actions)(target) as any
@@ -12,8 +12,8 @@ export const history = createHistory()
 export const mapLocationIntoActions = (
   { pathname, search }: any,
   handlers: any,
-  state: StoreState
-): [{ action: [Action] | Action; isExist: boolean }] =>
+  state: IStoreState
+): [{ action: [IAction] | IAction; isExist: boolean }] =>
   (Object as any)
     .entries(handlers)
     .map(([expectedPath, handler]) => {

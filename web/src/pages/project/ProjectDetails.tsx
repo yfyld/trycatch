@@ -4,7 +4,7 @@ import { WrappedFormUtils } from 'antd/lib/form/Form';
 import { connect } from "react-redux"
 import * as actions from '@/store/actions'
 import { bindActionCreators, Dispatch } from 'redux'
-import { Action, StoreState } from '@/types'
+import { IAction, IStoreState } from '@/types'
 import ProjectMember from './components/ProjectMember';
 import ProjectInfo from './components/ProjectInfo';
 import Sourcemap from './components/Sourcemap';
@@ -49,7 +49,7 @@ function ProjectDetails({ doProjectMembers, projectId, tabs }: Props) {
 }
 
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => bindActionCreators({
+const mapDispatchToProps = (dispatch: Dispatch<IAction>) => bindActionCreators({
 	doSubmit: (e: React.FormEvent, form: WrappedFormUtils) => {
 		e.preventDefault();
 		return actions.doUpdateProjectDetailsRequest(form)
@@ -59,7 +59,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => bindActionCreators({
 }, dispatch)
 
 
-const mapStateToProps = (state: StoreState) => {
+const mapStateToProps = (state: IStoreState) => {
 	const { projectId, projectDetail } = state.project;
 	return {
 

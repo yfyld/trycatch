@@ -1,7 +1,8 @@
+import { ISourceCode } from './../../interfaces/common.interface';
 import { ParseIntPipe } from './../../pipes/parse-int.pipe';
 import { QueryListQuery } from '@/interfaces/request.interface';
 import { QueryList } from './../../decotators/query-list.decorators';
-import { PageQuery, PageData } from './../../interfaces/request.interface';
+import { PageQuery, IPageData } from './../../interfaces/request.interface';
 import {
   Controller,
   Get,
@@ -17,7 +18,7 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
 } from '@nestjs/common';
-import { ProjectModel } from './project.model';
+import { ProjectModel, SourcemapModel } from './project.model';
 import { ProjectService } from './project.service';
 import { HttpProcessor } from '@/decotators/http.decotator';
 import { JwtAuthGuard } from '@/guards/auth.guard';
@@ -40,6 +41,8 @@ import {
   AddProjectResDto,
   AddSourcemapsDto,
   ActionSourcemapsDto,
+  ParseSourcemapDto,
+  QuerySourcemapsDto,
 } from './project.dto';
 import { Auth } from '@/decotators/user.decorators';
 import { UserModel } from '@/modules/user/user.model';
@@ -103,7 +106,7 @@ export class ProjectController {
   @Get('/')
   getProjects(
     @QueryList() query: QueryListQuery<QueryProjectsDto>,
-  ): Promise<PageData<ProjectModel>> {
+  ): Promise<IPageData<ProjectModel>> {
     return this.projectService.getProjects(query);
   }
 
@@ -112,7 +115,7 @@ export class ProjectController {
   @HttpProcessor.handle('获取所有相关项目')
   // @UseGuards(JwtAuthGuard)
   @Get('/all')
-  getMyProjects(@Auth() user: UserModel): Promise<PageData<ProjectModel>> {
+  getMyProjects(@Auth() user: UserModel): Promise<IPageData<ProjectModel>> {
     return this.projectService.getMyProjects(user);
   }
 
@@ -139,6 +142,19 @@ export class ProjectController {
     return this.projectService.updateMember(body);
   }
 
+
+  @ApiOperation({ title: '获取sourcemap列表', description: '' })
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, type: SourcemapModel })
+  @HttpProcessor.handle('获取sourcemap列表')
+  @Get('/sourcemap')
+  @UseGuards(JwtAuthGuard)
+  getSourcemaps(
+    @QueryList() query: QueryListQuery<QuerySourcemapsDto>,
+  ): Promise<IPageData<SourcemapModel>> {
+    return this.projectService.getSourcemaps(query);
+  }
+
   @ApiOperation({ title: '添加sourcemap', description: '' })
   @Post('/sourcemap')
   @HttpProcessor.handle({ message: '添加sourcemap' })
@@ -157,5 +173,14 @@ export class ProjectController {
     } else {
       return this.projectService.updateSourcemap(body);
     }
+  }
+
+
+  @ApiOperation({ title: '解析sourcemap', description: '' })
+  @Post('/parse-sourcemap')
+  @HttpProcessor.handle({ message: '解析sourcemap' })
+  @UseGuards(JwtAuthGuard)
+  parseSourcemap(@Body() {projectId,stack,version}: ParseSourcemapDto): Promise<ISourceCode> {
+    return this.projectService.getSourceCode(stack,projectId,version);
   }
 }

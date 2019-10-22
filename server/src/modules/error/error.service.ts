@@ -4,7 +4,7 @@ import { SourcemapModel, ProjectModel } from './../project/project.model';
 import {
   QueryErrorListDto,
   ErrorDto,
-  SourceCodeDto,
+
   UpdateErrorDto,
 } from './error.dto';
 import { HttpBadRequestError } from '../../errors/bad-request.error';
@@ -14,7 +14,7 @@ import { Repository, In, LessThan, MoreThan, Between } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { UserModel } from '@/modules/user/user.model';
-import { QueryListQuery, PageData } from '@/interfaces/request.interface';
+import { QueryListQuery, IPageData } from '@/interfaces/request.interface';
 
 import { RedisService } from 'nestjs-redis';
 import { Queue } from 'bull';
@@ -68,7 +68,7 @@ export class ErrorService {
 
   public async getErrors(
     query: QueryListQuery<QueryErrorListDto>,
-  ): Promise<PageData<ErrorModel>> {
+  ): Promise<IPageData<ErrorModel>> {
     const { endDate, startDate, guarderId, projectId, ...querys } = query.query;
     const searchBody = {
       skip: query.skip,

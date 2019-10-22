@@ -86,10 +86,7 @@ instance.interceptors.response.use(
       Loading.remove()
     }
     if (response.data.status === 200 || response.data.status === 404) {
-      response.data = {
-        result: response.data.result,
-        message: response.data.message
-      }
+      response.data = response.data.result
     } else {
       return Promise.reject({ message: response.data.message || '操作失败' })
     }

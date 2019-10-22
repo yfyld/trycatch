@@ -5,18 +5,18 @@ import { mergeMap, map, filter, catchError, tap } from 'rxjs/operators'
 import { bindNodeCallback, of } from 'rxjs'
 import { StoreState } from '@/store/reducers'
 import { isActionOf } from 'typesafe-actions'
-import { Action, ActionAny, ProjectListItem, PageData, ResponseOk, ProjectInfo, Project, Member } from '@/types'
+import { IAction, IActionAny,  IPageData, IProjectInfo, IProject, IMember } from '@/types'
 import * as Api from '@/api'
 import { push } from 'connected-react-router'
 import { AxiosResponse } from 'axios'
-import { SourcemapAdd } from '@/api'
+import { ISourcemapAdd,IProjectListItem } from '@/api'
 
-const getProjectList: Epic<Action, Action, StoreState> = action$ =>
+const getProjectList: Epic<IAction, IAction, StoreState> = action$ =>
   action$.pipe(
     filter(isActionOf(actions.doGetProjectListRequest)),
     mergeMap(({ payload: { page, pageSize, data = {}}}) =>
       Api.fetchProjectList({page, pageSize, ...data}).pipe(
-        map(({ data: { result: { list = [], totalCount = 0 } } }: AxiosResponse<ResponseOk<PageData<ProjectListItem>>>) =>
+        map(({ data:  { list = [], totalCount = 0 }  }: AxiosResponse<IPageData<IProjectListItem>>) =>
           actions.doGetProjectListSuccess({ list, totalCount, page, pageSize })
         ),
         catchError(error => {
@@ -27,13 +27,13 @@ const getProjectList: Epic<Action, Action, StoreState> = action$ =>
     )
   )
 
-const getProjectDetail: Epic<Action, Action, StoreState> = action$ =>
+const getProjectDetail: Epic<IAction, IAction, StoreState> = action$ =>
   action$.pipe(
     filter(isActionOf(actions.doGetProjectDetailsRequest)),
     mergeMap(action =>
       Api.fetchProjectInfo(action.payload).pipe(
         // map(actions.doGetProjectDetailsSuccess),
-        map(({ data: { result = {} } }: AxiosResponse<ResponseOk<ProjectInfo>>) => actions.doGetProjectDetailsSuccess(result)),
+        map(({ data }: AxiosResponse<IProjectInfo>) => actions.doGetProjectDetailsSuccess(data)),
         catchError(() => {
           return of(actions.doGetProjectDetailsFailure())
         })
@@ -41,12 +41,12 @@ const getProjectDetail: Epic<Action, Action, StoreState> = action$ =>
     )
   )
 
-const getProjectMembers: Epic<Action, Action, StoreState> = action$ =>
+const getProjectMembers: Epic<IAction, IAction, StoreState> = action$ =>
   action$.pipe(
     filter(isActionOf(actions.doGetProjectMembersRequest)),
     mergeMap(action =>
       Api.fetchProjectMembers(action.payload).pipe(
-        map(({ data: { result: { list = [], totalCount = 0 } } }: AxiosResponse<ResponseOk<PageData<Member>>>) =>
+        map(({ data: { list = [], totalCount = 0  } }: AxiosResponse<IPageData<IMember>>) =>
           actions.doGetProjectMembersSuccess({ list, totalCount })
         ),
         catchError(() => {
@@ -56,7 +56,7 @@ const getProjectMembers: Epic<Action, Action, StoreState> = action$ =>
     )
   )
 
-const updateProjectDetails: Epic<Action, Action, StoreState> = (action$, state$) =>
+const updateProjectDetails: Epic<IAction, IAction, StoreState> = (action$, state$) =>
   action$.pipe(
     filter(isActionOf(actions.doUpdateProjectDetailsRequest)),
     mergeMap(action =>
@@ -78,7 +78,7 @@ const updateProjectDetails: Epic<Action, Action, StoreState> = (action$, state$)
     )
   )
 
-const addProject: Epic<ActionAny, ActionAny, StoreState> = (action$, state$) =>
+const addProject: Epic<IActionAny, IActionAny, StoreState> = (action$, state$) =>
   action$.pipe(
     filter(isActionOf(actions.doAddProjectRequest)),
     mergeMap(action =>
@@ -88,8 +88,8 @@ const addProject: Epic<ActionAny, ActionAny, StoreState> = (action$, state$) =>
             tap(() => {
               message.success('提交成功')
             }),
-            mergeMap(({ data: { result } }: AxiosResponse<ResponseOk<Project>>) => {
-              return [actions.doAddProjectSuccess(), push(`/project/${result.id}`)]
+            mergeMap(({ data }: AxiosResponse<IProject>) => {
+              return [actions.doAddProjectSuccess(), push(`/project/${data.id}`)]
             })
           )
         ),
@@ -108,7 +108,7 @@ const addProject: Epic<ActionAny, ActionAny, StoreState> = (action$, state$) =>
 //       map(() => actions.doGetUserListRequest())
 //     )
 
-const addProjectMember: Epic<Action, Action, StoreState> = (action$, state$) =>
+const addProjectMember: Epic<IAction, IAction, StoreState> = (action$, state$) =>
   action$.pipe(
     filter(isActionOf(actions.doAddProjectMemberRequest)),
     mergeMap(action =>
@@ -135,7 +135,7 @@ const addProjectMember: Epic<Action, Action, StoreState> = (action$, state$) =>
     )
   )
 
-const deleteProjectMember: Epic<Action, Action, StoreState> = (action$, state$) =>
+const deleteProjectMember: Epic<IAction, IAction, StoreState> = (action$, state$) =>
   action$.pipe(
     filter(isActionOf(actions.doDeleteProjectMemberRequest)),
     mergeMap(action =>
@@ -153,7 +153,7 @@ const deleteProjectMember: Epic<Action, Action, StoreState> = (action$, state$) 
     catchError(error => of(actions.doDeleteProjectMemberFailure()))
   )
 
-const updateProjectMember: Epic<Action, Action, StoreState> = (action$, state$) =>
+const updateProjectMember: Epic<IAction, IAction, StoreState> = (action$, state$) =>
   action$.pipe(
     filter(isActionOf(actions.doUpdateProjectMemberRequest)),
     mergeMap(action =>
@@ -171,11 +171,27 @@ const updateProjectMember: Epic<Action, Action, StoreState> = (action$, state$) 
     catchError(error => of(actions.doUpdateProjectMemberFailure()))
   )
 
-const addSourcemap: Epic<Action, Action, StoreState> = (action$, state$) =>
+
+const getProjectSourcemapList: Epic<IAction, IAction, StoreState> = action$ =>
+  action$.pipe(
+    filter(isActionOf(actions.doGetSourcemapListRequest)),
+    mergeMap(action =>
+      Api.fetchSourcemapList(action.payload).pipe(
+        map(({data}) =>
+          actions.doGetSourcemapListSuccess(data)
+        ),
+        catchError(() => {
+          return of(actions.doGetSourcemapListFailure())
+        })
+      )
+    )
+  )
+
+const addSourcemap: Epic<IAction, IAction, StoreState> = (action$, state$) =>
   action$.pipe(
     filter(isActionOf(actions.doAddSourcemapRequest)),
     mergeMap(action =>
-      bindNodeCallback<SourcemapAdd>(action.payload.validateFields)().pipe(
+      bindNodeCallback<ISourcemapAdd>(action.payload.validateFields)().pipe(
         mergeMap(params => {
           const data: any = {
             hash: params.hash,
@@ -204,7 +220,7 @@ const addSourcemap: Epic<Action, Action, StoreState> = (action$, state$) =>
     )
   )
 
-const operateSourcemap: Epic<Action, Action, StoreState> = (action$, state$) =>
+const operateSourcemap: Epic<IAction, IAction, StoreState> = (action$, state$) =>
   action$.pipe(
     filter(isActionOf(actions.doOperateSourcemapRequest)),
     mergeMap(action =>
@@ -224,7 +240,7 @@ const operateSourcemap: Epic<Action, Action, StoreState> = (action$, state$) =>
     })
   )
 
-const deleteProject: Epic<Action, Action, StoreState> = action$ =>
+const deleteProject: Epic<IAction, IAction, StoreState> = action$ =>
   action$.pipe(
     filter(isActionOf(actions.doDeleteProjectRequest)),
     mergeMap(action =>
@@ -244,6 +260,7 @@ export default [
   getProjectDetail,
   addProject,
   getProjectMembers,
+  getProjectSourcemapList,
   // addProjectMemberToggle,
   addProjectMember,
   deleteProjectMember,

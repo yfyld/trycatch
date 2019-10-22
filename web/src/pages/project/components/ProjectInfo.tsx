@@ -1,20 +1,20 @@
 import * as React from 'react'
-import { Form, Input, Button, Select } from 'antd'
+import { Form, Input, Button, Select, Switch } from 'antd'
 import { WrappedFormUtils, FormComponentProps } from 'antd/lib/form/Form'
 import { connect } from 'react-redux'
 import * as actions from '@/store/actions'
 import { bindActionCreators, Dispatch } from 'redux'
-import { Action, ProjectInfo, StoreState, Member } from '@/types'
-
+import { IAction, IStoreState } from '@/types'
+import {  IProjectInfo, IMember } from '@/api'
 const FormItem = Form.Item
 const Option = Select.Option
 
 interface Props extends FormComponentProps {
   doSubmit: (e: React.FormEvent, form: WrappedFormUtils) => {}
-  projectInfo: ProjectInfo
+  projectInfo: IProjectInfo
   className?: string
   // userList: User[],
-  projectMembers: Member[]
+  projectMembers: IMember[]
 }
 
 function ProjectInfo({ className, form, doSubmit, projectInfo, projectMembers }: Props) {
@@ -28,7 +28,8 @@ function ProjectInfo({ className, form, doSubmit, projectInfo, projectMembers }:
         version: projectInfo.version,
         description: projectInfo.description,
         alarmType: projectInfo.alarmType,
-        alarmHookUrl: projectInfo.alarmHookUrl
+        alarmHookUrl: projectInfo.alarmHookUrl,
+        sourcemapOnline: projectInfo.sourcemapOnline
       })
     }
   }, [projectInfo.id])
@@ -63,7 +64,7 @@ function ProjectInfo({ className, form, doSubmit, projectInfo, projectMembers }:
           ]
         })(
           <Select placeholder="请选择" showSearch>
-            {projectMembers.map((item: Member) => (
+            {projectMembers.map((item: IMember) => (
               <Option key={item.id + ''} value={item.id}>
                 {item.nickname || item.username}
               </Option>
@@ -100,6 +101,11 @@ function ProjectInfo({ className, form, doSubmit, projectInfo, projectMembers }:
       <FormItem label="预警地址" {...formItemLayout}>
         {getFieldDecorator('alarmHookUrl')(<Input placeholder="请输入" />)}
       </FormItem>
+
+      <FormItem label="生产模式使用sourcemap" {...formItemLayout}>
+        {getFieldDecorator('sourcemapOnline', { valuePropName: 'checked' })(<Switch />)}
+      </FormItem>
+
       <FormItem label="项目描述" {...formItemLayout}>
         {getFieldDecorator('description')(<Input.TextArea placeholder="请输入" />)}
       </FormItem>
@@ -112,7 +118,7 @@ function ProjectInfo({ className, form, doSubmit, projectInfo, projectMembers }:
   )
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) =>
+const mapDispatchToProps = (dispatch: Dispatch<IAction>) =>
   bindActionCreators(
     {
       doSubmit: (e: React.FormEvent, form: WrappedFormUtils) => {
@@ -123,7 +129,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) =>
     dispatch
   )
 
-const mapStateToProps = (state: StoreState) => {
+const mapStateToProps = (state: IStoreState) => {
   // const { userList } = state.app;
   const { projectInfo, projectMembers } = state.project
   return {

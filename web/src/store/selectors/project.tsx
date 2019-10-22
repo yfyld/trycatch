@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
-import {StoreState} from "@/types"
+import {IStoreState} from "@/types"
 
-const projectMembersSelector=(state:StoreState)=>state.project.projectMembers
+const projectMembersSelector=(state:IStoreState)=>state.project.projectMembers
 export const projectMembersMapSelector=createSelector(
   projectMembersSelector,
   items=>items.reduce((total,item)=>{total[item.id]=item;return total;},{})

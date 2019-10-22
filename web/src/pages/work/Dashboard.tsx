@@ -10,7 +10,7 @@ import { parseDate ,findOne} from '@/utils'
 import { bindActionCreators } from 'redux'
 import { StoreState } from '@/store/reducers'
 import { Dispatch } from 'redux'
-import { Action, ErrorSearchParams, Order,ErrorChangeParams ,ErrorListData,Member} from '@/types'
+import { IAction, IErrorSearchParams, IOrder,IErrorChangeParams ,IErrorListData,IMember} from '@/types'
 import { Link } from 'react-router-dom';
 import * as moment from "moment";
 import {ERROR_STATUS,ERROR_TYPE,ERROR_LEVEL} from "@/constants"
@@ -23,31 +23,31 @@ interface ChartData{
 }
  
 interface Props {
-  doGetErrorAllData: (params:ErrorSearchParams) => any
+  doGetErrorAllData: (params:IErrorSearchParams) => any
   errorListLoading: boolean,
   errorChartData:ChartData[],
-  errorListData:ErrorListData,
+  errorListData:IErrorListData,
   rowSelectionKeys:number[],
   projectId:number,
-  projectMembers:Member[]
-  projectMembersMap:{[props:number]:Member}
-  doErrorListSelectionChange:(params:number[])=>Action,
-  doErrorChange:(params:ErrorChangeParams)=>Action,
-  errorSearchParams:ErrorSearchParams
+  projectMembers:IMember[]
+  projectMembersMap:{[props:number]:IMember}
+  doErrorListSelectionChange:(params:number[])=>IAction,
+  doErrorChange:(params:IErrorChangeParams)=>IAction,
+  errorSearchParams:IErrorSearchParams
 }
 
 interface TableSearchParams {
   pagination: { current: number; pageSize: number }
   filters: { type: string; status: string[] }
-  sorter: { field: string; order: Order }
+  sorter: { field: string; order: IOrder }
 }
 
 const mapTableSearchParamsToParam = ({
   pagination,
   filters,
   sorter
-}: TableSearchParams): ErrorSearchParams => {
-  const params: ErrorSearchParams = {
+}: TableSearchParams): IErrorSearchParams => {
+  const params: IErrorSearchParams = {
     page: pagination.current,
     pageSize: pagination.pageSize,
     status:null,
@@ -253,7 +253,7 @@ const Dashboard = ({errorSearchParams,projectMembers,projectMembersMap,projectId
 
 
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<IAction>) => ({
   ...bindActionCreators(
     {
       doGetErrorAllData: (params) => {

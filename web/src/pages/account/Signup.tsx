@@ -8,7 +8,7 @@ import * as actions from '@/store/actions'
 import LoginLayout from '@/components/LoginLayout'
 import {Link} from "react-router-dom";
 import style from "./Account.less"
-import {Action} from "@/types"
+import {IAction} from "@/types"
 interface Props {
   form:WrappedFormUtils,
   doSubmit:(e:React.FormEvent,form:WrappedFormUtils)=>{}
@@ -81,7 +81,7 @@ const Signup=({form,doSubmit}:Props)=>{
   )
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>)=>bindActionCreators({
+const mapDispatchToProps = (dispatch: Dispatch<IAction>)=>bindActionCreators({
   doSubmit:(e:React.FormEvent,form:WrappedFormUtils)=>{
     e.preventDefault();
     return actions.doSignupRequest(form)

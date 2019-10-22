@@ -2,7 +2,7 @@ import { ChartService } from './../../providers/helper/helper.chart.service';
 import { ParsePageQueryIntPipe } from './../../pipes/parse-page-query-int.pipe';
 import { ParseIntPipe } from './../../pipes/parse-int.pipe';
 import { Cookie } from './../../decotators/cookie.decorators';
-import { PageData } from './../../interfaces/request.interface';
+import { IPageData } from './../../interfaces/request.interface';
 import { SearchService } from './search.service';
 import { Controller, Get, Post, Query, Req, Param, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
@@ -94,7 +94,7 @@ export class SearchController {
   public async getErrorLogList(
     @QueryList(new ParsePageQueryIntPipe(['projectId']))
     query: QueryListQuery<QueryLogListDto>,
-  ): Promise<PageData<LogListDto>> {
+  ): Promise<IPageData<LogListDto>> {
     return this.searchService.getLogList(query);
   }
 

@@ -16,7 +16,8 @@ import { of, bindNodeCallback } from 'rxjs'
 import { StoreState } from '@/store/reducers'
 import { isActionOf } from 'typesafe-actions'
 import * as Api from '@/api'
-import { ActionAny, Action, ResponseOk, PageData, User, UserInfo, Project } from '@/types'
+import { IActionAny, IAction, IPageData, IUser, IProject } from '@/types'
+import { IUserInfo } from "@/api"
 import { push } from 'connected-react-router'
 import { message } from 'antd'
 import { mapLocationIntoActions } from '@/utils'
@@ -24,7 +25,7 @@ import handles from '@/store/handles'
 import { AxiosResponse } from 'axios';
 import instance from '@/api/http';
 
-const triggerFetchOnLocationChange: Epic<Action, Action, StoreState> = (
+const triggerFetchOnLocationChange: Epic<IAction, IAction, StoreState> = (
   action$,
   state$
 ) =>
@@ -48,14 +49,14 @@ const triggerFetchOnLocationChange: Epic<Action, Action, StoreState> = (
     )
   )
 
-const login: Epic<ActionAny, ActionAny, StoreState> = action$ =>
+const login: Epic<IActionAny, IActionAny, StoreState> = action$ =>
   action$.pipe(
     filter(isActionOf(actions.doLoginRequest)),
     mergeMap(action =>
       bindNodeCallback(action.payload.validateFields)().pipe(
         mergeMap(params =>
           Api.fetchLogin(params).pipe(
-            tap(({data: { result: { accessToken }}}: AxiosResponse<ResponseOk<{accessToken: string}>>) => {
+            tap(({data: { accessToken }}: AxiosResponse<{accessToken: string}>) => {
               instance.defaults.headers.Authorization = 'Bearer ' + accessToken;
               localStorage.setItem('accessToken', accessToken);
               message.success('登录成功')
@@ -73,7 +74,7 @@ const login: Epic<ActionAny, ActionAny, StoreState> = action$ =>
     )
   )
 
-const logout: Epic<ActionAny, ActionAny, StoreState> = action$ =>
+const logout: Epic<IActionAny, IActionAny, StoreState> = action$ =>
   action$.pipe(
     filter(isActionOf(actions.doLogoutRequest)),
     mergeMap(action =>
@@ -93,7 +94,7 @@ const logout: Epic<ActionAny, ActionAny, StoreState> = action$ =>
     )
   )
 
-const signup: Epic<ActionAny, ActionAny, StoreState> = action$ =>
+const signup: Epic<IActionAny, IActionAny, StoreState> = action$ =>
   action$.pipe(
     filter(isActionOf(actions.doSignupRequest)),
     mergeMap(action =>
@@ -116,12 +117,12 @@ const signup: Epic<ActionAny, ActionAny, StoreState> = action$ =>
     )
   )
 
-const getUserInfo: Epic<ActionAny, ActionAny, StoreState> = action$ =>
+const getUserInfo: Epic<IActionAny, IActionAny, StoreState> = action$ =>
   action$.pipe(
     filter(isActionOf(actions.doGetUserInfoRequest)),
     mergeMap(() =>
       Api.fetchUserInfo().pipe(
-        map(({data: { result}}: AxiosResponse<ResponseOk<UserInfo>>) => actions.doGetUserInfoSuccess(result)),
+        map(({data }: AxiosResponse<IUserInfo>) => actions.doGetUserInfoSuccess(data)),
         catchError(error => {
           return of(actions.doGetUserInfoFailure())
         })
@@ -130,21 +131,21 @@ const getUserInfo: Epic<ActionAny, ActionAny, StoreState> = action$ =>
   )
 
 
-const getUserList: Epic<Action, Action, StoreState> = action$ => 
+const getUserList: Epic<IAction, IAction, StoreState> = action$ => 
   action$.pipe(
     filter(isActionOf(actions.doGetUserListRequest)),
     mergeMap(() => Api.fetchUserList().pipe(
-      map(({ data: { result: { list = [], totalCount = 0}}}: AxiosResponse<ResponseOk<PageData<User>>>) => actions.doGetUserListSuccess({list, totalCount})),
+      map(({ data}: AxiosResponse<IPageData<IUser>>) => actions.doGetUserListSuccess(data)),
       catchError(error => of(actions.doGetUserListFailure()))
     ))
   )
 
 
-const getProjectAllList: Epic<Action, Action, StoreState> = action$ => 
+const getProjectAllList: Epic<IAction, IAction, StoreState> = action$ => 
       action$.pipe(
         filter(isActionOf(actions.doGetProjectAllListRequest)),
         mergeMap(() => Api.fetchProjectAllList().pipe(
-          map(({data: { result: { list = [], totalCount = 0 }}}: AxiosResponse<ResponseOk<PageData<Project>>>) => actions.doGetProjectAllListSuccess({list, totalCount})),
+          map(({data}: AxiosResponse<IPageData<IProject>>) => actions.doGetProjectAllListSuccess(data)),
           catchError(error => of(actions.doGetProjectAllListFailure()))
         ))
       )

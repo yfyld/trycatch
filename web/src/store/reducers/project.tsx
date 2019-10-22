@@ -1,21 +1,22 @@
 import { getType } from 'typesafe-actions'
 import * as actions from '../actions'
-import { ProjectListItem, ProjectInfo, Action, ProjectDetail, Member, ProjectSourcemapListItem, Page } from '@/types'
+import { IProjectInfo, IAction, IProjectDetail, IMember, ISourcemapList, IPage } from '@/types'
 import update from 'immutability-helper'
+import {IProjectListItem} from '@/api'
 
 export interface ProjectState {
-  projectList: ProjectListItem[]
-  projectInfo: ProjectInfo
-  projectMembers: Member[]
+  projectList: IProjectListItem[]
+  projectInfo: IProjectInfo
+  projectMembers: IMember[]
   projectId: number
   projectAddVisible: boolean
-  projectDetail: ProjectDetail
+  projectDetail: IProjectDetail
   projectMemberAddVisible: boolean
   projectMemberSelectedKeys: number[]
   fileList: any[],
   projectSourcemapAddVisible: boolean,
-  projectSourcemapList: ProjectSourcemapListItem[],
-  projectPage: Page
+  projectSourcemapList: ISourcemapList,
+  projectPage: IPage
 }
 
 const initialState = {
@@ -23,7 +24,29 @@ const initialState = {
   projectPage: {
     page: 1, pageSize: 10, totalCount: 0
   },
-  projectInfo: {},
+  projectInfo: {
+    name:'',
+    id: null,
+    image: '',
+    members: [],
+    guarderId: null,
+    description: '',
+    guarder: {
+      nickname:'',
+      id:null,
+      username:''
+    },
+    language: '',
+    version: '',
+    alarmType: '',
+    alarmHookUrl: '',
+    sourcemapOnline:false,
+    creator: {
+      nickname:'',
+      id:null,
+      username:''
+    }
+  },
   projectMembers: [],
   projectId: null,
   projectAddVisible: false,
@@ -35,10 +58,10 @@ const initialState = {
   projectMemberSelectedKeys: [],
   fileList: [],
   projectSourcemapAddVisible: false,
-  projectSourcemapList: []
+  projectSourcemapList: {list:[],totalCount:0}
 }
 
-export const projectReducer = (state: ProjectState = initialState, action: Action): ProjectState => {
+export const projectReducer = (state: ProjectState = initialState, action: IAction): ProjectState => {
   switch (action.type) {
     case getType(actions.doGetProjectListSuccess):
       return update(state, { 
@@ -58,8 +81,7 @@ export const projectReducer = (state: ProjectState = initialState, action: Actio
         projectDetail: {
           activeKey: { $set: '1' },
           tabs: { $set: ['1'] }
-        },
-        projectSourcemapList: { $set: action.payload.sourcemap }
+        }
       })
 
     case getType(actions.doAddProjectToggle):
@@ -93,6 +115,10 @@ export const projectReducer = (state: ProjectState = initialState, action: Actio
     case getType(actions.doAddProjectSourcemapToggle):
       return update(state, { 
         projectSourcemapAddVisible: { $set: action.payload }
+      })
+    case getType(actions.doGetSourcemapListSuccess):
+      return update(state, { 
+        projectSourcemapList: { $set: action.payload }
       })
     default:
       return state

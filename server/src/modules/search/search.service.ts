@@ -18,7 +18,7 @@ import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { Injectable } from '@nestjs/common';
 import * as UA from 'ua-device';
 import { UaService } from '@/providers/helper/helper.ua.service';
-import { QueryListQuery, PageData } from '@/interfaces/request.interface';
+import { QueryListQuery, IPageData } from '@/interfaces/request.interface';
 import { Queue } from 'bull';
 import * as uuidv4 from 'uuid/v4';
 import {
@@ -153,12 +153,13 @@ export class SearchService {
 
   public async getLogList<T>(
     query: QueryListQuery<QueryLogListDto>,
-  ): Promise<PageData<LogListDto>> {
+  ): Promise<IPageData<LogListDto>> {
     const result = await this.search({
       index: query.query.projectId,
       body: {
         from: query.skip,
         size: query.take,
+        // sort: 'data.time',
         query: {
           bool: {
             filter: [

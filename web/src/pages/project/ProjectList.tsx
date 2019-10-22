@@ -2,20 +2,21 @@ import * as React from 'react'
 import { connect } from 'react-redux';
 import { StoreState } from '@/store/reducers'
 import ProjectListPane from "./components/ProjectListPane"
-import { ProjectListItem, Page, PageDataQuery } from "@/types"
+import {  IPage, IPageDataQuery } from "@/types"
+import { IProjectListItem } from '@/api'
 import ProjectAdd from "./components/ProjectAdd"
 import { Empty, Button, Pagination } from "antd"
 import * as actions from '@/store/actions'
 import { bindActionCreators, Dispatch } from 'redux'
-import { Action } from '@/types';
+import { IAction } from '@/types';
 import style from './ProjectList.less';
 
 interface Props {
-	projectList: ProjectListItem[],
+	projectList: IProjectListItem[],
 	doAddProjectToggle: () => {},
 	doDeleteProject: (projectId: number) => {},
-	projectPage: Page,
-	doGetProjectList: (data: PageDataQuery<any>) => {}
+	projectPage: IPage,
+	doGetProjectList: (data: IPageDataQuery<any>) => {}
 }
 
 
@@ -30,7 +31,7 @@ function ProjectList({ projectList, projectPage: { page, pageSize, totalCount}, 
 				<div className={style.project}>
 					{
 						projectList.length === 0 ? <Empty /> : (
-							projectList.map((project: ProjectListItem) => (
+							projectList.map((project: IProjectListItem) => (
 								<ProjectListPane onDelete={props.doDeleteProject} key={project.id} projectInfo={project} />
 							))
 						)
@@ -63,10 +64,10 @@ const mapStateToProps = (state: StoreState) => ({
 	projectPage: state.project.projectPage
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => bindActionCreators({
+const mapDispatchToProps = (dispatch: Dispatch<IAction>) => bindActionCreators({
 	doAddProjectToggle: () => actions.doAddProjectToggle(true),
 	doDeleteProject: (projectId: number) => actions.doDeleteProjectRequest(projectId),
-	doGetProjectList: (data: PageDataQuery<any>) => actions.doGetProjectListRequest(data)
+	doGetProjectList: (data: IPageDataQuery<any>) => actions.doGetProjectListRequest(data)
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(React.memo(ProjectList))

@@ -16,6 +16,11 @@ export default {
       ttl: CACHE_TIME,
       isExist: false
     },
+    {
+      action: actions.doGetSourcemapListRequest({projectId:Number(projectId)}),
+      ttl: CACHE_TIME,
+      isExist: false
+    },
     // {
     //   action: actions.doGetProjectMembersRequest(Number(projectId)),
     //   ttl: CACHE_TIME,

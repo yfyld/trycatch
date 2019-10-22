@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import style from "./Layout.less"
 import DashboardHeader from './DashboardHeader';
 import * as actions from '@/store/actions';
-import { Action } from '@/types';
+import { IAction } from '@/types';
 import { bindActionCreators, Dispatch } from 'redux';
 
 interface Props {
@@ -29,7 +29,7 @@ const DashboardLayout=(props:Props)=>{
 
 const mapStateToProps = () => ({})
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<IAction>) => ({
   ...bindActionCreators(
     {
       doGetProjectAllList () {

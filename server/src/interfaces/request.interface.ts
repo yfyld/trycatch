@@ -1,4 +1,4 @@
-export interface PageData<T> {
+export interface IPageData<T> {
   totalCount: number;
   list: T[];
 }

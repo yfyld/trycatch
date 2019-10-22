@@ -1,11 +1,11 @@
 import { CACHE_TIME } from '@/constants';
 import * as actions from '@/store/actions';
-import {StoreState} from "@/types"
+import {IStoreState} from "@/types"
 
 const exclude = ['', '/login', '/home', '/signup'];
 
 export default {
-  '/*': ({ pathname, search },state:StoreState) => {
+  '/*': ({ pathname, search },state:IStoreState) => {
     return [
       {
         action: actions.doGetUserInfoRequest(),

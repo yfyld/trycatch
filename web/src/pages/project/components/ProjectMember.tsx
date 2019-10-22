@@ -4,21 +4,21 @@ import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 import { Table, Button, Popover, Menu } from 'antd'
 import findIndex from 'lodash/findIndex'
-import { StoreState, Member, Action, ProjectMemberOperate } from '@/types'
+import { IStoreState, IAction  } from '@/types'
 import * as actions from '@/store/actions'
 import ProjectMemberAdd from './ProjectMemberAdd'
 import style from './ProjectMember.less'
-import { ProjectMemberUpdate } from '@/api'
+import { IProjectMemberUpdate,IProjectMemberOperate ,IMember} from '@/api'
 
 interface Props {
-  memberList: Member[]
+  memberList: IMember[]
   doAddProjectMemberToggle: () => {}
   projectMemberAddVisible: boolean
   className?: string
   doSelectProjectMember: (selectedKeys: number[]) => {}
   selectedRowKeys: number[]
-  doDeleteProjectMember: (data: ProjectMemberOperate) => {}
-  doUpdateProjectMember: (data: ProjectMemberUpdate) => {}
+  doDeleteProjectMember: (data: IProjectMemberOperate) => {}
+  doUpdateProjectMember: (data: IProjectMemberUpdate) => {}
   projectId: number
 }
 
@@ -38,7 +38,7 @@ function renderColumns() {
       title: '角色',
       dataIndex: 'roleCode',
       key: 'roleCode',
-      render: (roleCode: String, record: Member) => roleCode
+      render: (roleCode: String, record: IMember) => roleCode
     }
     // {
     //     title: '操作',
@@ -70,7 +70,7 @@ function ProjectMember({
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const rowSelection = {
     // selectedRowKeys,
-    selectedRowKeys: selectedRowKeys.filter((i: number) => findIndex(memberList, (j: Member): boolean => j.id === i) !== -1),
+    selectedRowKeys: selectedRowKeys.filter((i: number) => findIndex(memberList, (j: IMember): boolean => j.id === i) !== -1),
     onChange: selectedKeys => {
       //   doSelectProjectMember(selectedKeys);
 
@@ -121,7 +121,7 @@ function ProjectMember({
     </div>
   )
 }
-const mapStateToProps = (state: StoreState) => {
+const mapStateToProps = (state: IStoreState) => {
   const {
     projectMembers: memberList = [],
     projectMemberAddVisible,
@@ -136,13 +136,13 @@ const mapStateToProps = (state: StoreState) => {
   }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) =>
+const mapDispatchToProps = (dispatch: Dispatch<IAction>) =>
   bindActionCreators(
     {
       doAddProjectMemberToggle: () => actions.doAddProjectMemberToggle(true),
       doSelectProjectMember: (selectedKeys: number[]) => actions.doSelectProjectMember(selectedKeys),
-      doDeleteProjectMember: (data: ProjectMemberOperate) => actions.doDeleteProjectMemberRequest(data),
-      doUpdateProjectMember: (data: ProjectMemberUpdate) => actions.doUpdateProjectMemberRequest(data)
+      doDeleteProjectMember: (data: IProjectMemberOperate) => actions.doDeleteProjectMemberRequest(data),
+      doUpdateProjectMember: (data: IProjectMemberUpdate) => actions.doUpdateProjectMemberRequest(data)
     },
     dispatch
   )

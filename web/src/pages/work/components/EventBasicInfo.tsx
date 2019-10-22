@@ -1,34 +1,26 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import * as moment from 'moment';
-import { StoreState, IError, LibInfo, ClientInfo, Location, Source } from '@/types';
+import { IStoreState, IError, ILibInfo, IClientInfo, ILocation, IAction } from '@/types';
 import style from './EventBasicInfo.less';
-import { eventInfoSelector } from '@/store/selectors'
-import hljs from 'highlight.js/lib/highlight';
-import javascript from 'highlight.js/lib/languages/javascript';
-import 'highlight.js/styles/github.css';
-hljs.registerLanguage('javascript', javascript);
+
+import StackList from './StackList';
+import { Dispatch, bindActionCreators } from 'redux';
+import { doParseSourcemapRequest } from '@/store/actions';
+import {  IStack } from '@/api';
+
 
 interface Props {
     data: IError,
-    clientInfo: ClientInfo,
-    location: Location,
-    libInfo: LibInfo,
-    source: Source
+    clientInfo: IClientInfo,
+    location: ILocation,
+    libInfo: ILibInfo,
+    parseSourcemap:(param:IStack)=>IAction
 }
 
 
-function EventInfo({ data, clientInfo, location, libInfo, source }: Props) {
-    React.useEffect(() => {
-        if (source && source.code) {
-            const dom = document.querySelector(".code");
-            hljs.highlightBlock(dom);
-            const html = dom.innerHTML;
-            dom.innerHTML = `<ol start="${source.line-3}"><li>${html.replace(/\n/g,"\n</li><li>")}\n</li></ol></<ol>`;
-            
-        
-        }
-    }, [source && source.code])
+function EventInfo({ data, clientInfo, location, libInfo ,parseSourcemap}: Props) {
+
     return (
         <div className={style.wrapper}>
             <div className={style.info}>
@@ -142,27 +134,23 @@ function EventInfo({ data, clientInfo, location, libInfo, source }: Props) {
                             <div className={style.title}>资源信息</div>
                             <ul>
                                 <li className={style.item}>
-                                    <span className={style.name}>outerHTML</span>
-                                    <span>{data.outerHTML}</span>
-                                </li>
-                                <li className={style.item}>
-                                    <span className={style.name}>tagName</span>
-                                    <span>{data.tagName}</span>
+                                    <span className={style.name}>name</span>
+                                    <span>{data.name}</span>
                                 </li>
                                 <li className={style.item}>
                                     <span className={style.name}>src</span>
-                                    <span>{data.src}</span>
+                                    <span>{data.message}</span>
                                 </li>
                                 <li className={style.item}>
-                                    <span className={style.name}>timeStamp</span>
-                                    <span>{data.timeStamp}</span>
+                                    <span className={style.name}>time</span>
+                                    <span>{data.time}</span>
                                 </li>
                             </ul>
                         </div>
                     )
                 }
                 
-                {
+                {/* {
                     source && (
                         <div className={style.part}>
                             <div className={style.title}>SourceMap信息</div>
@@ -190,40 +178,8 @@ function EventInfo({ data, clientInfo, location, libInfo, source }: Props) {
                             </ul>
                         </div>
                     )
-                }
-                {
-                    data.stack && data.stack.length && (
-                        <div className={style.part}>
-                            <div className={style.title}>堆栈信息</div>
-                            {
-                                data.stack.map((item, index) => (
-                                    <ul key={index}>
-                                        <li className={style.item}>
-                                            <span className={style.name}>args</span>
-                                            {/* <span>{JSON.stringify(item.args)}</span> */}
-                                        </li>
-                                        <li className={style.item}>
-                                            <span className={style.name}>行号</span>
-                                            <span>{item.line}</span>
-                                        </li>
-                                        <li className={style.item}>
-                                            <span className={style.name}>列号</span>
-                                            <span>{item.column}</span>
-                                        </li>
-                                        <li className={style.item}>
-                                            <span className={style.name}>方法</span>
-                                            <span>{item.func}</span>
-                                        </li>
-                                        <li className={style.item}>
-                                            <span className={style.name}>文件</span>
-                                            <span>{item.url}</span>
-                                        </li>
-                                    </ul>
-                                ))
-                            }
-                        </div>
-                    )
-                }
+                } */}
+                <StackList onParseSourcemap={stack=>parseSourcemap(stack)} stacks={data.stack}></StackList>
                 
             </div>
             
@@ -291,12 +247,24 @@ function EventInfo({ data, clientInfo, location, libInfo, source }: Props) {
     )
 }
 
-const mapStateToProps = (state: StoreState) => {
-    const eventInfo = eventInfoSelector(state);
-    const { data, libInfo, clientInfo, location, info, source } = eventInfo;
+const mapStateToProps = (state: IStoreState) => {
+    const eventInfo = state.work.eventInfo;
+    const { data, libInfo, clientInfo, location, info  } = eventInfo;
     return {
-        data, libInfo, clientInfo, location, info, source
+        data, libInfo, clientInfo, location, info
     }
 }
 
-export default connect(mapStateToProps)(EventInfo);
+
+const mapDispatchToProps = (dispatch: Dispatch<IAction>) => ({
+    ...bindActionCreators(
+      {
+        parseSourcemap: (stack:IStack) => {
+          return doParseSourcemapRequest(stack)
+        }
+      },
+      dispatch
+    )
+  })
+
+export default connect(mapStateToProps,mapDispatchToProps)(EventInfo);

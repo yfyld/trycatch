@@ -5,7 +5,7 @@ import {connect} from "react-redux"
 import { bindActionCreators,Dispatch } from 'redux'
 import * as actions from "@/store/actions"
 import { WrappedFormUtils } from 'antd/lib/form/Form';
-import {Action} from "@/types"
+import {IAction} from "@/types"
 
 const Option = Select.Option;
 
@@ -70,7 +70,7 @@ const ProjectAdd = ({ visible, doSubmit, doCancel ,form}: Props) => {
   )
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>)=>bindActionCreators({
+const mapDispatchToProps = (dispatch: Dispatch<IAction>)=>bindActionCreators({
   doSubmit:(form:WrappedFormUtils)=>{
     return actions.doAddProjectRequest(form)
   },

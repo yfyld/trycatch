@@ -3,14 +3,14 @@ import style from './Header.less'
 import { Link, withRouter, RouteComponentProps } from 'react-router-dom'
 import { connect } from "react-redux"
 import { Select } from 'antd';
-import { StoreState, Project } from "@/types"
+import { IStoreState, IProject } from "@/types"
 import RightHeader from './RightHeader';
 
 const Option = Select.Option;
 
 interface Props extends RouteComponentProps{
   projectId: number,
-  projectList: Project[]
+  projectList: IProject[]
 }
 
 const DashboardHeader = ({ projectId, projectList, history }: Props) => {
@@ -20,7 +20,7 @@ const DashboardHeader = ({ projectId, projectList, history }: Props) => {
       <div className={style.project}>
           <Select style={{width: 200}} value={projectId} onChange={(value) => { history.push(`/dashboard/${value}`)}}>
               {
-                  projectList.map((item: Project) => <Option key={item.id+''} value={item.id}>{item.name}</Option>)
+                  projectList.map((item: IProject) => <Option key={item.id+''} value={item.id}>{item.name}</Option>)
               }
           </Select>
           <Link className={style.error} to={`/dashboard/${projectId}`}>错误列表</Link>
@@ -30,7 +30,7 @@ const DashboardHeader = ({ projectId, projectList, history }: Props) => {
   )
 }
 
-const mapStateToProps = (state: StoreState) => {
+const mapStateToProps = (state: IStoreState) => {
     const { project, app } = state;
     const { projectId } = project
     const { projectList } = app;

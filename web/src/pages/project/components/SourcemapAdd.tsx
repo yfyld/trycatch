@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 import { Modal, Form, Upload, Button, Icon, Input, Radio } from 'antd'
 import { WrappedFormUtils } from 'antd/lib/form/Form'
-import { StoreState, Action } from '@/types'
+import { IStoreState, IAction } from '@/types'
 import * as actions from '@/store/actions'
 
 const FormItem = Form.Item
@@ -73,13 +73,13 @@ function SourcemapAdd({ visible, doCancel, doSubmit, form, ...props }: Props) {
   )
 }
 
-const mapStateToProps = (state: StoreState) => {
+const mapStateToProps = (state: IStoreState) => {
   return {
     visible: state.project.projectSourcemapAddVisible
   }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) =>
+const mapDispatchToProps = (dispatch: Dispatch<IAction>) =>
   bindActionCreators(
     {
       doSubmit: (form: WrappedFormUtils) => actions.doAddSourcemapRequest(form),

@@ -2,12 +2,12 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Timeline } from 'antd';
 import * as moment from 'moment';
-import { StoreState, BehaviorListItem } from '@/types';
+import { IStoreState, IBehaviorListItem } from '@/types';
 import style from './ErrorBehavior.less';
-import { eventInfoSelector } from '@/store/selectors';
+
 
 interface Props {
-    behavior: BehaviorListItem[]
+    behavior: IBehaviorListItem[]
 }
 
 function ErrorBehavior({behavior}: Props) {
@@ -41,8 +41,8 @@ function ErrorBehavior({behavior}: Props) {
     )
 }
 
-const mapStateToProps = (state: StoreState) => {
-    const eventInfo = eventInfoSelector(state);
+const mapStateToProps = (state: IStoreState) => {
+    const eventInfo = state.work.eventInfo;
     return {
         behavior: eventInfo.behavior || []
     }

@@ -3,35 +3,35 @@ import { getType } from 'typesafe-actions'
 import * as actions from '../actions'
 import update from 'immutability-helper'
 import {
-	Action,
-	ErrorChartData,
-	ErrorListData,
-	ErrorSearchParams,
-	ErrorInfo,
-	EventInfo,
+	IAction,
+	IErrorChartData,
+	IErrorListData,
+	IErrorSearchParams,
+	IErrorInfo,
+	IEventInfo,
 	EventListDataItem,
-	PageData,
-	EventChartData,
-	EventListParams
+	IPageData,
+	IEventChartData,
+	IEventListParams
 } from '@/types'
 
 export interface WorkState {
 	errorId: string,
-	errorChartData: ErrorChartData
-	errorListData: ErrorListData
-	errorSearchParams: ErrorSearchParams
+	errorChartData: IErrorChartData
+	errorListData: IErrorListData
+	errorSearchParams: IErrorSearchParams
 	loading: boolean
 	errorListLoading: boolean
 	rowSelectionKeys: number[]
-	errorInfo: ErrorInfo
-	eventInfo: EventInfo
-	eventListData: PageData<EventListDataItem>
+	errorInfo: IErrorInfo
+	eventInfo: IEventInfo
+	eventListData: IPageData<EventListDataItem>
 	eventListLoading: boolean
 	eventListMoreShow: boolean
 	eventInfoLoading: boolean
 	errorInfoLoading: boolean
-	eventListParams: EventListParams,
-	eventChartData: EventChartData,
+	eventListParams: IEventListParams,
+	eventChartData: IEventChartData,
 	eventId: number
 }
 
@@ -72,7 +72,41 @@ const initialState = {
 	eventListLoading: false,
 	eventInfoLoading: false,
 	eventListData: { totalCount: 0, list: [] },
-	eventInfo: {},
+	eventInfo: {
+		location: {
+			region: null,
+  isp: null,
+		},
+		clientInfo: {
+			ua: null,
+  os: null,
+  osVersion: null,
+  browser: null,
+  browserVersion: null,
+  device: null,
+		},
+		behavior: [],
+		libInfo: {
+			libVersion: null,
+  libType: null,
+		},
+		info: {
+			projectId: null,
+  version: null,
+		},
+		data: {
+			errorId:null,
+			projectId:null,
+			type: null,
+			level: null,
+			url: null,
+			time: null,
+			message: null,
+			name: null,
+		},
+		id: null,
+		version:null
+	},
 	eventChartData: {
 		trendStat: { data: [], totalCount: 0 },
 		osStat: { data: [], totalCount: 0 },
@@ -83,7 +117,7 @@ const initialState = {
 
 export const workReducer = (
 	state: WorkState = initialState,
-	action: Action
+	action: IAction
 ): WorkState => {
 	switch (action.type) {
 		case getType(actions.doGetErrorListDataRequest):
@@ -140,11 +174,12 @@ export const workReducer = (
 			return update(state, {
 				eventListLoading: { $set: true }
 			})
-		case getType(actions.doGetEventInfoRequest):
-			return update(state, { eventInfoLoading: { $set: true } })
+		// case getType(actions.doGetEventInfoRequest):
+		// 	return update(state, { eventInfoLoading: { $set: true } })
 
-		case getType(actions.doGetEventInfoSuccess):
-			return update(state, { eventInfo: { $set: action.payload }, eventInfoLoading: { $set: false } })
+		// case getType(actions.doGetEventInfoSuccess):
+		// 	return update(state, { eventInfo: { $set: action.payload }, eventInfoLoading: { $set: false } })
+
 		case getType(actions.doGetErrorInfoSuccess):
 			return update(state, { 
 				errorInfo: { $set: action.payload },
@@ -154,9 +189,15 @@ export const workReducer = (
 			return update(state, {
 				eventChartData: { $set: action.payload }
 			})
-		case getType(actions.doSetEventId):
+		case getType(actions.doSetEventInfo):
 			return update(state, {
-				eventId: { $set: action.payload }
+				eventId: { $set: action.payload.id },
+				eventInfo:{ $set: action.payload}
+			})
+
+		case getType(actions.doParseSourcemapSuccess):
+			return update(state, {
+				eventListData: { $set: action.payload}
 			})
 		default:
 			return state

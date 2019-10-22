@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { StoreState } from '@/store/reducers'
 import { Dispatch } from 'redux'
-import { Action, ErrorChangeParams,EventListDataItem,PageData,EventInfo,ErrorInfo as IErrorInfo, Member, EventChartData } from '@/types'
+import { IAction, IErrorChangeParams,EventListDataItem,IPageData,IEventInfo,IErrorInfo, IMember, IEventChartData } from '@/types'
 // import * as moment from "moment";
 import ErrorBehavior from './components/ErrorBehavior';
 import EventBasicInfo from './components/EventBasicInfo';
@@ -18,23 +18,23 @@ import ErrorInfo from './components/ErrorInfo';
 import EventListItem from './components/EventListItem';
 
 const {TabPane} =Tabs;
-interface Props extends EventChartData{
+interface Props extends IEventChartData{
   eventListLoading: boolean
-  doErrorChange: (params: ErrorChangeParams) => Action
-  doGetEventListDataRequest:()=>Action
-  doGetEventInfoRequest:(eventId:number)=>Action,
-  doSetEventId: (id: number) => Action,
+  doErrorChange: (params: IErrorChangeParams) => IAction
+  doGetEventListDataRequest:()=>IAction
+  doGetEventInfoRequest:(eventId:number)=>IAction,
+  doSetEventInfo: (param: IEventInfo) => IAction,
   doErrorDetails: any,
-  eventInfo:EventInfo
+  eventInfo:IEventInfo
   errorInfo:IErrorInfo
-  eventListData:PageData<EventListDataItem>,
+  eventListData:IPageData<EventListDataItem>,
   eventListMoreShow:boolean
   eventInfoLoading:boolean,
-  projectMembers: Member[],
+  projectMembers: IMember[],
   eventId: number,
 }
 
-const ErrorDetails = ({eventInfoLoading,doSetEventId,eventListMoreShow, errorInfo,eventInfo,eventListLoading,doErrorChange, doErrorDetails ,eventListData,doGetEventListDataRequest,projectMembers, trendStat, deviceStat, osStat, browserStat, eventId}: Props) => {
+const ErrorDetails = ({eventInfoLoading,doSetEventInfo,eventListMoreShow, errorInfo,eventInfo,eventListLoading,doErrorChange, doErrorDetails ,eventListData,doGetEventListDataRequest,projectMembers, trendStat, deviceStat, osStat, browserStat, eventId}: Props) => {
  
 
   const loadMore = !eventListLoading&&eventListMoreShow ? (
@@ -73,7 +73,7 @@ const ErrorDetails = ({eventInfoLoading,doSetEventId,eventListMoreShow, errorInf
               loadMore={loadMore}
               dataSource={eventListData.list}
               renderItem={item => (
-                <List.Item className={item.id === eventId ? style.selected: ''} onClick={()=>doSetEventId(item.id)}>
+                <List.Item className={item.id === eventId ? style.selected: ''} onClick={()=>doSetEventInfo(item)}>
                     <EventListItem {...item}/>
                 </List.Item>
               )}
@@ -102,7 +102,7 @@ const ErrorDetails = ({eventInfoLoading,doSetEventId,eventListMoreShow, errorInf
   )
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<IAction>) => ({
   ...bindActionCreators(
     {
       doErrorChange: params => {
@@ -115,7 +115,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
           return actions.doGetEventListDataRequest({})
       },
       doGetEventInfoRequest:params=>actions.doGetEventInfoRequest(params),
-      doSetEventId: (id: number) => actions.doSetEventId(id)
+      doSetEventInfo: (param: IEventInfo) => actions.doSetEventInfo(param)
     },
     dispatch
   )

@@ -2,7 +2,7 @@ import { ParsePageQueryIntPipe } from './../../pipes/parse-page-query-int.pipe';
 import { ParseIntPipe } from './../../pipes/parse-int.pipe';
 import { QueryListQuery } from '@/interfaces/request.interface';
 import { QueryList } from '../../decotators/query-list.decorators';
-import { PageQuery, PageData } from '../../interfaces/request.interface';
+import { PageQuery, IPageData } from '../../interfaces/request.interface';
 import {
   Controller,
   Get,
@@ -77,7 +77,7 @@ export class ErrorController {
       ]),
     )
     query: QueryListQuery<QueryErrorListDto>,
-  ): Promise<PageData<ErrorModel>> {
+  ): Promise<IPageData<ErrorModel>> {
     return this.errorService.getErrors(query);
   }
 

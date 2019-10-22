@@ -1,5 +1,6 @@
+import { IStack, ISourceCode } from './../../interfaces/common.interface';
 import { RedisService } from 'nestjs-redis';
-import { SourceCodeDto } from './../error/error.dto';
+
 import { RoleModel } from './../user/user.model';
 import { HttpBadRequestError } from './../../errors/bad-request.error';
 import { ProjectModel, MemberModel, SourcemapModel } from './project.model';
@@ -17,9 +18,10 @@ import {
   DeleteMembersDto,
   AddSourcemapsDto,
   ActionSourcemapsDto,
+  QuerySourcemapsDto,
 } from './project.dto';
 import { UserModel } from '@/modules/user/user.model';
-import { QueryListQuery, PageData } from '@/interfaces/request.interface';
+import { QueryListQuery, IPageData } from '@/interfaces/request.interface';
 import * as SourceMap from 'source-map';
 import { UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 @Injectable()
@@ -79,12 +81,12 @@ export class ProjectService {
    *带分页
    * 
    * @param {QueryListQuery<QueryProjectsDto>} query
-   * @returns {Promise<PageData<ProjectModel>>}
+   * @returns {Promise<IPageData<ProjectModel>>}
    * @memberof ProjectService
    */
   public async getProjects(
     query: QueryListQuery<QueryProjectsDto>
-  ): Promise<PageData<ProjectModel>> {
+  ): Promise<IPageData<ProjectModel>> {
     const [projects, totalCount] = await this.projectModel.findAndCount({
       skip: query.skip,
       take: query.take,
@@ -96,6 +98,34 @@ export class ProjectService {
     return {
       totalCount,
       list: projects,
+    };
+  }
+
+
+/**
+ *获取sourcemap列表
+ *
+ * @param {QueryListQuery<QuerySourcemapsDto>} query
+ * @returns {Promise<IPageData<SourcemapModel>>}
+ * @memberof ProjectService
+ */
+public async getSourcemaps(
+    query: QueryListQuery<QuerySourcemapsDto>
+  ): Promise<IPageData<SourcemapModel>> {
+    const searchBody={
+      skip: query.skip,
+      take: query.take,
+      where: {},
+    }
+    if(query.query.name){
+      searchBody.where= {
+        name: Like(`%${query.query.name || ''}%`),
+      }
+    }
+    const [sourcemap, totalCount] = await this.sourcemapModel.findAndCount(searchBody);
+    return {
+      totalCount,
+      list: sourcemap,
     };
   }
 
@@ -290,7 +320,7 @@ export class ProjectService {
     sourcemapSrc,
     line,
     column
-  ): Promise<SourceCodeDto> {
+  ): Promise<ISourceCode> {
    try {
     var rawSourceMap = await this.httpService.axiosRef.request({
       url: sourcemapSrc,
@@ -355,15 +385,15 @@ export class ProjectService {
    * @param {number} projectId
    * @param {string} version
    * @param {boolean} [cache=false]
-   * @returns {Promise<SourceCodeDto>}
+   * @returns {Promise<ISourceCode>}
    * @memberof ProjectService
    */
   public async getSourceCode(
-    stack: any,
+    stack: IStack,
     projectId: number,
     version: string,
     cache=false
-  ): Promise<SourceCodeDto> {
+  ): Promise<ISourceCode> {
     const client = this.redisService.getClient();
     const fileName =
       stack.url.match(/[^/]+\/?$/) && stack.url.match(/[^/]+\/?$/)[0];

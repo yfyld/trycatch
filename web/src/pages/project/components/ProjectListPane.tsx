@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { Icon, Card, Avatar, Modal } from 'antd'
-import { ProjectListItem } from '@/types'
+import { IProjectListItem } from '@/api'
 import style from './ProjectListPane.less'
 import defaultImg from '@/assets/imgs/default.jpeg'
 
@@ -9,7 +9,7 @@ const { Meta } = Card
 const { confirm } = Modal
 
 interface Props {
-  projectInfo: ProjectListItem
+  projectInfo: IProjectListItem
   onDelete: (projectId: number) => {}
 }
 

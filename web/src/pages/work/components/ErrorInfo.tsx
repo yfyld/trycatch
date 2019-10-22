@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import style from './ErrorInfo.less';
-import { StoreState, ErrorInfo as IErrorInfo, Member, Action } from '@/types';
+import { IStoreState, IErrorInfo as IErrorInfo, IMember, IAction } from '@/types';
 import { Dropdown, Tooltip, Menu, Button } from 'antd';
 import { ERROR_STATUS, ERROR_LEVEL } from '@/constants';
 import { bindActionCreators, Dispatch } from 'redux';
 import * as actions from '@/store/actions';
 
 interface Props {
-    projectMembers: Member[],
+    projectMembers: IMember[],
     errorInfo: IErrorInfo,
     errorId: string,
     doErrorChange: (params) => void
@@ -88,7 +88,7 @@ function ErrorInfo({errorInfo, projectMembers, errorId, ...props}: Props) {
     )
 }
 
-const mapStateToProps = (state: StoreState) => {
+const mapStateToProps = (state: IStoreState) => {
     const { work, project } = state;
     return {
         errorInfo: work.errorInfo,
@@ -97,7 +97,7 @@ const mapStateToProps = (state: StoreState) => {
     }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<IAction>) => ({
     ...bindActionCreators(
       {
         

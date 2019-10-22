@@ -3,14 +3,15 @@ import style from './RightHeader.less'
 import { Link } from 'react-router-dom'
 import { connect } from "react-redux"
 import { Icon, Dropdown, Menu } from 'antd'
-import { StoreState, UserInfo, Action } from "@/types"
+import { IStoreState, IAction } from "@/types"
+import { IUserInfo } from "@/api"
 import * as actions from '@/store/actions'
 import { bindActionCreators, Dispatch } from 'redux'
 
 const MenuItem = Menu.Item;
 
 interface Props {
-  userInfo: UserInfo,
+  userInfo: IUserInfo,
   doLogoutRequest: () => {}
 }
 
@@ -43,11 +44,11 @@ const AppHeader = ({ userInfo, doLogoutRequest }: Props) => {
   )
 }
 
-const mapStateToProps = (state: StoreState) => ({
+const mapStateToProps = (state: IStoreState) => ({
   userInfo: state.app.userInfo,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => bindActionCreators({
+const mapDispatchToProps = (dispatch: Dispatch<IAction>) => bindActionCreators({
   doLogoutRequest: () => {
     return actions.doLogoutRequest()
   }

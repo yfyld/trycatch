@@ -1,9 +1,11 @@
+import { IStack } from './../../interfaces/common.interface';
 import {
   IsNotEmpty,
   IsDefined,
   IsInt,
   IsString,
   IsBoolean,
+  IsOptional,
 } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { UserModel } from '../user/user.model';
@@ -126,6 +128,16 @@ export class UpdateProjectDto {
   guarderId: number;
 }
 
+
+export class QuerySourcemapsDto {
+  @IsDefined()
+  projectId: number;
+
+  @IsOptional()
+  name?:string
+}
+
+
 export class AddSourcemapsDto {
   @IsDefined()
   @IsNotEmpty({ message: '项目id不能为空' })
@@ -143,6 +155,7 @@ export class AddSourcemapsDto {
   @IsDefined()
   hash: boolean;
 }
+
 
 export class ActionSourcemapsDto {
   @IsDefined()
@@ -164,4 +177,19 @@ export class ActionSourcemapsDto {
   @ApiModelProperty()
   @IsString({ message: 'version必须为字符串' })
   version: string;
+}
+
+
+export class ParseSourcemapDto {
+  @IsDefined()
+  @IsNotEmpty({ message: '项目id不能为空' })
+  projectId: number;
+
+  @ApiModelProperty()
+  @IsDefined()
+  stack: IStack;
+
+  @IsOptional()
+  version?: string;
+
 }

@@ -4,7 +4,7 @@ import {history} from "@/utils"
 import { routerMiddleware } from 'connected-react-router'
 import reducers, { StoreState } from "@/store/reducers";
 import epics from "@/store/epics";
-import {ActionAny} from "@/types"
+import {IActionAny} from "@/types"
 
 
 
@@ -22,7 +22,7 @@ const composeEnhancers = (
   window && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
 ) || compose;
 
-const epicMiddleware = createEpicMiddleware<ActionAny, ActionAny, StoreState>();
+const epicMiddleware = createEpicMiddleware<IActionAny, IActionAny, StoreState>();
 
 function configureStore(initialState?: StoreState) {
   // configure middlewares

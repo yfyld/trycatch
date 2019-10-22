@@ -4,13 +4,13 @@ import { bindActionCreators, Dispatch } from 'redux'
 import { Button, Table } from 'antd'
 import style from './Sourcemap.less'
 import SourcemapAdd from './SourcemapAdd'
-import { Action, StoreState, ProjectSourcemapListItem } from '@/types'
+import { IAction, IStoreState, ISourcemapList } from '@/types'
 import * as actions from '@/store/actions'
 
 interface Props {
   className: string,
   doVisible: () => void,
-  sourcemap: ProjectSourcemapListItem[]
+  sourcemap: ISourcemapList
 }
 
 function Sourcemap({ className, doVisible, sourcemap }: Props) {
@@ -49,16 +49,16 @@ function Sourcemap({ className, doVisible, sourcemap }: Props) {
         </Button>
         {/* <Button onClick={}>修改sourcemap</Button> */}
       </div>
-      <Table columns={columns} pagination={false} dataSource={sourcemap}/>
+      <Table columns={columns} pagination={false} dataSource={sourcemap.list}/>
     </div>
   )
 }
 
-const mapStateToProps = (state: StoreState) => ({
+const mapStateToProps = (state: IStoreState) => ({
   sourcemap: state.project.projectSourcemapList
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) =>
+const mapDispatchToProps = (dispatch: Dispatch<IAction>) =>
   bindActionCreators(
     {
       doVisible: () => actions.doAddProjectSourcemapToggle(true),

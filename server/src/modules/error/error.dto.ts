@@ -47,10 +47,4 @@ export class UpdateErrorDto {
   actionType: string;
 }
 
-export class SourceCodeDto {
-  code: string;
-  line: number;
-  column: number;
-  sourceUrl: string;
-  name: string;
-}
+
