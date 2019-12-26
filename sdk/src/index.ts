@@ -1,6 +1,6 @@
-if (typeof Symbol === 'undefined' || typeof XMLHttpRequest === 'undefined') {
-  throw new Error('tracker requires ie10+')
-}
+// if (typeof Symbol === 'undefined' || typeof XMLHttpRequest === 'undefined') {
+//   throw new Error('tracker requires ie10+')
+// }
 
 try {
   process.env.NODE_ENV

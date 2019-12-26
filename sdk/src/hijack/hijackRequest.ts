@@ -1,5 +1,6 @@
 import { getFlag, setFlag, class2Type } from '../utils/util'
-import { HttpDetailData } from '../types'
+import { HttpDetailData } from '../types';
+
 
 function xhrEventTrigger(event: string) {
   const fetchEvent = new CustomEvent(event, { detail: this })
@@ -19,11 +20,11 @@ export function hijackXMLHttpRequest() {
   const oldOpen = XMLHttpRequest.prototype.open
   const oldSend = XMLHttpRequest.prototype.send
 
-  XMLHttpRequest.prototype.open = function() {
+  XMLHttpRequest.prototype.open = function () {
     this.method = arguments[0]
     this.url = arguments[1]
     this.sTime = Date.now()
-    this.addEventListener('error', function() {
+    this.addEventListener('error', function () {
       // 例接口不存在
       this.elapsedTime = Date.now() - this.sTime
       xhrEventTrigger.call(this, 'httpErrored')
@@ -31,9 +32,9 @@ export function hijackXMLHttpRequest() {
     oldOpen.apply(this, arguments)
   }
 
-  XMLHttpRequest.prototype.send = function() {
+  XMLHttpRequest.prototype.send = function () {
     const data = arguments[0]
-    this.addEventListener('loadend', function() {
+    this.addEventListener('loadend', function () {
       if (
         class2Type(data) === '[object String]' ||
         class2Type(data) === '[object object]'
@@ -54,7 +55,7 @@ export function hijackXMLHttpRequest() {
     oldSend.apply(this, arguments)
   }
 
-  
+
   XMLHttpRequest.prototype.oldOpen = oldOpen
   XMLHttpRequest.prototype.oldSend = oldSend
 
@@ -66,12 +67,12 @@ export function hijackFetch() {
     return
   }
   const oldFetch = window.fetch
-  window.fetch = function(url: string, config: RequestInit): Promise<Response> {
+  window.fetch = function (url: string, config: RequestInit): Promise<Response> {
     const sTime = Date.now()
     return oldFetch
       .apply(this, arguments)
-      .then(function(response: Response) {
-       
+      .then(function (response: Response) {
+
         const eTime = Date.now()
         const data: HttpDetailData = {
           elapsedTime: eTime - sTime,
@@ -89,7 +90,7 @@ export function hijackFetch() {
         }
         if (data.responseText) {
           data.responseText instanceof Promise &&
-            data.responseText.then(function(text: string) {
+            data.responseText.then(function (text: string) {
               data.responseText = text
               fetchEventTrigger.apply(this, ['httpLoadEnded', data])
             })
@@ -98,7 +99,7 @@ export function hijackFetch() {
         }
         return response
       })
-      .catch(function(e: any) {
+      .catch(function (e: any) {
         console.log(e);
         const eTime = Date.now()
         const data: HttpDetailData = {

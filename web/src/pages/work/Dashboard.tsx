@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 import * as moment from "moment";
 import {ERROR_STATUS,ERROR_TYPE,ERROR_LEVEL} from "@/constants"
 import {projectMembersMapSelector} from "@/store/selectors"
+
 const { Column } = Table
 
 interface ChartData{
@@ -141,7 +142,12 @@ const Dashboard = ({errorSearchParams,projectMembers,projectMembersMap,projectId
         <Table rowSelection={{
           selectedRowKeys:rowSelectionKeys,
           onChange: doErrorListSelectionChange
-          }} rowKey="id" loading={errorListLoading} dataSource={errorListData.list} onChange={(pagination:any, filters:any, sorter:any)=>doGetErrorAllData(mapTableSearchParamsToParam({pagination, filters, sorter}))}>
+          }} 
+          rowKey="id" 
+          loading={errorListLoading} 
+          dataSource={errorListData.list} 
+          onChange={(pagination:any, filters:any, sorter:any)=>doGetErrorAllData(mapTableSearchParamsToParam({pagination, filters, sorter}))}
+        >
           <Column
             width={400}
             title={<div>全选{rowSelectionKeys.length?selectionHandler:''}</div>}
