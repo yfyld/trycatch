@@ -19,3 +19,8 @@ interface XMLHttpRequest {
   oldSend(body?: Document | BodyInit | null): void,
   oldError(this: XMLHttpRequest, ev: ProgressEvent): any
 }
+
+interface Window {
+  CustomEvent: any,
+  Event: any
+}

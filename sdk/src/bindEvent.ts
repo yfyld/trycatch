@@ -9,7 +9,7 @@ import errorTrackerInPromise from './errorTrackerInPromise'
 import hijackConsole from './hijack/hijackConsole'
 import errorTrackerInVue from './errorTrackerInVue'
 
-const install = function(conf?: SetConfig) {
+const install = function (conf?: SetConfig) {
   if (conf) {
     setConfig(conf)
   }
@@ -25,14 +25,13 @@ const install = function(conf?: SetConfig) {
   errorTrackerInResource.install()
   errorTrackerInHttp.install(config)
   errorTrackerInPromise.install()
-  // errorTrackerInHttp.install()
 
   if ((window as any).Vue) {
     errorTrackerInVue.install((window as any).Vue)
   }
 }
 
-const uninstall = function() {
+const uninstall = function () {
   if ((window as any).Vue) {
     errorTrackerInVue.uninstall((window as any).Vue)
   }

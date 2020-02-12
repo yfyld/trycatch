@@ -23,7 +23,7 @@ export interface ErrorJavaScript {
   time: number,
   message?: string
   name?: string
-  stack?: Stack[] 
+  stack?: Stack[]
   line?: number,
   column?: number
 }
@@ -139,6 +139,13 @@ export interface BehaviorHttp {
   page?: string
 }
 
-export interface BehaviorVue {}
+export interface BehaviorVue { }
 
-export interface Behavior extends BehaviorClick, BehaviorHttp, BehaviorPage {}
+export interface Behavior extends BehaviorClick, BehaviorHttp, BehaviorPage { }
+
+
+export interface EventParam<T> {
+  canBubbleArg: boolean
+  cancelableArg: boolean
+  detailArg: T
+}

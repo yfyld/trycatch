@@ -45,6 +45,7 @@ function ProjectList({ projectList, projectPage: { page, pageSize, totalCount}, 
 								pageSize={pageSize} 
 								total={totalCount}
 								onChange={(page: number, pageSize: number) => { props.doGetProjectList({ page, pageSize })}}
+								showTotal={(total, range) => `共${total}条数据，当前显示第${range[0]}-${range[1]}条数据`}
 							/>
 						</div>
 					) : null
