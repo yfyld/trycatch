@@ -1,5 +1,4 @@
 import { BullQueueModule } from './providers/bull-queue/bull-queue.module';
-import { EsModule } from './providers/es/es.module';
 import { HelperModule } from './providers/helper/helper.module';
 import { SearchModule } from './modules/search/search.module';
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
@@ -11,6 +10,7 @@ import { ErrorModule } from './modules/error/error.module';
 import { CorsMiddleware } from './middlewares/cors.middleware';
 import { DatabaseModule } from './providers/database/database.module';
 import { PermissionsGuard } from './guards/permission.guard';
+import { SlsModule } from './providers/sls/sls.module';
 
 @Module({
   imports: [
@@ -21,8 +21,8 @@ import { PermissionsGuard } from './guards/permission.guard';
     CommonModule,
     ErrorModule,
     HelperModule,
-    EsModule,
     BullQueueModule,
+    SlsModule
   ],
   controllers: [AppController],
   providers: [PermissionsGuard],

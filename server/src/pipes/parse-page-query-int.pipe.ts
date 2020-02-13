@@ -7,11 +7,13 @@ import { QueryListQuery } from '@/interfaces/request.interface';
 export class ParsePageQueryIntPipe implements PipeTransform<string> {
   keys: string[] = [];
   constructor(keys = []) {
+
     if (keys) {
       this.keys = keys;
     }
   }
   async transform(value: any, metadata: ArgumentMetadata) {
+
     if (this.keys.length === 0) {
       this.keys = Object.keys(value.query);
     }

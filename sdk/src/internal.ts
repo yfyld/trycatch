@@ -1,4 +1,4 @@
-import '../utils/customEvent';
+import './utils/customEvent';
 import { getConfig, setConfig } from './config'
 import { install, uninstall } from './bindEvent'
 import { log } from './logError'

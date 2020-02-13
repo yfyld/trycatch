@@ -20,10 +20,15 @@ export interface SortQuery {
 }
 
 export interface QueryListQuery<T> {
-  skip: number;
-  take: number;
+  // skip: number;
+  // take: number;
+  // query: T;
+  // sort: {
+  //   [propName: string]: Sort;
+  // };
+  line: number;
+  offset: number;
+  from: number;
+  to: number;
   query: T;
-  sort: {
-    [propName: string]: Sort;
-  };
 }

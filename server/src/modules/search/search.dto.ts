@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsDefined, IsInt } from 'class-validator';
+import { IsNotEmpty, IsDefined, IsInt, IsString } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 
@@ -83,6 +83,8 @@ export class QueryLogListDto {
   @IsInt()
   @Transform(value => Number(value))
   projectId: number;
+
+  @IsNotEmpty()
   errorId: string;
 }
 
@@ -96,4 +98,14 @@ export class LogListDto {
   id: string;
   source: any;
   ua: string;
+}
+
+interface SlsItem {
+  key: string;
+  value: any;
+}
+
+export class LogSlsDto {
+  time: number;
+  contents: SlsItem[]
 }
