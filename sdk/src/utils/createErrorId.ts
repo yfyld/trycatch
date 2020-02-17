@@ -27,13 +27,15 @@ function objectOrder(str: string): string {
       let obj = JSON.parse(str);
       obj = sortFn(obj);
       return JSON.stringify(obj);
+    } else {
+      return str
     }
   } catch (error) {
     return str;
   }
 }
 
-export default function(data: IError, maxCount = { once: 3, oneDay: 10 }) {
+export default function (data: IError, maxCount = { once: 3, oneDay: 10 }) {
   let id: string;
   let hashId: number;
   const locationUrl = getRealPath(data.url);

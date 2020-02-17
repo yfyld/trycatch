@@ -12,6 +12,7 @@ import {
   QueryStatLogDto,
   QueryLogListDto,
   LogListDto,
+  LogSlsDto,
 } from './search.dto';
 import { IpService } from './../../providers/helper/helper.ip.service';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
@@ -31,11 +32,13 @@ import {
 import { eachDay, format, addMonths, addYears } from 'date-fns';
 import * as path from 'path';
 import { ILogJobData } from './search.queue';
+import { SlsService } from '@/providers/sls/sls.service';
 
 @Injectable()
 export class SearchService {
   constructor(
     private readonly elasticsearchService: ElasticsearchService,
+    private readonly slsService: SlsService,
     @InjectRepository(ErrorModel)
     private readonly errorModel: Repository<ErrorModel>,
     @InjectRepository(ProjectModel)
@@ -46,12 +49,36 @@ export class SearchService {
     private readonly chartService: ChartService,
     @InjectQueue()
     private readonly queue: Queue,
-  ) {}
+  ) { }
 
-  private bulk(index: string, type: string, generic: any): any[] {
-    const bulk = [];
-    bulk.push({ index: { _index: index, _type: type } });
-    bulk.push(generic);
+  private tolevel(data: any) {
+
+    const content = [];
+    for (const key in data) {
+      if (data[key] !== undefined && data[key] !== null) {
+        let value = data[key];
+        if (typeof data[key] !== 'object') {
+          value = String(value);
+        } else {
+          value = JSON.stringify(value);
+        }
+        content.push({
+          key, value
+        })
+      }
+
+    }
+    return content;
+  }
+
+  private bulk(body: any, ua: any): LogSlsDto[] {
+    const bulk: LogSlsDto[] = [];
+    const data: LogSlsDto = {
+      time: Math.floor(new Date().getTime() / 1000),  // 单位秒
+      contents: []
+    };
+    data.contents = this.tolevel({ ...body.data, ...body.info, ...body.libInfo, behavior: body.behavior, ...ua })
+    bulk.push(data);
     return bulk;
   }
 
@@ -59,8 +86,9 @@ export class SearchService {
     return query.replace(/([-\!\*\+\&\|\(\)\[\]\{\}\^\~\?\:\"\/])/g, '\\$1');
   }
 
-  async search<T>(params) {
-    return await this.elasticsearchService.getClient().search<T>(params);
+  async search(params: QueryListQuery<QueryLogListDto>) {
+
+    return await this.slsService.query(params);
   }
 
   async get<T>(params) {
@@ -103,103 +131,107 @@ export class SearchService {
     const location = await this.ipService.query(ip);
     body.location = location;
     const uaDetail = this.uaService.parse(ua);
-    const bulk: LogDto[] = this.bulk(body.info.projectId + '', 'log', {
-      clientInfo: uaDetail,
-      ...body,
-      uid,
-    });
-    //this.queue.add('createLog', bulk);
-    this.saveLogToEs(bulk);
+    const bulk: LogSlsDto[] = this.bulk(body, uaDetail);
+    this.saveLogToSls(bulk);
     return bulk;
   }
 
-  private getErrors(bulks:LogDto[]):ErrorDto[]{
-    const errorMap:{[prop:string]:{data:LogDto,num:number}} = this.bulks.reduce((total, item) => {
-      if (item.data) {
-        if (total[item.data.errorId]) {
-          total[item.data.errorId].num++;
-        } else {
-          total[item.data.errorId] = { data: item, num: 1 };
-        }
-      }
-      return total;
-    }, {});
-    const result:ErrorDto[]=Object.values(errorMap).map(item=>({
-      id:item.data.data.errorId,
-      project:{id:item.data.info.projectId},
-      ...item.data.data,
-      eventNum:item.num
-    }))
-    return result
+  private getErrors(bulks: any[]): any[] {
+    // const errorMap: { [prop: string]: { data: any, num: number } } = this.bulks.reduce((total, item) => {
+    //   if (item.contents) {
+    //     const index = item.contents.findIndex()
+    //     if (total[item.data.errorId]) {
+    //       total[item.data.errorId].num++;
+    //     } else {
+    //       total[item.data.errorId] = { data: item, num: 1 };
+    //     }
+    //   }
+    //   return total;
+    // }, {});
+    // const result: ErrorDto[] = Object.values(errorMap).map(item => ({
+    //   id: item.data.data.errorId,
+    //   project: { id: item.data.info.projectId },
+    //   ...item.data.data,
+    //   eventNum: item.num
+    // }))
+    // return result
+    return [];
   }
   private time = Date.now();
-  private bulks:LogDto[] = [];
-  private saveLogToEs(bulk: LogDto[]) {
+  private bulks: LogSlsDto[] = [];
+  private saveLogToSls(bulk: LogSlsDto[]) {
     this.bulks = this.bulks.concat(bulk);
+    console.log(2);
     if (this.time < Date.now() - 10 * 1000 || this.bulks.length > 10) {
       this.time = Date.now();
-      const errorDatas = this.getErrors(this.bulks)
-      this.queue.add('updateError', errorDatas);
-      this.createLogIndex(this.bulks);
+      // const errorDatas = this.getErrors(this.bulks)
+      // this.queue.add('updateError', errorDatas);
+      console.log(1);
+      this.createLog(this.bulks);
       this.bulks = [];
     }
   }
 
-  public async createLogIndex(bulk: LogDto[]) {
-    return await this.elasticsearchService.getClient().bulk({
-      body: bulk,
-    });
+  public async createLog(bulk: LogSlsDto[]) {
+    return await this.slsService.create(bulk);
   }
 
-  public async getLogList<T>(
-    query: QueryListQuery<QueryLogListDto>,
-  ): Promise<IPageData<LogListDto>> {
-    const result = await this.search({
-      index: query.query.projectId,
-      body: {
-        from: query.skip,
-        size: query.take,
-        // sort: 'data.time',
-        query: {
-          bool: {
-            filter: [
-              {
-                term: {
-                  'data.errorId': query.query.errorId,
-                },
-              },
-            ],
-          },
-        },
-      },
-    });
-    const list: any[] = result.hits.hits.map(({ _source, _id }) => {
-      return { ..._source, id: _id };
-    });
-    let source;
-    const sameStack = {};
-    for (let item of list) {
-      if (!item.data.stack || (item.data.stack && !item.data.stack[0])) {
-        continue;
-      }
-      const key = `${item.data.stack[0].url}-${item.data.stack[0].line}-${item.data.stack[0].column}-${item.info.version}`;
-      if (!!sameStack[key]) {
-        source = sameStack[key];
-      } else {
-        source = await this.projectService.getSourceCode(
-          item.data.stack[0],
-          item.info.projectId,
-          item.info.version,
-        );
-        sameStack[key] = source;
-      }
-      item.source = source;
-    }
 
+  public async getLogList<T>(
+    query: QueryListQuery<QueryLogListDto>
+  ): Promise<IPageData<LogListDto>> {
+    const result = await this.search(query);
+    console.log(result);
+    // const result = await this.search({
+    //   index: query.query.projectId,
+    //   body: {
+    //     from: query.skip,
+    //     size: query.take,
+    //     // sort: 'data.time',
+    //     query: {
+    //       bool: {
+    //         filter: [
+    //           {
+    //             term: {
+    //               'data.errorId': query.query.errorId,
+    //             },
+    //           },
+    //         ],
+    //       },
+    //     },
+    //   },
+    // });
+    // const list: any[] = result.hits.hits.map(({ _source, _id }) => {
+    //   return { ..._source, id: _id };
+    // });
+    // let source;
+    // const sameStack = {};
+    // for (let item of list) {
+    //   if (!item.data.stack || (item.data.stack && !item.data.stack[0])) {
+    //     continue;
+    //   }
+    //   const key = `${item.data.stack[0].url}-${item.data.stack[0].line}-${item.data.stack[0].column}-${item.info.version}`;
+    //   if (!!sameStack[key]) {
+    //     source = sameStack[key];
+    //   } else {
+    //     source = await this.projectService.getSourceCode(
+    //       item.data.stack[0],
+    //       item.info.projectId,
+    //       item.info.version,
+    //     );
+    //     sameStack[key] = source;
+    //   }
+    //   item.source = source;
+    // }
+
+    // return {
+    //   totalCount: (result as any).hits.total.value,
+    //   list,
+    // };
     return {
-      totalCount: (result as any).hits.total.value,
-      list,
-    };
+      totalCount: 0,
+      list: []
+    }
   }
 
   public async addComputedErrorsUserNumTask() {
@@ -217,39 +249,39 @@ export class SearchService {
   }
 
   public async computedErrorsUserNum(error) {
-    const { aggregations } = await this.search({
-      index: '1',
-      body: {
-        size: 0,
-        aggs: {
-          queryResult: {
-            filter: {
-              term: {
-                'data.errorId': error.id,
-              },
-            },
-            aggs: {
-              userNum: {
-                cardinality: {
-                  field: 'uid.keyword',
-                },
-              },
-            },
-          },
-        },
-      },
-    });
-    error.userNum = aggregations.queryResult.userNum.value;
-    await this.errorModel
-      .query(
-        `UPDATE error_model set userNum = ${error.userNum} where id = "${error.id}"`, //防止更新更新时间
-      )
-      .catch(e => {
-        // console.log(e);
-      });
-    console.log(
-      `UPDATE error_model set userNum = ${error.userNum} where id = ${error.id}`,
-    );
+    // const { aggregations } = await this.search({
+    //   index: '1',
+    //   body: {
+    //     size: 0,
+    //     aggs: {
+    //       queryResult: {
+    //         filter: {
+    //           term: {
+    //             'data.errorId': error.id,
+    //           },
+    //         },
+    //         aggs: {
+    //           userNum: {
+    //             cardinality: {
+    //               field: 'uid.keyword',
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //   },
+    // });
+    // error.userNum = aggregations.queryResult.userNum.value;
+    // await this.errorModel
+    //   .query(
+    //     `UPDATE error_model set userNum = ${error.userNum} where id = "${error.id}"`, //防止更新更新时间
+    //   )
+    //   .catch(e => {
+    //     // console.log(e);
+    //   });
+    // console.log(
+    //   `UPDATE error_model set userNum = ${error.userNum} where id = ${error.id}`,
+    // );
     return true;
   }
 
@@ -323,88 +355,88 @@ export class SearchService {
 
   public async statLog(query: QueryStatLogDto) {
     const { times, type } = this.getTimes(query.startDate, query.endDate);
-    const { hits, aggregations } = await this.search({
-      index: query.projectId,
-      body: {
-        query: {
-          bool: {
-            filter: [
-              {
-                term: {
-                  'data.errorId': query.errorId,
-                },
-              },
-              {
-                range: {
-                  'data.time': {
-                    gt: query.startDate,
-                    lt: query.endDate,
-                  },
-                },
-              },
-            ],
-          },
-        },
-        size: 0,
-        aggs: {
-          trendStat: {
-            range: {
-              field: 'data.time',
-              ranges: times,
-            },
-          },
-          osStat: {
-            terms: {
-              field: 'clientInfo.os.keyword',
-              size: 4,
-            },
-          },
-          browserStat: {
-            terms: {
-              field: 'clientInfo.browser.keyword',
-              size: 4,
-            },
-          },
-          deviceStat: {
-            terms: {
-              field: 'clientInfo.deviceType.keyword',
-              size: 4,
-            },
-          },
-        },
-      },
-    });
+    // const { hits, aggregations } = await this.search({
+    //   index: query.projectId,
+    //   body: {
+    //     query: {
+    //       bool: {
+    //         filter: [
+    //           {
+    //             term: {
+    //               'data.errorId': query.errorId,
+    //             },
+    //           },
+    //           {
+    //             range: {
+    //               'data.time': {
+    //                 gt: query.startDate,
+    //                 lt: query.endDate,
+    //               },
+    //             },
+    //           },
+    //         ],
+    //       },
+    //     },
+    //     size: 0,
+    //     aggs: {
+    //       trendStat: {
+    //         range: {
+    //           field: 'data.time',
+    //           ranges: times,
+    //         },
+    //       },
+    //       osStat: {
+    //         terms: {
+    //           field: 'clientInfo.os.keyword',
+    //           size: 4,
+    //         },
+    //       },
+    //       browserStat: {
+    //         terms: {
+    //           field: 'clientInfo.browser.keyword',
+    //           size: 4,
+    //         },
+    //       },
+    //       deviceStat: {
+    //         terms: {
+    //           field: 'clientInfo.deviceType.keyword',
+    //           size: 4,
+    //         },
+    //       },
+    //     },
+    //   },
+    // });
 
-    return {
-      trendStat: {
-        totalCount: hits.total,
-        data: aggregations.trendStat.buckets.map(item => ({
-          date: format(item.from, type),
-          count: item.doc_count,
-        })),
-      },
-      osStat: {
-        totalCount: hits.total,
-        data: aggregations.osStat.buckets.map(item => ({
-          name: item.key,
-          count: item.doc_count,
-        })),
-      },
-      browserStat: {
-        totalCount: hits.total,
-        data: aggregations.browserStat.buckets.map(item => ({
-          name: item.key,
-          count: item.doc_count,
-        })),
-      },
-      deviceStat: {
-        totalCount: hits.total,
-        data: aggregations.deviceStat.buckets.map(item => ({
-          name: item.key,
-          count: item.doc_count,
-        })),
-      },
-    };
+    // return {
+    //   trendStat: {
+    //     totalCount: hits.total,
+    //     data: aggregations.trendStat.buckets.map(item => ({
+    //       date: format(item.from, type),
+    //       count: item.doc_count,
+    //     })),
+    //   },
+    //   osStat: {
+    //     totalCount: hits.total,
+    //     data: aggregations.osStat.buckets.map(item => ({
+    //       name: item.key,
+    //       count: item.doc_count,
+    //     })),
+    //   },
+    //   browserStat: {
+    //     totalCount: hits.total,
+    //     data: aggregations.browserStat.buckets.map(item => ({
+    //       name: item.key,
+    //       count: item.doc_count,
+    //     })),
+    //   },
+    //   deviceStat: {
+    //     totalCount: hits.total,
+    //     data: aggregations.deviceStat.buckets.map(item => ({
+    //       name: item.key,
+    //       count: item.doc_count,
+    //     })),
+    //   },
+    // };
   }
 
   public async statError(query: any) {
@@ -422,50 +454,50 @@ export class SearchService {
 
     const { times, type } = this.getTimes(startDate, endDate);
 
-    const filterIn = [];
-    errors.forEach(item => {
-      filterIn.push({
-        term: {
-          'data.errorId': item.id,
-        },
-      });
-    });
-    const { hits, aggregations } = await this.search({
-      index: projectId,
-      body: {
-        query: {
-          bool: {
-            filter: [
-              {
-                range: {
-                  'data.time': {
-                    gt: startDate,
-                    lt: endDate,
-                  },
-                },
-              },
-            ],
-            should: filterIn,
-          },
-        },
-        size: 0,
-        aggs: {
-          trendStat: {
-            range: {
-              field: 'data.time',
-              ranges: times,
-            },
-          },
-        },
-      },
-    });
-    return {
-      totalCount: hits.total,
-      data: aggregations.trendStat.buckets.map(item => ({
-        date: format(item.from, type),
-        count: item.doc_count,
-      })),
-    };
+    // const filterIn = [];
+    // errors.forEach(item => {
+    //   filterIn.push({
+    //     term: {
+    //       'data.errorId': item.id,
+    //     },
+    //   });
+    // });
+    // const { hits, aggregations } = await this.search({
+    //   index: projectId,
+    //   body: {
+    //     query: {
+    //       bool: {
+    //         filter: [
+    //           {
+    //             range: {
+    //               'data.time': {
+    //                 gt: startDate,
+    //                 lt: endDate,
+    //               },
+    //             },
+    //           },
+    //         ],
+    //         should: filterIn,
+    //       },
+    //     },
+    //     size: 0,
+    //     aggs: {
+    //       trendStat: {
+    //         range: {
+    //           field: 'data.time',
+    //           ranges: times,
+    //         },
+    //       },
+    //     },
+    //   },
+    // });
+    // return {
+    //   totalCount: hits.total,
+    //   data: aggregations.trendStat.buckets.map(item => ({
+    //     date: format(item.from, type),
+    //     count: item.doc_count,
+    //   })),
+    // };
   }
 
   /**

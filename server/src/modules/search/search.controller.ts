@@ -28,7 +28,7 @@ export class SearchController {
     private readonly searchService: SearchService,
     @InjectQueue()
     private readonly queue: Queue,
-  ) {}
+  ) { }
 
   @ApiOperation({ title: '上报错误日志', description: '' })
   @ApiResponse({ status: 200 })

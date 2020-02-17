@@ -111,7 +111,7 @@ export interface PackageData {
 export interface SendInfo {
   projectId: number
   version: string
-  guarderId: number
+  guarderId?: number
 }
 
 export interface BehaviorClick {
