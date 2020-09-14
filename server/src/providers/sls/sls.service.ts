@@ -3,8 +3,8 @@ import * as ALY from 'aliyun-sdk';
 import { transformQueryToStr, addSelect } from './sls.util';
 
 const sls = new ALY.SLS({
-  accessKeyId: 'LTAI2HEgJhoUQxyf', // 步骤2获取的密钥
-  secretAccessKey: 'TKzszN6cfyc99y5lgn0Th3hzsddbSW', // 步骤2获取的密钥值
+  accessKeyId: '', // 步骤2获取的密钥
+  secretAccessKey: '', // 步骤2获取的密钥值
   endpoint: 'http://cn-hangzhou.sls.aliyuncs.com',
   apiVersion: '2015-06-01'
 });
